@@ -15,10 +15,10 @@ data class VariableScope(
    */
   fun resolveVariable(name: String) = variables[name]
 
-  fun assignVariable(name: String, meriadValue: MeriadValue, mutability: Modifier?) {
+  fun assignVariable(name: String, meriadValue: MeriadValue, modifier: Modifier?) {
 
-    if (mutability == null) {
-      // If the mutability is null, then we assume the code is trying to assign a variable that was already declared.
+    if (modifier == null) {
+      // If the modifier is null, then we assume the code is trying to assign a variable that was already declared.
       // TODO: throw an error if the variable did not resolve (and is therefore not declared)
       val resolved = resolveVariable(name) ?: return
 
@@ -27,7 +27,7 @@ data class VariableScope(
       } // TODO: else throw error
     } else {
       // Since the mutability parameter is not null, the variable is being declared.
-      variables[name] = Variable(name, meriadValue.value, mutability)
+      variables[name] = Variable(name, meriadValue.value, modifier)
     }
   }
 
