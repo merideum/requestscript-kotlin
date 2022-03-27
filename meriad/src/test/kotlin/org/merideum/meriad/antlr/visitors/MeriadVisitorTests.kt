@@ -6,35 +6,114 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.meriad.MeriadLexer
 import org.merideum.meriad.MeriadParser
+import org.merideum.meriad.antlr.Modifier
 import org.merideum.meriad.antlr.VariableScope
 
 class MeriadVisitorTests: DescribeSpec({
-  describe("Meriad code") {
-    it("should parse successfully and run") {
-      val meriad = """
-        |test = 123
+  fun executeCode(code: String, variableScope: VariableScope) {
+    val lexer = MeriadLexer(CharStreams.fromString(code))
+    val parser = MeriadParser(CommonTokenStream(lexer))
+
+    parser.buildParseTree = true
+
+    val parseTree = parser.parse()
+
+    val visitor = MeriadVisitor(variableScope)
+
+    visitor.visit(parseTree)
+  }
+
+  describe("variable declaration") {
+    describe("const") {
+      var code = """
+        |const test = 123
       """.trimMargin()
-      val lexer = MeriadLexer(CharStreams.fromString(meriad))
-      val parser = MeriadParser(CommonTokenStream(lexer))
-      parser.buildParseTree = true
 
-      val parseTree: ParseTree = parser.parse()
+      it("should parse successfully and run") {
+        val variableScope = VariableScope(null, mutableMapOf())
 
-      val variableScope = VariableScope(null, mutableMapOf())
-      val visitor = MeriadVisitor(variableScope)
+        executeCode(code, variableScope)
 
-      visitor.visit(parseTree)
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value 123") {
+            size shouldBe 1
 
-      variableScope.variables.apply {
-        withClue("should have one variable named 'test' with value 123") {
-          size shouldBe 1
-          get("test")
-            .shouldNotBeNull()
-            .value
-            .shouldBe(123)
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value shouldBe 123
+            actualConst.modifier shouldBe Modifier.CONST
+          }
+        }
+      }
+
+      it("should reject re-assignment") {
+        code = """
+          |const test = 123
+          |test = 456
+        """.trimMargin()
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value 123") {
+            size shouldBe 1
+
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value shouldBe 123
+            actualConst.modifier shouldBe Modifier.CONST
+          }
+        }
+      }
+    }
+
+    describe("var") {
+      var code = """
+        |var test = 123
+      """.trimMargin()
+
+      it("should parse successfully and run") {
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value 123") {
+            size shouldBe 1
+
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value shouldBe 123
+            actualConst.modifier shouldBe Modifier.VAR
+          }
+        }
+      }
+
+      it("should reject re-assignment") {
+        code = """
+          |var test = 123
+          |test = 456
+        """.trimMargin()
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value 456") {
+            size shouldBe 1
+
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value shouldBe 456
+            actualConst.modifier shouldBe Modifier.VAR
+          }
         }
       }
     }
