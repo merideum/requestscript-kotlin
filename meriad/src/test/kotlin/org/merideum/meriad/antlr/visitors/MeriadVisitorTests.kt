@@ -100,6 +100,7 @@ class MeriadVisitorTests: DescribeSpec({
           |var test = 123
           |test = 456
         """.trimMargin()
+
         val variableScope = VariableScope(null, mutableMapOf())
 
         executeCode(code, variableScope)
