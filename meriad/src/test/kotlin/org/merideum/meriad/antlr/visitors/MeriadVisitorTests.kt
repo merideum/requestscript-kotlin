@@ -95,7 +95,7 @@ class MeriadVisitorTests: DescribeSpec({
         }
       }
 
-      it("should reject re-assignment") {
+      it("can be reassigned") {
         code = """
           |var test = 123
           |test = 456
