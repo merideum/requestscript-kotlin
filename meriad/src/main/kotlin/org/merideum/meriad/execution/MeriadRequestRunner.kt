@@ -20,10 +20,11 @@ class MeriadRequestRunner: MeriadRunner {
   override fun execute(code: String): MeriadExecutionResult {
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
-    val visitor = MeriadVisitor(mainScope)
+    val outputContainer = OutputContainer(mutableMapOf())
+    val visitor = MeriadVisitor(mainScope, outputContainer)
 
     visitor.visit(parseTree)
 
-    return MeriadExecutionResult(emptyMap())
+    return MeriadExecutionResult(outputContainer.output())
   }
 }

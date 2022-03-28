@@ -2,6 +2,7 @@ package org.merideum.meriad.antlr.visitors
 
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.antlr.v4.runtime.CharStreams
@@ -10,9 +11,14 @@ import org.merideum.meriad.MeriadLexer
 import org.merideum.meriad.MeriadParser
 import org.merideum.meriad.antlr.Modifier
 import org.merideum.meriad.antlr.VariableScope
+import org.merideum.meriad.execution.OutputContainer
 
 class MeriadVisitorTests: DescribeSpec({
-  fun executeCode(code: String, variableScope: VariableScope) {
+  fun executeCode(
+    code: String,
+    variableScope: VariableScope = VariableScope(null, mutableMapOf()),
+    outputContainer: OutputContainer = OutputContainer.empty()
+  ) {
     val lexer = MeriadLexer(CharStreams.fromString(code))
     val parser = MeriadParser(CommonTokenStream(lexer))
 
@@ -20,7 +26,7 @@ class MeriadVisitorTests: DescribeSpec({
 
     val parseTree = parser.parse()
 
-    val visitor = MeriadVisitor(variableScope)
+    val visitor = MeriadVisitor(variableScope, outputContainer)
 
     visitor.visit(parseTree)
   }
@@ -70,6 +76,21 @@ class MeriadVisitorTests: DescribeSpec({
           }
         }
       }
+
+      it("should reject declaration without assignment") {
+        code = """
+          |const test
+        """.trimMargin()
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should not have any variables") {
+            shouldBeEmpty()
+          }
+        }
+      }
     }
 
     describe("var") {
@@ -77,7 +98,7 @@ class MeriadVisitorTests: DescribeSpec({
         |var test = 123
       """.trimMargin()
 
-      it("should parse successfully and run") {
+      it("should add variable with 'var' modifier and assigned value") {
         val variableScope = VariableScope(null, mutableMapOf())
 
         executeCode(code, variableScope)
@@ -90,6 +111,28 @@ class MeriadVisitorTests: DescribeSpec({
               .shouldNotBeNull()
 
             actualConst.value shouldBe 123
+            actualConst.modifier shouldBe Modifier.VAR
+          }
+        }
+      }
+
+      it("can declare 'var' variable without assignment") {
+        code = """
+          |var test
+        """.trimMargin()
+
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value Unit") {
+            size shouldBe 1
+
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value shouldBe Unit
             actualConst.modifier shouldBe Modifier.VAR
           }
         }
@@ -114,6 +157,76 @@ class MeriadVisitorTests: DescribeSpec({
 
             actualConst.value shouldBe 456
             actualConst.modifier shouldBe Modifier.VAR
+          }
+        }
+      }
+    }
+  }
+
+  describe("output assignment") {
+    lateinit var code: String
+
+    describe("output is assigned") {
+      code = """
+        |output test = 123
+      """.trimMargin()
+
+      it("should have output") {
+        val outputContainer = OutputContainer.empty()
+
+        executeCode(code, outputContainer = outputContainer)
+
+        outputContainer.output().apply {
+          withClue("should have one output set to 'test' with value 123") {
+            size shouldBe 1
+
+            val actualOutput = get("test")
+              .shouldNotBeNull()
+
+            actualOutput shouldBe 123
+          }
+        }
+      }
+    }
+
+    describe("output value is already initialized") {
+      code = """
+        |const test = 123
+        |output test
+      """.trimMargin()
+
+      it("should have output") {
+        val outputContainer = OutputContainer.empty()
+
+        executeCode(code, outputContainer = outputContainer)
+
+        outputContainer.output().apply {
+          withClue("should have one output set to the 'test' 'const' variable") {
+            size shouldBe 1
+
+            val actualOutput = get("test")
+              .shouldNotBeNull()
+
+            actualOutput shouldBe 123
+          }
+        }
+      }
+    }
+
+    describe("output value is not initialized") {
+      code = """
+        |var test
+        |output test
+      """.trimMargin()
+
+      it("should reject setting value") {
+        val outputContainer = OutputContainer.empty()
+
+        executeCode(code, outputContainer = outputContainer)
+
+        outputContainer.output().apply {
+          withClue("should not have any output") {
+            shouldBeEmpty()
           }
         }
       }

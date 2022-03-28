@@ -27,7 +27,13 @@ data class VariableScope(
       } // TODO: else throw error
     } else {
       // Since the mutability parameter is not null, the variable is being declared.
-      variables[name] = Variable(name, meriadValue.value, modifier)
+
+      // const variables cannot be declared without an assignment.
+      // If the value is Unit then has been declared without an assignment.
+      // TODO: throw error if a 'const' variable has been declared without an assignment.
+      if ((modifier == Modifier.CONST && meriadValue.value != Unit) || modifier == Modifier.VAR) {
+        variables[name] = Variable(name, meriadValue.value, modifier)
+      }
     }
   }
 
