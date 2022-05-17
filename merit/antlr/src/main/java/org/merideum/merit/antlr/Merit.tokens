@@ -1,0 +1,12 @@
+ASSIGN=1
+OUTPUT=2
+CONST=3
+VAR=4
+IDENTIFIER=5
+LETTER=6
+INTEGER=7
+WS=8
+'='=1
+'output'=2
+'const'=3
+'var'=4
