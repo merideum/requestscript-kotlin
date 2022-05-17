@@ -1,0 +1,16 @@
+plugins {
+  kotlin("jvm")
+}
+
+dependencies {
+  val antlr: String by project
+  val kotestVersion: String by project
+
+  implementation(project(":merit:antlr"))
+
+  implementation("org.antlr:antlr4-runtime:$antlr")
+  testImplementation("org.antlr:antlr4-runtime:$antlr")
+
+  testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+  testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+}
