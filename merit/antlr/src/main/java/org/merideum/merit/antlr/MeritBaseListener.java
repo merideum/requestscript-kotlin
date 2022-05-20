@@ -40,6 +40,18 @@ public class MeritBaseListener implements MeritListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterImportDependency(MeritParser.ImportDependencyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitImportDependency(MeritParser.ImportDependencyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStatement(MeritParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -107,6 +119,30 @@ public class MeritBaseListener implements MeritListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariableModifier(MeritParser.VariableModifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

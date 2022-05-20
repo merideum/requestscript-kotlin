@@ -23,6 +23,12 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(MeritParser.BlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MeritParser#importDependency}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImportDependency(MeritParser.ImportDependencyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MeritParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -59,4 +65,16 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariableModifier(MeritParser.VariableModifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#dependencyPathIdentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#simpleIdentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
 }

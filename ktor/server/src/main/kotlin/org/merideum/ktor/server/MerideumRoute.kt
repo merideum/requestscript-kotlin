@@ -5,7 +5,7 @@ import io.ktor.request.receiveText
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.post
-import org.merideum.kotlin.merit.execution.SimpleMeritExecutor
+import org.merideum.ktor.server.executor.SimpleMeritExecutor
 
 fun Route.merideum() {
   post("/merideum") {
