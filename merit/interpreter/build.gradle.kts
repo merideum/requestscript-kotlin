@@ -7,9 +7,9 @@ dependencies {
   val kotestVersion: String by project
   val mockkVersion: String by project
 
-  implementation(project(":merit:antlr"))
+  api(project(":merit:antlr"))
 
-  implementation("org.antlr:antlr4-runtime:$antlr")
+  api("org.antlr:antlr4-runtime:$antlr")
   testImplementation("org.antlr:antlr4-runtime:$antlr")
 
   testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
