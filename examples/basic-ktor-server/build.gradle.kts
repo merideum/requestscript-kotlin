@@ -1,6 +1,8 @@
 plugins {
   kotlin("jvm")
   kotlin("plugin.serialization")
+
+  application
 }
 
 dependencies {
@@ -9,13 +11,20 @@ dependencies {
   val logbackVersion: String by project
   val kotlinSerializationJsonVersion: String by project
 
-  implementation(project(":merit:interpreter"))
+  implementation(project(":ktor:server"))
+
   implementation("io.ktor:ktor-server-core:$ktorVersion")
+  implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
   implementation("io.ktor:ktor-server-cio:$ktorVersion")
+  implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
   implementation("ch.qos.logback:logback-classic:$logbackVersion")
-  implementation("io.ktor:ktor-serialization:$ktorVersion")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationJsonVersion")
+  // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationJsonVersion")
 
   testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
   testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+}
+
+application {
+  mainClass.set("io.ktor.server.cio.EngineMain")
 }
