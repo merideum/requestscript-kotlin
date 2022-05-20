@@ -28,6 +28,16 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitBlock(MeritParser.BlockContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MeritParser#importDependency}.
+	 * @param ctx the parse tree
+	 */
+	void enterImportDependency(MeritParser.ImportDependencyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#importDependency}.
+	 * @param ctx the parse tree
+	 */
+	void exitImportDependency(MeritParser.ImportDependencyContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MeritParser#statement}.
 	 * @param ctx the parse tree
 	 */
@@ -89,4 +99,24 @@ public interface MeritListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariableModifier(MeritParser.VariableModifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#dependencyPathIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#dependencyPathIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#simpleIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#simpleIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
 }

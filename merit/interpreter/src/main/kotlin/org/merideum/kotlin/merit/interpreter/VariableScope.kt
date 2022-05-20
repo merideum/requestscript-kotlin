@@ -1,5 +1,7 @@
 package org.merideum.kotlin.merit.interpreter
 
+import org.merideum.kotlin.merit.interpreter.error.VariableAlreadyDeclaredException
+
 /**
  * Contains variables with a scope.
  */
@@ -16,24 +18,29 @@ data class VariableScope(
   fun resolveVariable(name: String) = variables[name]
 
   fun assignVariable(name: String, meritValue: MeritValue, modifier: Modifier?) {
+    val resolved = resolveVariable(name)
 
+    /**
+     * Re-assign an existing variable.
+     */
     if (modifier == null) {
-      // If the modifier is null, then we assume the code is trying to assign a variable that was already declared.
-      // TODO: throw an error if the variable did not resolve (and is therefore not declared)
-      val resolved = resolveVariable(name) ?: return
+      // TODO throw error. Cannot re-assign a variable that does not exist.
+      if (resolved == null) return
 
-      if (resolved.modifier == Modifier.VAR) {
-        resolved.value = meritValue.value
-      } // TODO: else throw error
+      // TODO throw error. Cannot re-assign a CONST variable.
+      if (resolved.modifier == Modifier.CONST) return
+
+      resolved.value = meritValue.value
     } else {
-      // Since the mutability parameter is not null, the variable is being declared.
+      /**
+       * Declare and assign a new variable.
+       */
+      if (resolved != null) throw VariableAlreadyDeclaredException(name)
 
-      // const variables cannot be declared without an assignment.
-      // If the value is Unit then has been declared without an assignment.
-      // TODO: throw error if a 'const' variable has been declared without an assignment.
-      if ((modifier == Modifier.CONST && meritValue.value != Unit) || modifier == Modifier.VAR) {
-        variables[name] = Variable(name, meritValue.value, modifier)
-      }
+      // TODO throw error. Cannot declare a CONST variable without an assignment
+      if (modifier == Modifier.CONST && meritValue.value == Unit) return
+
+      variables[name] = Variable(name, meritValue.value, modifier)
     }
   }
 

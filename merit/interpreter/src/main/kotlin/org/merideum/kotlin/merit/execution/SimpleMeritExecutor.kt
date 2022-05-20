@@ -3,6 +3,8 @@ package org.merideum.kotlin.merit.execution
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTree
+import org.merideum.kotlin.merit.interpreter.Dependency
+import org.merideum.kotlin.merit.interpreter.DependencyResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.visitors.MeritVisitor
 import org.merideum.merit.antlr.MeritLexer
@@ -21,7 +23,16 @@ class SimpleMeritExecutor: MeritExecutor {
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
     val outputContainer = OutputContainer(mutableMapOf())
-    val visitor = MeritVisitor(mainScope, outputContainer)
+    val dependencyResolver = object : DependencyResolver {
+      override fun resolve(name: String): Dependency {
+        return SimpleDependency()
+      }
+
+      override fun resolve(name: String, path: String): Dependency? {
+        return SimpleDependency()
+      }
+    }
+    val visitor = MeritVisitor(mainScope, outputContainer, dependencyResolver)
 
     visitor.visit(parseTree)
 

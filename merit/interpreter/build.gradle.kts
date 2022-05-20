@@ -5,6 +5,7 @@ plugins {
 dependencies {
   val antlr: String by project
   val kotestVersion: String by project
+  val mockkVersion: String by project
 
   implementation(project(":merit:antlr"))
 
@@ -13,4 +14,6 @@ dependencies {
 
   testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
   testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+
+  testImplementation("io.mockk:mockk:$mockkVersion")
 }
