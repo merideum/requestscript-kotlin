@@ -4,16 +4,16 @@ import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.DependencyResolver
+import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
-import org.merideum.kotlin.merit.interpreter.error.DependencyResolutionException
+import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
 
 class MeritVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
-  val dependencyResolver: DependencyResolver
+  val resourceResolver: ResourceResolver
 ): MeritBaseVisitor<MeritValue>() {
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue {
@@ -71,10 +71,10 @@ class MeritVisitor(
         ?.removeSuffix(".")
 
       val dependency = if (dependencyPath == null) {
-        dependencyResolver.resolve(dependencyName)
+        resourceResolver.resolve(dependencyName)
       } else {
-        dependencyResolver.resolve(dependencyName, dependencyPath)
-      } ?: throw DependencyResolutionException(dependencyName)
+        resourceResolver.resolve(dependencyName, dependencyPath)
+      } ?: throw ResourceResolutionException(dependencyName)
 
       scope.assignVariable(dependencyIdentifier, MeritValue(dependency), Modifier.CONST)
     }
