@@ -23,7 +23,8 @@ val Merideum = createApplicationPlugin(
   name = "Merideum",
   createConfiguration = ::MerideumPluginConfiguration
 ) {
-  val executor = SimpleMeritExecutor(pluginConfig.resourceContainer)
+  val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
+  val executor = SimpleMeritExecutor(resourceResolver)
 
   application.install(StatusPages) {
     exception<Throwable> { call, cause ->
@@ -52,13 +53,12 @@ val Merideum = createApplicationPlugin(
 }
 
 class MerideumPluginConfiguration {
-  lateinit var resourceContainer: MerideumResourceResolver
+  val resources: MutableList<Resource> = mutableListOf()
 
   fun resources(configuration: ResourcesConfiguration.() -> Unit) {
     val config = ResourcesConfiguration().apply(configuration)
 
-    val resources = config.resources
-    resourceContainer = MerideumResourceResolver(resources)
+    resources.addAll(config.resources)
   }
 }
 
