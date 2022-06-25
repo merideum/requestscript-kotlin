@@ -1,13 +1,18 @@
 package org.merideum.ktor.server.plugin
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.merideum.kotlin.merit.interpreter.Resource
+import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
@@ -20,6 +25,13 @@ val Merideum = createApplicationPlugin(
 ) {
   val executor = SimpleMeritExecutor(pluginConfig.resourceContainer)
 
+  application.install(StatusPages) {
+    exception<Throwable> { call, cause ->
+      if(cause is ResourceResolutionException) {
+        call.respondText(text = "${cause.message}" , status = HttpStatusCode.BadRequest)
+      }
+    }
+  }
   application.routing {
     route("/merideum") {
 
