@@ -25,7 +25,7 @@ import org.merideum.merit.antlr.MeritParser
 class MeritVisitorTests: DescribeSpec({
   lateinit var resourceResolver: ResourceResolver
 
-  class TestResource: Resource
+  class TestResource(override val name: String, override val path: String) : Resource
 
   beforeAny {
     resourceResolver = mockk()
@@ -252,6 +252,7 @@ class MeritVisitorTests: DescribeSpec({
 
   describe("import dependency") {
     val dependencyName = "TestDependency"
+    val dependencyPath = "org.merideum"
     var code: String = """
           |import testDependency: $dependencyName
         """.trimMargin()
@@ -265,7 +266,7 @@ class MeritVisitorTests: DescribeSpec({
     describe("when the dependency is resolvable") {
 
       it("should resolve the dependency and not throw an error") {
-        every { resourceResolver.resolve(dependencyName) } returns TestResource()
+        every { resourceResolver.resolve(dependencyName) } returns TestResource(dependencyName, "")
 
         shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
@@ -298,11 +299,11 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("when a path is included in the dependency name") {
       code = """
-        |import test: org.merideum.$dependencyName
+        |import test: $dependencyPath.$dependencyName
       """.trimMargin()
 
       it("should resolve the dependency and not throw an error") {
-        every { resourceResolver.resolve(dependencyName, "org.merideum") } returns TestResource()
+        every { resourceResolver.resolve(dependencyName, ) } returns TestResource(dependencyName, dependencyPath)
 
         shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
@@ -325,7 +326,7 @@ class MeritVisitorTests: DescribeSpec({
       """.trimMargin()
 
       it("should throw an exception") {
-        every { resourceResolver.resolve(dependencyName) } returns TestResource()
+        every { resourceResolver.resolve(dependencyName) } returns TestResource(dependencyName, dependencyPath)
 
         val actualException = shouldThrow<VariableAlreadyDeclaredException> {
           executeCode(code, variableScope)
