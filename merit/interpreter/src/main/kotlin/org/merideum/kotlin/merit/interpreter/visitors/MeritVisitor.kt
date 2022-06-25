@@ -63,20 +63,20 @@ class MeritVisitor(
     return MeritValue.nothing()
   }
 
-  override fun visitImportDependency(ctx: MeritParser.ImportDependencyContext?): MeritValue {
+  override fun visitImportResource(ctx: MeritParser.ImportResourceContext?): MeritValue {
     if (ctx != null) {
-      val dependencyIdentifier = ctx.IDENTIFIER().text
-      val dependencyName = ctx.DEPENDENCY_NAME().text
-      val dependencyPath = ctx.dependencyPathIdentifier()?.text
+      val resourceIdentifier = ctx.IDENTIFIER().text
+      val resourceName = ctx.RESOURCE_NAME().text
+      val resourcePath = ctx.resourcePathIdentifier()?.text
         ?.removeSuffix(".")
 
-      val dependency = if (dependencyPath == null) {
-        resourceResolver.resolve(dependencyName)
+      val resource = if (resourcePath == null) {
+        resourceResolver.resolve(resourceName)
       } else {
-        resourceResolver.resolve(dependencyName, dependencyPath)
-      } ?: throw ResourceResolutionException(dependencyName)
+        resourceResolver.resolve(resourceName, resourcePath)
+      } ?: throw ResourceResolutionException(resourceName)
 
-      scope.assignVariable(dependencyIdentifier, MeritValue(dependency), Modifier.CONST)
+      scope.assignVariable(resourceIdentifier, MeritValue(resource), Modifier.CONST)
     }
 
     return MeritValue.nothing()

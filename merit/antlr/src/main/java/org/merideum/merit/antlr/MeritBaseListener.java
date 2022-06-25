@@ -40,13 +40,13 @@ public class MeritBaseListener implements MeritListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterImportDependency(MeritParser.ImportDependencyContext ctx) { }
+	@Override public void enterImportResource(MeritParser.ImportResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitImportDependency(MeritParser.ImportDependencyContext ctx) { }
+	@Override public void exitImportResource(MeritParser.ImportResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -124,13 +124,13 @@ public class MeritBaseListener implements MeritListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx) { }
+	@Override public void enterResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx) { }
+	@Override public void exitResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

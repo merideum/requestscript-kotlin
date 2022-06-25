@@ -302,7 +302,7 @@ class MeritVisitorTests: DescribeSpec({
         |import test: $resourcePath.$resourceName
       """.trimMargin()
 
-      it("should resolve the dependency and not throw an error") {
+      it("should resolve the resource and not throw an error") {
         every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath)
 
         shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
