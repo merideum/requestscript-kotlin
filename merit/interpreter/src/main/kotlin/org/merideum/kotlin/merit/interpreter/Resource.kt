@@ -1,6 +1,6 @@
 package org.merideum.kotlin.merit.interpreter
 
-interface Resource {
+interface Resource<T>: VariableValue<T> {
   /**
    * The name of the Resource
    */

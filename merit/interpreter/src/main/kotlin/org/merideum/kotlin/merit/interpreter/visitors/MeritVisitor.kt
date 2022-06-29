@@ -6,6 +6,7 @@ import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
+import org.merideum.kotlin.merit.interpreter.VariableValue
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
@@ -14,35 +15,37 @@ class MeritVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
   val resourceResolver: ResourceResolver
-): MeritBaseVisitor<MeritValue>() {
+): MeritBaseVisitor<MeritValue<*>>() {
 
-  override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue {
+  override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<*> {
     return MeritValue(ctx.text.toInt())
   }
 
-  override fun visitVariableModifier(ctx: MeritParser.VariableModifierContext): MeritValue {
+  override fun visitVariableModifier(ctx: MeritParser.VariableModifierContext): MeritValue<*> {
     return MeritValue(ctx.text)
   }
 
-  override fun visitAssignment(ctx: MeritParser.AssignmentContext): MeritValue {
+  override fun visitAssignment(ctx: MeritParser.AssignmentContext): MeritValue<*> {
     return MeritValue(this.visit(ctx.expression()).value)
   }
 
-  override fun visitVariableAssignment(ctx: MeritParser.VariableAssignmentContext): MeritValue {
-    val variableValue: MeritValue = if (ctx.assignment() == null) {
+  override fun visitVariableAssignment(ctx: MeritParser.VariableAssignmentContext): MeritValue<*> {
+    val variableValue: MeritValue<*> = if (ctx.assignment() == null) {
       MeritValue.nothing()
     } else this.visit(ctx.assignment())
 
     val variableName = ctx.simpleIdentifier().text
     val variableMutability = ctx.variableModifier()?.text?.toModifier()
 
-    scope.assignVariable(variableName, variableValue, variableMutability)
+    if (variableValue.value is VariableValue<*>) {
+      scope.assignVariable(variableName, variableValue.value, variableMutability)
+    }
 
     return MeritValue.nothing()
   }
 
-  override fun visitOutputAssignment(ctx: MeritParser.OutputAssignmentContext): MeritValue {
-    val outputAssignment: MeritValue = if (ctx.assignment() == null) {
+  override fun visitOutputAssignment(ctx: MeritParser.OutputAssignmentContext): MeritValue<*> {
+    val outputAssignment: MeritValue<*> = if (ctx.assignment() == null) {
       MeritValue.nothing()
     } else this.visit(ctx.assignment())
 
@@ -63,7 +66,7 @@ class MeritVisitor(
     return MeritValue.nothing()
   }
 
-  override fun visitImportResource(ctx: MeritParser.ImportResourceContext?): MeritValue {
+  override fun visitImportResource(ctx: MeritParser.ImportResourceContext?): MeritValue<*> {
     if (ctx != null) {
       val resourceIdentifier = ctx.IDENTIFIER().text
       val resourceName = ctx.RESOURCE_NAME().text
@@ -76,7 +79,7 @@ class MeritVisitor(
         resourceResolver.resolve(resourceName, resourcePath)
       } ?: throw ResourceResolutionException(resourceName)
 
-      scope.assignVariable(resourceIdentifier, MeritValue(resource), Modifier.CONST)
+      scope.assignVariable(resourceIdentifier, resource, Modifier.CONST)
     }
 
     return MeritValue.nothing()
