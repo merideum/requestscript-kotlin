@@ -6,14 +6,14 @@ import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.kotlin.merit.execution.MeritExecutionResult
 import org.merideum.kotlin.merit.execution.MeritExecutor
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.Dependency
-import org.merideum.kotlin.merit.interpreter.DependencyResolver
+import org.merideum.kotlin.merit.interpreter.Resource
+import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.visitors.MeritVisitor
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
-class SimpleMeritExecutor: MeritExecutor {
+class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor {
 
   private fun lexer(code: String) = MeritLexer(CharStreams.fromString(code))
 
@@ -26,16 +26,7 @@ class SimpleMeritExecutor: MeritExecutor {
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
     val outputContainer = OutputContainer(mutableMapOf())
-    val dependencyResolver = object : DependencyResolver {
-      override fun resolve(name: String): Dependency {
-        return SimpleDependency()
-      }
-
-      override fun resolve(name: String, path: String): Dependency? {
-        return SimpleDependency()
-      }
-    }
-    val visitor = MeritVisitor(mainScope, outputContainer, dependencyResolver)
+    val visitor = MeritVisitor(mainScope, outputContainer, resourceResolver)
 
     visitor.visit(parseTree)
 

@@ -22,7 +22,7 @@ DOT
 OUTPUT
 CONST
 VAR
-DEPENDENCY_NAME
+RESOURCE_NAME
 IDENTIFIER
 COLON
 CAPITAL_LETTER
@@ -33,14 +33,14 @@ WS
 rule names:
 parse
 block
-importDependency
+importResource
 statement
 outputAssignment
 variableAssignment
 assignment
 expression
 variableModifier
-dependencyPathIdentifier
+resourcePathIdentifier
 simpleIdentifier
 
 

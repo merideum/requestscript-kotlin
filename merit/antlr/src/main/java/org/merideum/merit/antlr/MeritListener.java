@@ -28,15 +28,15 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitBlock(MeritParser.BlockContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#importDependency}.
+	 * Enter a parse tree produced by {@link MeritParser#importResource}.
 	 * @param ctx the parse tree
 	 */
-	void enterImportDependency(MeritParser.ImportDependencyContext ctx);
+	void enterImportResource(MeritParser.ImportResourceContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MeritParser#importDependency}.
+	 * Exit a parse tree produced by {@link MeritParser#importResource}.
 	 * @param ctx the parse tree
 	 */
-	void exitImportDependency(MeritParser.ImportDependencyContext ctx);
+	void exitImportResource(MeritParser.ImportResourceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#statement}.
 	 * @param ctx the parse tree
@@ -100,15 +100,15 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitVariableModifier(MeritParser.VariableModifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#dependencyPathIdentifier}.
+	 * Enter a parse tree produced by {@link MeritParser#resourcePathIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx);
+	void enterResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MeritParser#dependencyPathIdentifier}.
+	 * Exit a parse tree produced by {@link MeritParser#resourcePathIdentifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx);
+	void exitResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#simpleIdentifier}.
 	 * @param ctx the parse tree

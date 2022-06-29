@@ -17,18 +17,18 @@ public class MeritParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IMPORT=1, ASSIGN=2, DOT=3, OUTPUT=4, CONST=5, VAR=6, DEPENDENCY_NAME=7, 
+		IMPORT=1, ASSIGN=2, DOT=3, OUTPUT=4, CONST=5, VAR=6, RESOURCE_NAME=7, 
 		IDENTIFIER=8, COLON=9, CAPITAL_LETTER=10, LETTER=11, INTEGER=12, WS=13;
 	public static final int
-		RULE_parse = 0, RULE_block = 1, RULE_importDependency = 2, RULE_statement = 3, 
+		RULE_parse = 0, RULE_block = 1, RULE_importResource = 2, RULE_statement = 3, 
 		RULE_outputAssignment = 4, RULE_variableAssignment = 5, RULE_assignment = 6, 
-		RULE_expression = 7, RULE_variableModifier = 8, RULE_dependencyPathIdentifier = 9, 
+		RULE_expression = 7, RULE_variableModifier = 8, RULE_resourcePathIdentifier = 9, 
 		RULE_simpleIdentifier = 10;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"parse", "block", "importDependency", "statement", "outputAssignment", 
+			"parse", "block", "importResource", "statement", "outputAssignment", 
 			"variableAssignment", "assignment", "expression", "variableModifier", 
-			"dependencyPathIdentifier", "simpleIdentifier"
+			"resourcePathIdentifier", "simpleIdentifier"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -42,7 +42,7 @@ public class MeritParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "DEPENDENCY_NAME", 
+			null, "IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "RESOURCE_NAME", 
 			"IDENTIFIER", "COLON", "CAPITAL_LETTER", "LETTER", "INTEGER", "WS"
 		};
 	}
@@ -145,11 +145,11 @@ public class MeritParser extends Parser {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
-		public List<ImportDependencyContext> importDependency() {
-			return getRuleContexts(ImportDependencyContext.class);
+		public List<ImportResourceContext> importResource() {
+			return getRuleContexts(ImportResourceContext.class);
 		}
-		public ImportDependencyContext importDependency(int i) {
-			return getRuleContext(ImportDependencyContext.class,i);
+		public ImportResourceContext importResource(int i) {
+			return getRuleContext(ImportResourceContext.class,i);
 		}
 		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
 		public TerminalNode WS(int i) {
@@ -195,7 +195,7 @@ public class MeritParser extends Parser {
 				{
 				{
 				setState(25);
-				importDependency();
+				importResource();
 				}
 				}
 				setState(30);
@@ -245,40 +245,40 @@ public class MeritParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ImportDependencyContext extends ParserRuleContext {
+	public static class ImportResourceContext extends ParserRuleContext {
 		public TerminalNode IMPORT() { return getToken(MeritParser.IMPORT, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(MeritParser.IDENTIFIER, 0); }
 		public TerminalNode COLON() { return getToken(MeritParser.COLON, 0); }
-		public TerminalNode DEPENDENCY_NAME() { return getToken(MeritParser.DEPENDENCY_NAME, 0); }
+		public TerminalNode RESOURCE_NAME() { return getToken(MeritParser.RESOURCE_NAME, 0); }
 		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
 		public TerminalNode WS(int i) {
 			return getToken(MeritParser.WS, i);
 		}
-		public DependencyPathIdentifierContext dependencyPathIdentifier() {
-			return getRuleContext(DependencyPathIdentifierContext.class,0);
+		public ResourcePathIdentifierContext resourcePathIdentifier() {
+			return getRuleContext(ResourcePathIdentifierContext.class,0);
 		}
-		public ImportDependencyContext(ParserRuleContext parent, int invokingState) {
+		public ImportResourceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_importDependency; }
+		@Override public int getRuleIndex() { return RULE_importResource; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritListener ) ((MeritListener)listener).enterImportDependency(this);
+			if ( listener instanceof MeritListener ) ((MeritListener)listener).enterImportResource(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritListener ) ((MeritListener)listener).exitImportDependency(this);
+			if ( listener instanceof MeritListener ) ((MeritListener)listener).exitImportResource(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritVisitor ) return ((MeritVisitor<? extends T>)visitor).visitImportDependency(this);
+			if ( visitor instanceof MeritVisitor ) return ((MeritVisitor<? extends T>)visitor).visitImportResource(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ImportDependencyContext importDependency() throws RecognitionException {
-		ImportDependencyContext _localctx = new ImportDependencyContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_importDependency);
+	public final ImportResourceContext importResource() throws RecognitionException {
+		ImportResourceContext _localctx = new ImportResourceContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_importResource);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -337,13 +337,13 @@ public class MeritParser extends Parser {
 			if (_la==IDENTIFIER) {
 				{
 				setState(64);
-				dependencyPathIdentifier();
+				resourcePathIdentifier();
 				}
 			}
 
 			{
 			setState(67);
-			match(DEPENDENCY_NAME);
+			match(RESOURCE_NAME);
 			}
 			}
 		}
@@ -796,7 +796,7 @@ public class MeritParser extends Parser {
 		return _localctx;
 	}
 
-	public static class DependencyPathIdentifierContext extends ParserRuleContext {
+	public static class ResourcePathIdentifierContext extends ParserRuleContext {
 		public List<SimpleIdentifierContext> simpleIdentifier() {
 			return getRuleContexts(SimpleIdentifierContext.class);
 		}
@@ -811,28 +811,28 @@ public class MeritParser extends Parser {
 		public TerminalNode WS(int i) {
 			return getToken(MeritParser.WS, i);
 		}
-		public DependencyPathIdentifierContext(ParserRuleContext parent, int invokingState) {
+		public ResourcePathIdentifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_dependencyPathIdentifier; }
+		@Override public int getRuleIndex() { return RULE_resourcePathIdentifier; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritListener ) ((MeritListener)listener).enterDependencyPathIdentifier(this);
+			if ( listener instanceof MeritListener ) ((MeritListener)listener).enterResourcePathIdentifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritListener ) ((MeritListener)listener).exitDependencyPathIdentifier(this);
+			if ( listener instanceof MeritListener ) ((MeritListener)listener).exitResourcePathIdentifier(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritVisitor ) return ((MeritVisitor<? extends T>)visitor).visitDependencyPathIdentifier(this);
+			if ( visitor instanceof MeritVisitor ) return ((MeritVisitor<? extends T>)visitor).visitResourcePathIdentifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final DependencyPathIdentifierContext dependencyPathIdentifier() throws RecognitionException {
-		DependencyPathIdentifierContext _localctx = new DependencyPathIdentifierContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_dependencyPathIdentifier);
+	public final ResourcePathIdentifierContext resourcePathIdentifier() throws RecognitionException {
+		ResourcePathIdentifierContext _localctx = new ResourcePathIdentifierContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_resourcePathIdentifier);
 		int _la;
 		try {
 			int _alt;

@@ -4,16 +4,16 @@ import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.DependencyResolver
+import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
-import org.merideum.kotlin.merit.interpreter.error.DependencyResolutionException
+import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
 
 class MeritVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
-  val dependencyResolver: DependencyResolver
+  val resourceResolver: ResourceResolver
 ): MeritBaseVisitor<MeritValue>() {
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue {
@@ -63,20 +63,20 @@ class MeritVisitor(
     return MeritValue.nothing()
   }
 
-  override fun visitImportDependency(ctx: MeritParser.ImportDependencyContext?): MeritValue {
+  override fun visitImportResource(ctx: MeritParser.ImportResourceContext?): MeritValue {
     if (ctx != null) {
-      val dependencyIdentifier = ctx.IDENTIFIER().text
-      val dependencyName = ctx.DEPENDENCY_NAME().text
-      val dependencyPath = ctx.dependencyPathIdentifier()?.text
+      val resourceIdentifier = ctx.IDENTIFIER().text
+      val resourceName = ctx.RESOURCE_NAME().text
+      val resourcePath = ctx.resourcePathIdentifier()?.text
         ?.removeSuffix(".")
 
-      val dependency = if (dependencyPath == null) {
-        dependencyResolver.resolve(dependencyName)
+      val resource = if (resourcePath == null) {
+        resourceResolver.resolve(resourceName)
       } else {
-        dependencyResolver.resolve(dependencyName, dependencyPath)
-      } ?: throw DependencyResolutionException(dependencyName)
+        resourceResolver.resolve(resourceName, resourcePath)
+      } ?: throw ResourceResolutionException(resourceName)
 
-      scope.assignVariable(dependencyIdentifier, MeritValue(dependency), Modifier.CONST)
+      scope.assignVariable(resourceIdentifier, MeritValue(resource), Modifier.CONST)
     }
 
     return MeritValue.nothing()

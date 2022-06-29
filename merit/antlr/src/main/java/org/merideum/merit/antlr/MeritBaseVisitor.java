@@ -31,7 +31,7 @@ public class MeritBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitImportDependency(MeritParser.ImportDependencyContext ctx) { return visitChildren(ctx); }
+	@Override public T visitImportResource(MeritParser.ImportResourceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -80,7 +80,7 @@ public class MeritBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDependencyPathIdentifier(MeritParser.DependencyPathIdentifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -13,22 +13,22 @@ import io.mockk.mockk
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.Dependency
-import org.merideum.kotlin.merit.interpreter.DependencyResolver
+import org.merideum.kotlin.merit.interpreter.Resource
+import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.VariableScope
-import org.merideum.kotlin.merit.interpreter.error.DependencyResolutionException
+import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.error.VariableAlreadyDeclaredException
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
 class MeritVisitorTests: DescribeSpec({
-  lateinit var dependencyResolver: DependencyResolver
+  lateinit var resourceResolver: ResourceResolver
 
-  class TestDependency: Dependency
+  class TestResource(override val name: String, override val path: String) : Resource
 
   beforeAny {
-    dependencyResolver = mockk()
+    resourceResolver = mockk()
   }
 
   fun executeCode(
@@ -43,7 +43,7 @@ class MeritVisitorTests: DescribeSpec({
 
     val parseTree = parser.parse()
 
-    val visitor = MeritVisitor(variableScope, outputContainer, dependencyResolver)
+    val visitor = MeritVisitor(variableScope, outputContainer, resourceResolver)
 
     visitor.visit(parseTree)
   }
@@ -250,10 +250,11 @@ class MeritVisitorTests: DescribeSpec({
     }
   }
 
-  describe("import dependency") {
-    val dependencyName = "TestDependency"
+  describe("import resource") {
+    val resourceName = "TestResource"
+    val resourcePath = "org.merideum"
     var code: String = """
-          |import testDependency: $dependencyName
+          |import testResource: $resourceName
         """.trimMargin()
 
     lateinit var variableScope: VariableScope
@@ -262,18 +263,18 @@ class MeritVisitorTests: DescribeSpec({
       variableScope = VariableScope(null, mutableMapOf())
     }
 
-    describe("when the dependency is resolvable") {
+    describe("when the resource is resolvable") {
 
-      it("should resolve the dependency and not throw an error") {
-        every { dependencyResolver.resolve(dependencyName) } returns TestDependency()
+      it("should resolve the resource and not throw an error") {
+        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "")
 
-        shouldNotThrow<DependencyResolutionException> { executeCode(code, variableScope) }
+        shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-        withClue("should add dependency as a variable to the root scope") {
+        withClue("should add resource as a variable to the root scope") {
           variableScope.variables.run {
             shouldHaveSize(1)
 
-            get("testDependency")
+            get("testResource")
               .shouldNotBeNull()
               .modifier shouldBe Modifier.CONST
           }
@@ -281,32 +282,32 @@ class MeritVisitorTests: DescribeSpec({
       }
     }
 
-    describe("when the dependency is unresolvable") {
+    describe("when the resource is unresolvable") {
 
-      it("should resolve the dependency and not throw an error") {
-        every { dependencyResolver.resolve(dependencyName) } returns null
+      it("should resolve the resource and not throw an error") {
+        every { resourceResolver.resolve(resourceName) } returns null
 
-        val actualException = shouldThrow<DependencyResolutionException> { executeCode(code, variableScope) }
+        val actualException = shouldThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-        actualException.message shouldBe "Could not resolve dependency: TestDependency"
+        actualException.message shouldBe "Could not resolve resource: TestResource"
 
-        withClue("should not add dependency as a variable") {
+        withClue("should not add resource as a variable") {
           variableScope.variables.shouldBeEmpty()
         }
       }
     }
 
-    describe("when a path is included in the dependency name") {
+    describe("when a path is included in the resource name") {
       code = """
-        |import test: org.merideum.$dependencyName
+        |import test: $resourcePath.$resourceName
       """.trimMargin()
 
-      it("should resolve the dependency and not throw an error") {
-        every { dependencyResolver.resolve(dependencyName, "org.merideum") } returns TestDependency()
+      it("should resolve the resource and not throw an error") {
+        every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath)
 
-        shouldNotThrow<DependencyResolutionException> { executeCode(code, variableScope) }
+        shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-        withClue("should add dependency as a variable to the root scope") {
+        withClue("should add resource as a variable to the root scope") {
           variableScope.variables.run {
             shouldHaveSize(1)
 
@@ -318,14 +319,14 @@ class MeritVisitorTests: DescribeSpec({
       }
     }
 
-    describe("when a variable is declared with the same name as an imported dependency") {
+    describe("when a variable is declared with the same name as an imported resource") {
       code = """
-        |import test: $dependencyName
+        |import test: $resourceName
         |const test = 123
       """.trimMargin()
 
       it("should throw an exception") {
-        every { dependencyResolver.resolve(dependencyName) } returns TestDependency()
+        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath)
 
         val actualException = shouldThrow<VariableAlreadyDeclaredException> {
           executeCode(code, variableScope)

@@ -17,7 +17,7 @@ public class MeritLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IMPORT=1, ASSIGN=2, DOT=3, OUTPUT=4, CONST=5, VAR=6, DEPENDENCY_NAME=7, 
+		IMPORT=1, ASSIGN=2, DOT=3, OUTPUT=4, CONST=5, VAR=6, RESOURCE_NAME=7, 
 		IDENTIFIER=8, COLON=9, CAPITAL_LETTER=10, LETTER=11, INTEGER=12, WS=13;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -29,7 +29,7 @@ public class MeritLexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "DEPENDENCY_NAME", 
+			"IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "RESOURCE_NAME", 
 			"IDENTIFIER", "COLON", "CAPITAL_LETTER", "LETTER", "INTEGER", "DIGIT", 
 			"WS"
 		};
@@ -45,7 +45,7 @@ public class MeritLexer extends Lexer {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "DEPENDENCY_NAME", 
+			null, "IMPORT", "ASSIGN", "DOT", "OUTPUT", "CONST", "VAR", "RESOURCE_NAME", 
 			"IDENTIFIER", "COLON", "CAPITAL_LETTER", "LETTER", "INTEGER", "WS"
 		};
 	}
