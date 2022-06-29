@@ -11,6 +11,7 @@ dependencies {
   val kotestKtorVersion: String by project
 
   implementation(project(":merit:interpreter"))
+
   implementation("io.ktor:ktor-server-core:$ktorVersion")
   implementation("io.ktor:ktor-server-cio:$ktorVersion")
   implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -21,7 +22,10 @@ dependencies {
   testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
   testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
+  testImplementation("io.ktor:ktor-serialization:$ktorVersion")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationJsonVersion")
   testImplementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+  testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
   testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
   testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
