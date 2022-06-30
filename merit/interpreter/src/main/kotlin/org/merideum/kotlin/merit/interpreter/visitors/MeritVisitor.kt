@@ -6,7 +6,7 @@ import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
-import org.merideum.kotlin.merit.interpreter.VariableValue
+import org.merideum.kotlin.merit.interpreter.TypedValue
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
@@ -37,7 +37,7 @@ class MeritVisitor(
     val variableName = ctx.simpleIdentifier().text
     val variableMutability = ctx.variableModifier()?.text?.toModifier()
 
-    if (variableValue.value is VariableValue<*>) {
+    if (variableValue.value is TypedValue<*>) {
       scope.assignVariable(variableName, variableValue.value, variableMutability)
     }
 

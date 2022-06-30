@@ -1,7 +1,9 @@
 package org.merideum.kotlin.merit.interpreter
 
-
-interface VariableValue <T> {
+/**
+ * A value that has an instance in memory.
+ */
+interface TypedValue <T> {
 
   val value: T?
 
