@@ -53,7 +53,7 @@ val Merideum = createApplicationPlugin(
 }
 
 class MerideumPluginConfiguration {
-  val resources: MutableList<Resource> = mutableListOf()
+  val resources: MutableList<Resource<*>> = mutableListOf()
 
   fun resources(configuration: ResourcesConfiguration.() -> Unit) {
     val config = ResourcesConfiguration().apply(configuration)
@@ -63,7 +63,7 @@ class MerideumPluginConfiguration {
 }
 
 class ResourcesConfiguration {
-  val resources = mutableListOf<Resource>()
+  val resources = mutableListOf<Resource<*>>()
 
   /**
    * An internal resource is a resource that has an instance in memory.

@@ -1,9 +1,11 @@
 package org.merideum.kotlin.merit.interpreter
 
-data class Variable(
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
+
+data class Variable<T>(
   val name: String,
-  var value: Any?,
+  var value: TypedValue<T>?,
   val modifier: Modifier
 ) {
-  val initialized = value !is Unit
+  val initialized = value != null
 }

@@ -53,12 +53,44 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(MeritParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code simpleIdentifierExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code integerExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#functionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCall(MeritParser.FunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#functionParameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionParameters(MeritParser.FunctionParametersContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#variableModifier}.
 	 * @param ctx the parse tree

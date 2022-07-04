@@ -1,6 +1,8 @@
 package org.merideum.kotlin.merit.interpreter
 
-interface Resource {
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
+
+interface Resource<T>: TypedValue<T> {
   /**
    * The name of the Resource
    */
