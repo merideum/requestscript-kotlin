@@ -66,7 +66,8 @@ class MeritVisitor(
       return MeritValue(functionCaller.value.callFunction(functionAttributes.name, parameterValues))
     }
 
-    return super.visitFunctionCallExpression(ctx)
+    // TODO Replace this.
+    throw RuntimeException("Could not call function expression.")
   }
 
   override fun visitFunctionCall(ctx: MeritParser.FunctionCallContext): MeritValue<FunctionCallAttributes> {
