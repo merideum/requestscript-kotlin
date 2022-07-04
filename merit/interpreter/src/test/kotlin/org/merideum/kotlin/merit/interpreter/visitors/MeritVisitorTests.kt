@@ -25,7 +25,15 @@ import org.merideum.merit.antlr.MeritParser
 class MeritVisitorTests: DescribeSpec({
   lateinit var resourceResolver: ResourceResolver
 
-  class TestResource(override val name: String, override val path: String) : Resource
+  class TestResource<T>(override val name: String, override val path: String, override val value: T?) : Resource<T> {
+    override fun callFunction(functionName: String, parameters: List<*>): Any? {
+      return null
+    }
+
+    override fun get(): T? {
+      return value
+    }
+  }
 
   beforeAny {
     resourceResolver = mockk()
@@ -35,7 +43,7 @@ class MeritVisitorTests: DescribeSpec({
     code: String,
     variableScope: VariableScope = VariableScope(null, mutableMapOf()),
     outputContainer: OutputContainer = OutputContainer.empty()
-  ) {
+  ): OutputContainer {
     val lexer = MeritLexer(CharStreams.fromString(code))
     val parser = MeritParser(CommonTokenStream(lexer))
 
@@ -46,6 +54,8 @@ class MeritVisitorTests: DescribeSpec({
     val visitor = MeritVisitor(variableScope, outputContainer, resourceResolver)
 
     visitor.visit(parseTree)
+
+    return outputContainer
   }
 
   describe("variable declaration") {
@@ -266,7 +276,7 @@ class MeritVisitorTests: DescribeSpec({
     describe("when the resource is resolvable") {
 
       it("should resolve the resource and not throw an error") {
-        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "")
+        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "", "123")
 
         shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
@@ -303,7 +313,7 @@ class MeritVisitorTests: DescribeSpec({
       """.trimMargin()
 
       it("should resolve the resource and not throw an error") {
-        every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath)
+        every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath, "123")
 
         shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
@@ -326,7 +336,7 @@ class MeritVisitorTests: DescribeSpec({
       """.trimMargin()
 
       it("should throw an exception") {
-        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath)
+        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
 
         val actualException = shouldThrow<VariableAlreadyDeclaredException> {
           executeCode(code, variableScope)
@@ -334,6 +344,26 @@ class MeritVisitorTests: DescribeSpec({
 
         actualException.message shouldBe "The identifier 'test' has already been declared."
       }
+    }
+  }
+
+  describe("function call") {
+    var code = """
+      |const largest = 555
+      |const middle = 444
+      |const smallest = 300
+      |
+      |const minimum = largest.min(middle.min(smallest))
+      |
+      |output minimum
+    """.trimMargin()
+
+    it("should call function") {
+      val variableScope = VariableScope(null, mutableMapOf())
+
+      val actualOutput = executeCode(code, variableScope)
+
+      actualOutput.output()["minimum"] shouldBe 300
     }
   }
 })

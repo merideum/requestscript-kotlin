@@ -78,6 +78,30 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitAssignment(MeritParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code simpleIdentifierExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code simpleIdentifierExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code integerExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree
@@ -89,6 +113,26 @@ public interface MeritListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCall(MeritParser.FunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCall(MeritParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#functionParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionParameters(MeritParser.FunctionParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#functionParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionParameters(MeritParser.FunctionParametersContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#variableModifier}.
 	 * @param ctx the parse tree

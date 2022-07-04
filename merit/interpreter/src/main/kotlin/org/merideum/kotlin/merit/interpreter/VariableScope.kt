@@ -1,6 +1,7 @@
 package org.merideum.kotlin.merit.interpreter
 
 import org.merideum.kotlin.merit.interpreter.error.VariableAlreadyDeclaredException
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
 
 /**
  * Contains variables with a scope.

@@ -1,13 +1,17 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
-import org.merideum.kotlin.merit.interpreter.MeritValue
-import org.merideum.kotlin.merit.interpreter.VariableScope
-import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.ResourceResolver
+import org.merideum.kotlin.merit.interpreter.FunctionCallAttributes
+import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Modifier
-import org.merideum.kotlin.merit.interpreter.TypedValue
+import org.merideum.kotlin.merit.interpreter.ResourceResolver
+import org.merideum.kotlin.merit.interpreter.Variable
+import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
+import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
+import org.merideum.kotlin.merit.interpreter.toModifier
+import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
 
@@ -18,15 +22,63 @@ class MeritVisitor(
 ): MeritBaseVisitor<MeritValue<*>>() {
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<*> {
-    return MeritValue(ctx.text.toInt())
+    return MeritValue(IntValue(ctx.text.toInt()))
   }
 
-  override fun visitVariableModifier(ctx: MeritParser.VariableModifierContext): MeritValue<*> {
+  /**
+   * Return the variable for the identifier.
+   */
+  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable<*>> {
+    val expectedIdentifier = ctx.simpleIdentifier().text
+
+    val found = scope.resolveVariable(expectedIdentifier)
+      ?: throw UnknownVariableIdentifierException(expectedIdentifier)
+
+    return MeritValue(found)
+  }
+
+  override fun visitVariableModifier(ctx: MeritParser.VariableModifierContext): MeritValue<String> {
     return MeritValue(ctx.text)
   }
 
   override fun visitAssignment(ctx: MeritParser.AssignmentContext): MeritValue<*> {
     return MeritValue(this.visit(ctx.expression()).value)
+  }
+
+  override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
+    val functionCaller = this.visit(ctx.expression()).value
+
+    if (functionCaller is Variable<*>) {
+      val functionAttributes = this.visit(ctx.functionCall()).value as FunctionCallAttributes
+      val parameterValues = functionAttributes.parameters.map {
+        /**
+         * If the value of a parameter is not a TypedValue, then we need to get the TypedValue.
+         */
+        val parameterValue = it.value
+
+        if (parameterValue is Variable<*>) {
+          parameterValue.value
+        } else {
+          parameterValue
+        }
+      }
+
+      return MeritValue(functionCaller.value.callFunction(functionAttributes.name, parameterValues))
+    }
+
+    return super.visitFunctionCallExpression(ctx)
+  }
+
+  override fun visitFunctionCall(ctx: MeritParser.FunctionCallContext): MeritValue<FunctionCallAttributes> {
+    val name = ctx.simpleIdentifier().text
+    val parameters = this.visit(ctx.functionParameters()).value as List<MeritValue<*>>
+    return MeritValue(FunctionCallAttributes(name, parameters))
+  }
+
+  override fun visitFunctionParameters(ctx: MeritParser.FunctionParametersContext): MeritValue<List<MeritValue<*>>> {
+    val parameters = ctx.expression().map { this.visit(it) }
+
+    return MeritValue(parameters)
   }
 
   override fun visitVariableAssignment(ctx: MeritParser.VariableAssignmentContext): MeritValue<*> {
@@ -57,10 +109,13 @@ class MeritVisitor(
 
       // TODO: throw error if the resolved variable is not initialized.
       if (resolved.initialized) {
-        output.add(outputName, resolved.value)
+        output.add(outputName, resolved.value.get())
       }
     } else {
-      output.add(outputName, outputAssignment.value)
+
+      if (outputAssignment.value is TypedValue<*>) {
+        output.add(outputName, outputAssignment.value.get())
+      }
     }
 
     return MeritValue.nothing()
@@ -70,8 +125,7 @@ class MeritVisitor(
     if (ctx != null) {
       val resourceIdentifier = ctx.IDENTIFIER().text
       val resourceName = ctx.RESOURCE_NAME().text
-      val resourcePath = ctx.resourcePathIdentifier()?.text
-        ?.removeSuffix(".")
+      val resourcePath = ctx.resourcePathIdentifier()?.text?.removeSuffix(".")
 
       val resource = if (resourcePath == null) {
         resourceResolver.resolve(resourceName)

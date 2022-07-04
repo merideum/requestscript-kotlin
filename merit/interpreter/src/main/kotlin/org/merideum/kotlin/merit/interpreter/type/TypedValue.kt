@@ -1,4 +1,4 @@
-package org.merideum.kotlin.merit.interpreter
+package org.merideum.kotlin.merit.interpreter.type
 
 /**
  * A value that has an instance in memory.
