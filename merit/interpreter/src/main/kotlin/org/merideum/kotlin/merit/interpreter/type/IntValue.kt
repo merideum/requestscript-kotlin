@@ -3,6 +3,9 @@ package org.merideum.kotlin.merit.interpreter.type
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
 class IntValue(override val value: Int?) : TypedValue<Int> {
+
+  override val type = Type.INT
+
   override fun callFunction(functionName: String, parameters: List<*>): Any? {
     if (value == null) throw FunctionNotFoundException(functionName)
 

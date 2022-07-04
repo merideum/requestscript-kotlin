@@ -10,7 +10,6 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import org.antlr.v4.runtime.CharStreams
@@ -21,7 +20,7 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
-import org.merideum.kotlin.merit.interpreter.error.VariableAlreadyDeclaredException
+import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
@@ -92,7 +91,9 @@ class MeritVisitorTests: DescribeSpec({
         """.trimMargin()
         val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+        shouldThrow<IdentifierAlreadyDeclaredException> {
+          executeCode(code, variableScope)
+        }
 
         variableScope.variables.apply {
           withClue("should have one variable named 'test' with value 123") {
@@ -110,6 +111,7 @@ class MeritVisitorTests: DescribeSpec({
       it("should reject declaration without assignment") {
         code = """
           |const test
+          |
         """.trimMargin()
         val variableScope = VariableScope(null, mutableMapOf())
 
@@ -148,7 +150,7 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can declare without assignment") {
         code = """
-          |var test
+          |var test: int
         """.trimMargin()
 
         val variableScope = VariableScope(null, mutableMapOf())
@@ -341,7 +343,7 @@ class MeritVisitorTests: DescribeSpec({
       it("should throw an exception") {
         every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
 
-        val actualException = shouldThrow<VariableAlreadyDeclaredException> {
+        val actualException = shouldThrow<IdentifierAlreadyDeclaredException> {
           executeCode(code, variableScope)
         }
 

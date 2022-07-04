@@ -76,13 +76,37 @@ public class MeritBaseListener implements MeritListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableAssignment(MeritParser.VariableAssignmentContext ctx) { }
+	@Override public void enterVariableDeclaration(MeritParser.VariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableAssignment(MeritParser.VariableAssignmentContext ctx) { }
+	@Override public void exitVariableDeclaration(MeritParser.VariableDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableReassignment(MeritParser.VariableReassignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableReassignment(MeritParser.VariableReassignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -95,6 +119,18 @@ public class MeritBaseListener implements MeritListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAssignment(MeritParser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringExpression(MeritParser.StringExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringExpression(MeritParser.StringExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -203,6 +239,18 @@ public class MeritBaseListener implements MeritListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTypeDeclaration(MeritParser.TypeDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTypeDeclaration(MeritParser.TypeDeclarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

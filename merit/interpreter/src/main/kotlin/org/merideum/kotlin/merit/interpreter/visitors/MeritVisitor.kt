@@ -11,6 +11,8 @@ import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
@@ -21,8 +23,16 @@ class MeritVisitor(
   val resourceResolver: ResourceResolver
 ): MeritBaseVisitor<MeritValue<*>>() {
 
-  override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<*> {
+  override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
+    return MeritValue(Type.fromDeclaration(ctx.type.text))
+  }
+
+  override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<IntValue> {
     return MeritValue(IntValue(ctx.text.toInt()))
+  }
+
+  override fun visitStringExpression(ctx: MeritParser.StringExpressionContext): MeritValue<StringValue> {
+    return MeritValue(StringValue(ctx.text))
   }
 
   /**
@@ -130,19 +140,37 @@ class MeritVisitor(
     return MeritValue(parameters)
   }
 
-  override fun visitVariableAssignment(ctx: MeritParser.VariableAssignmentContext): MeritValue<*> {
-    val variableValue: MeritValue<*> = if (ctx.assignment() == null) {
-      MeritValue.nothing()
-    } else this.visit(ctx.assignment())
+  override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<*> {
+    val name = ctx.simpleIdentifier().text
+    val type = this.visitTypeDeclaration(ctx.typeDeclaration()).value!!
 
-    val variableName = ctx.simpleIdentifier().text
-    val variableMutability = ctx.variableModifier()?.text?.toModifier()
+    type.declareVariable(scope, name)
 
-    // If the value of the variable is not a [TypedValue] then the variable value is not assigned.
-    if (variableValue.value is TypedValue<*>) {
-      scope.assignVariable(variableName, variableValue.value, variableMutability)
-    } else {
-      scope.assignVariable<Unit>(variableName, null, variableMutability)
+    return MeritValue.nothing()
+  }
+
+  override fun visitVariableDeclarationAssignment(ctx: MeritParser.VariableDeclarationAssignmentContext): MeritValue<*> {
+    val name = ctx.simpleIdentifier().text
+    val modifier = ctx.variableModifier().text.toModifier()
+
+    // ANTLR4 may still report back a null assignment if the syntax is broken.
+    if (ctx.assignment() == null) return MeritValue.nothing()
+
+    val value = this.visitAssignment(ctx.assignment()).value
+
+    if (value is TypedValue<*>) {
+      scope.declareAndAssignVariable(name, value, modifier)
+    }
+
+    return MeritValue.nothing()
+  }
+
+  override fun visitVariableReassignment(ctx: MeritParser.VariableReassignmentContext): MeritValue<*> {
+    val name = ctx.simpleIdentifier().text
+    val value = this.visitAssignment(ctx.assignment()).value
+
+    if (value is TypedValue<*>) {
+      scope.reassignVariable(name, value)
     }
 
     return MeritValue.nothing()
@@ -184,7 +212,7 @@ class MeritVisitor(
         resourceResolver.resolve(resourceName, resourcePath)
       } ?: throw ResourceResolutionException(resourceName)
 
-      scope.assignVariable(resourceIdentifier, resource, Modifier.CONST)
+      scope.declareAndAssignVariable(resourceIdentifier, resource, Modifier.CONST)
     }
 
     return MeritValue.nothing()

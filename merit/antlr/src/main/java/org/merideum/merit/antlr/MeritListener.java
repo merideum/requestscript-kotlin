@@ -58,15 +58,35 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitOutputAssignment(MeritParser.OutputAssignmentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#variableAssignment}.
+	 * Enter a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariableAssignment(MeritParser.VariableAssignmentContext ctx);
+	void enterVariableDeclaration(MeritParser.VariableDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MeritParser#variableAssignment}.
+	 * Exit a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariableAssignment(MeritParser.VariableAssignmentContext ctx);
+	void exitVariableDeclaration(MeritParser.VariableDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#variableDeclarationAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#variableDeclarationAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#variableReassignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableReassignment(MeritParser.VariableReassignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#variableReassignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
@@ -77,6 +97,18 @@ public interface MeritListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAssignment(MeritParser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringExpression(MeritParser.StringExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringExpression(MeritParser.StringExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -173,4 +205,14 @@ public interface MeritListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
 }

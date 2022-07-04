@@ -41,17 +41,36 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOutputAssignment(MeritParser.OutputAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MeritParser#variableAssignment}.
+	 * Visit a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariableAssignment(MeritParser.VariableAssignmentContext ctx);
+	T visitVariableDeclaration(MeritParser.VariableDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#variableDeclarationAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#variableReassignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAssignment(MeritParser.AssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringExpression(MeritParser.StringExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -109,4 +128,10 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
 }

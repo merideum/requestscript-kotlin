@@ -1,6 +1,7 @@
 package org.merideum.kotlin.merit.interpreter
 
-import org.merideum.kotlin.merit.interpreter.error.VariableAlreadyDeclaredException
+import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 
 /**
@@ -18,31 +19,34 @@ data class VariableScope(
    */
   fun resolveVariable(name: String) = variables[name]
 
-  fun <T> assignVariable(name: String, typedValue: TypedValue<T>?, modifier: Modifier?) {
+  fun <T: TypedValue<*>> declareVariable(name: String, type: Type) {
     val resolved = resolveVariable(name)
 
-    /**
-     * Re-assign an existing variable.
-     */
-    if (modifier == null) {
-      // TODO throw error. Cannot re-assign a variable that does not exist.
-      if (resolved == null) return
+    // TODO throw exception because a variable should not be redeclared
+    if (resolved != null) return
 
-      // TODO throw error. Cannot re-assign a CONST variable.
-      if (resolved.modifier == Modifier.CONST) return
+    variables[name] = Variable<T>(name, null, Modifier.VAR, type)
+  }
 
-      variables[name] = Variable(name, typedValue, resolved.modifier)
-    } else {
-      /**
-       * Declare and assign a new variable.
-       */
-      if (resolved != null) throw VariableAlreadyDeclaredException(name)
+  fun declareAndAssignVariable(name: String, value: TypedValue<*>, modifier: Modifier) {
+    val resolved = resolveVariable(name)
 
-      // TODO throw error. Cannot declare a CONST variable without an assignment
-      if (modifier == Modifier.CONST && typedValue == null) return
+    if (resolved != null) throw IdentifierAlreadyDeclaredException(name)
 
-      variables[name] = Variable(name, typedValue, modifier)
-    }
+    variables[name] = Variable(name, value, modifier, value.type)
+  }
+
+  fun reassignVariable(name: String, newValue: TypedValue<*>) {
+    // TODO throw error if it cannot be resolved because cannot reassign a variable that does not exist.
+    val resolved = resolveVariable(name) ?: return
+
+    // Cannot reassign a constant variable.
+    if (resolved.modifier == Modifier.CONST) throw IdentifierAlreadyDeclaredException(name)
+
+    // TODO throw error if the types do not match.
+    if (newValue.type != resolved.type) return
+
+    variables[name] = Variable(name, newValue, resolved.modifier, resolved.type)
   }
 
   companion object {
