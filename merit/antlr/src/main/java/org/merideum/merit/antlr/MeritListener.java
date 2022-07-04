@@ -114,6 +114,16 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MeritParser#functionCall}.
 	 * @param ctx the parse tree
 	 */

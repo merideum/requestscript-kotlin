@@ -1,6 +1,7 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
 import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
@@ -8,6 +9,7 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import org.antlr.v4.runtime.CharStreams
@@ -364,6 +366,23 @@ class MeritVisitorTests: DescribeSpec({
       val actualOutput = executeCode(code, variableScope)
 
       actualOutput.output()["minimum"] shouldBe 300
+    }
+
+    describe("function not in expression") {
+      code = """
+        |const stepCounter = 1
+        |
+        |stepCounter.min(300)
+        |
+      """.trimMargin()
+
+      it("should call function") {
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        shouldNotThrowAny {
+          executeCode(code, variableScope)
+        }
+      }
     }
   }
 })

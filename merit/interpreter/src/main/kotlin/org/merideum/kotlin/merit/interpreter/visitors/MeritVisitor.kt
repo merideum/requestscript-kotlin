@@ -45,6 +45,33 @@ class MeritVisitor(
     return MeritValue(this.visit(ctx.expression()).value)
   }
 
+  override fun visitStandaloneFunctionCall(ctx: MeritParser.StandaloneFunctionCallContext): MeritValue<*> {
+    val functionCaller = this.visit(ctx.expression()).value
+
+    if (functionCaller is Variable<*>) {
+      val functionAttributes = this.visit(ctx.functionCall()).value as FunctionCallAttributes
+      val parameterValues = functionAttributes.parameters.map {
+        /**
+         * If the value of a parameter is not a TypedValue, then we need to get the TypedValue.
+         */
+        val parameterValue = it.value
+
+        if (parameterValue is Variable<*>) {
+          parameterValue.value
+        } else {
+          parameterValue
+        }
+      }
+
+      functionCaller.value.callFunction(functionAttributes.name, parameterValues)
+
+      return MeritValue(MeritValue.nothing())
+    }
+
+    // TODO Replace this.
+    throw RuntimeException("Could not call function expression.")
+  }
+
   override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
     val functionCaller = this.visit(ctx.expression()).value
 
@@ -72,7 +99,12 @@ class MeritVisitor(
 
   override fun visitFunctionCall(ctx: MeritParser.FunctionCallContext): MeritValue<FunctionCallAttributes> {
     val name = ctx.simpleIdentifier().text
-    val parameters = this.visit(ctx.functionParameters()).value as List<MeritValue<*>>
+    val parameters = if (ctx.functionParameters() == null) {
+      emptyList()
+    } else {
+      this.visit(ctx.functionParameters()).value as List<MeritValue<*>>
+    }
+
     return MeritValue(FunctionCallAttributes(name, parameters))
   }
 

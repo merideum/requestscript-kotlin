@@ -136,6 +136,18 @@ public class MeritBaseListener implements MeritListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunctionCall(MeritParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -74,6 +74,12 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MeritParser#functionCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
