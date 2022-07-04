@@ -18,7 +18,7 @@ data class VariableScope(
    */
   fun resolveVariable(name: String) = variables[name]
 
-  fun <T> assignVariable(name: String, typedValue: TypedValue<T>, modifier: Modifier?) {
+  fun <T> assignVariable(name: String, typedValue: TypedValue<T>?, modifier: Modifier?) {
     val resolved = resolveVariable(name)
 
     /**
@@ -39,7 +39,7 @@ data class VariableScope(
       if (resolved != null) throw VariableAlreadyDeclaredException(name)
 
       // TODO throw error. Cannot declare a CONST variable without an assignment
-      if (modifier == Modifier.CONST && typedValue.get() == Unit) return
+      if (modifier == Modifier.CONST && typedValue == null) return
 
       variables[name] = Variable(name, typedValue, modifier)
     }

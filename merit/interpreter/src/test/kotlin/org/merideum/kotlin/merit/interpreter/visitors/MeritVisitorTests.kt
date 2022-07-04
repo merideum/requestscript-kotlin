@@ -7,6 +7,7 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -78,7 +79,7 @@ class MeritVisitorTests: DescribeSpec({
             val actualConst = get("test")
               .shouldNotBeNull()
 
-            actualConst.value shouldBe 123
+            actualConst.value!!.get() shouldBe 123
             actualConst.modifier shouldBe Modifier.CONST
           }
         }
@@ -100,7 +101,7 @@ class MeritVisitorTests: DescribeSpec({
             val actualConst = get("test")
               .shouldNotBeNull()
 
-            actualConst.value shouldBe 123
+            actualConst.value!!.get() shouldBe 123
             actualConst.modifier shouldBe Modifier.CONST
           }
         }
@@ -139,7 +140,7 @@ class MeritVisitorTests: DescribeSpec({
             val actualConst = get("test")
               .shouldNotBeNull()
 
-            actualConst.value shouldBe 123
+            actualConst.value!!.get() shouldBe 123
             actualConst.modifier shouldBe Modifier.VAR
           }
         }
@@ -155,13 +156,13 @@ class MeritVisitorTests: DescribeSpec({
         executeCode(code, variableScope)
 
         variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value Unit") {
+          withClue("should have one variable named 'test' with null value") {
             size shouldBe 1
 
             val actualConst = get("test")
               .shouldNotBeNull()
 
-            actualConst.value shouldBe Unit
+            actualConst.value.shouldBeNull()
             actualConst.modifier shouldBe Modifier.VAR
           }
         }
@@ -184,7 +185,7 @@ class MeritVisitorTests: DescribeSpec({
             val actualConst = get("test")
               .shouldNotBeNull()
 
-            actualConst.value shouldBe 456
+            actualConst.value!!.get() shouldBe 456
             actualConst.modifier shouldBe Modifier.VAR
           }
         }
