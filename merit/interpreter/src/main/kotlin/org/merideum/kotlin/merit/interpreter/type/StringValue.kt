@@ -11,4 +11,8 @@ class StringValue(override val value: String?) : TypedValue<String> {
   override fun get(): String? {
     return value
   }
+
+  override fun stringify(): String {
+    return value.toString()
+  }
 }

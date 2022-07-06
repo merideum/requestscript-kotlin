@@ -1,4 +1,4 @@
-// Generated from Merit.g4 by ANTLR 4.10.1
+// Generated from MeritParser.g4 by ANTLR 4.10.1
 package org.merideum.merit.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link MeritParser}.
  */
-public interface MeritListener extends ParseTreeListener {
+public interface MeritParserListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#parse}.
 	 * @param ctx the parse tree
@@ -146,16 +146,6 @@ public interface MeritListener extends ParseTreeListener {
 	 */
 	void exitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MeritParser#functionCall}.
 	 * @param ctx the parse tree
 	 */
@@ -215,4 +205,40 @@ public interface MeritListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code embeddedExpression}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void enterEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code embeddedExpression}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void exitEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code text}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void enterText(MeritParser.TextContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code text}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void exitText(MeritParser.TextContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code escapeSequence}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void enterEscapeSequence(MeritParser.EscapeSequenceContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code escapeSequence}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 */
+	void exitEscapeSequence(MeritParser.EscapeSequenceContext ctx);
 }

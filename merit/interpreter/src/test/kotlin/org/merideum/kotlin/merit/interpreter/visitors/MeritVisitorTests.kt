@@ -10,17 +10,21 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.every
 import io.mockk.mockk
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.merideum.kotlin.merit.execution.OutputContainer
+import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.Resource
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
-import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.VariableScope
-import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
+import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
+import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
@@ -184,11 +188,37 @@ class MeritVisitorTests: DescribeSpec({
           withClue("should have one variable named 'test' with value 456") {
             size shouldBe 1
 
-            val actualConst = get("test")
+            val actualValue = get("test")
               .shouldNotBeNull()
 
-            actualConst.value!!.get() shouldBe 456
-            actualConst.modifier shouldBe Modifier.VAR
+            actualValue.value.shouldNotBeNull().get() shouldBe 456
+            actualValue.modifier shouldBe Modifier.VAR
+          }
+        }
+      }
+
+      it("cannot reassign with value of different type") {
+        code = """
+          |var test = 123
+          |test = "throws error"
+        """.trimMargin()
+
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'test' with value 123") {
+            size shouldBe 1
+
+            val actualValue = get("test")
+              .shouldNotBeNull()
+
+            actualValue.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntValue>()
+              .get()
+              .shouldBe(123)
           }
         }
       }
@@ -348,6 +378,134 @@ class MeritVisitorTests: DescribeSpec({
         }
 
         actualException.message shouldBe "The identifier 'test' has already been declared."
+      }
+    }
+  }
+
+  describe("built-in types") {
+    var code: String
+
+    var variableScope = VariableScope(null, mutableMapOf())
+
+    beforeEach {
+      variableScope = VariableScope(null, mutableMapOf())
+    }
+
+    describe("int") {
+      it("can declare 'var' variable with type") {
+        code = """
+          |var test: int
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.INT
+
+        withClue("should have null 'value' since it is unassigned") {
+          actualVariable.value.shouldBeNull()
+        }
+      }
+
+      it("can declare and assign value") {
+        code = """
+          |var test: int
+          |test = 4839218
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.INT
+
+        withClue("should be Kotlin 'Int' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<IntValue>()
+            .get() shouldBe 123
+        }
+      }
+    }
+
+    describe("string") {
+      it("can declare variable with type") {
+        code = """
+          |var test: string
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.STRING
+
+        withClue("should have null 'value' since it is unassigned") {
+          actualVariable.value.shouldBeNull()
+        }
+      }
+
+      it("can declare variable and assign value") {
+        code = """
+          |var test: string
+          |test = "dksAKdj3029d@klnv*#*&#"
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.STRING
+
+        withClue("should be Kotlin 'String' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<StringValue>()
+            .get() shouldBe "dksAKdj3029d@klnv*#*&#"
+        }
+      }
+
+      describe("interpolation") {
+        it("can interpolate variable") {
+          code = """
+            |const name = "Merideum"
+            |const greeting = "Hello ${'$'}{name}!"
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("greeting")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "Hello Merideum!"
+          }
+        }
       }
     }
   }

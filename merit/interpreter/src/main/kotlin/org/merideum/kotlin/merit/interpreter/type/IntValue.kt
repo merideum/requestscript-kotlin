@@ -24,4 +24,8 @@ class IntValue(override val value: Int?) : TypedValue<Int> {
   override fun get(): Int? {
     return value
   }
+
+  override fun stringify(): String {
+    return value.toString()
+  }
 }

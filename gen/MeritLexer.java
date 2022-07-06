@@ -1,5 +1,4 @@
-// Generated from MeritLexer.g4 by ANTLR 4.10.1
-package org.merideum.merit.antlr;
+// Generated from /Users/christopherpoulsen/dev/git/merideum-kotlin/MeritLexer.g4 by ANTLR 4.10.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

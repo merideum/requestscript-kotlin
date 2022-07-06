@@ -14,14 +14,14 @@ import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
-import org.merideum.merit.antlr.MeritBaseVisitor
 import org.merideum.merit.antlr.MeritParser
+import org.merideum.merit.antlr.MeritParserBaseVisitor
 
 class MeritVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
   val resourceResolver: ResourceResolver
-): MeritBaseVisitor<MeritValue<*>>() {
+): MeritParserBaseVisitor<MeritValue<*>>() {
 
   override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
     return MeritValue(Type.fromDeclaration(ctx.type.text))
@@ -32,7 +32,35 @@ class MeritVisitor(
   }
 
   override fun visitStringExpression(ctx: MeritParser.StringExpressionContext): MeritValue<StringValue> {
-    return MeritValue(StringValue(ctx.text))
+    val content = ctx.stringContent().joinToString("") {
+      // TODO throw better exception
+      when (val stringPart = this.visit(it).value) {
+        is Variable<*> -> {
+          stringPart.value?.stringify() ?: throw RuntimeException("Could not stringify null value")
+        }
+        is TypedValue<*> -> {
+          stringPart.stringify()
+        }
+        is String -> {
+          stringPart
+        }
+        else -> throw RuntimeException("Could not stringify content")
+      }
+    }
+
+    return MeritValue(StringValue(content))
+  }
+
+  override fun visitEmbeddedExpression(ctx: MeritParser.EmbeddedExpressionContext): MeritValue<*> {
+    return MeritValue(this.visit(ctx.expression()).value)
+  }
+
+  override fun visitText(ctx: MeritParser.TextContext): MeritValue<*> {
+    return MeritValue(ctx.TEXT().text)
+  }
+
+  override fun visitEscapeSequence(ctx: MeritParser.EscapeSequenceContext): MeritValue<*> {
+    return MeritValue(ctx.ESCAPE_SEQUENCE().text)
   }
 
   /**
@@ -53,41 +81,6 @@ class MeritVisitor(
 
   override fun visitAssignment(ctx: MeritParser.AssignmentContext): MeritValue<*> {
     return MeritValue(this.visit(ctx.expression()).value)
-  }
-
-  override fun visitStandaloneFunctionCall(ctx: MeritParser.StandaloneFunctionCallContext): MeritValue<*> {
-    val functionCaller = this.visit(ctx.expression()).value
-
-    if (functionCaller is Variable<*>) {
-      val caller = functionCaller.value
-
-      // Cannot call functions of null values.
-      if (caller != null) {
-        val functionAttributes = this.visit(ctx.functionCall()).value as FunctionCallAttributes
-        val parameterValues = functionAttributes.parameters.map {
-          /**
-           * If the value of a parameter is not a TypedValue, then we need to get the TypedValue.
-           */
-          val parameterValue = it.value
-
-          if (parameterValue is Variable<*>) {
-            parameterValue.value
-          } else {
-            parameterValue
-          }
-        }
-
-        caller.callFunction(functionAttributes.name, parameterValues)
-
-        return MeritValue(MeritValue.nothing())
-      }
-
-      // TODO Replace with better Exception class.
-      throw RuntimeException("Cannot call function of null value.")
-    }
-
-    // TODO Replace with better Exception class.
-    throw RuntimeException("Could not call function expression.")
   }
 
   override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
@@ -128,7 +121,7 @@ class MeritVisitor(
     val parameters = if (ctx.functionParameters() == null) {
       emptyList()
     } else {
-      this.visit(ctx.functionParameters()).value as List<MeritValue<*>>
+      this.visitFunctionParameters(ctx.functionParameters()).value!!
     }
 
     return MeritValue(FunctionCallAttributes(name, parameters))

@@ -16,4 +16,9 @@ interface Resource<T>: TypedValue<T> {
 
   override val type: Type
     get() = Type.RESOURCE
+
+  override fun stringify(): String {
+    // TODO throw better exception.
+    throw RuntimeException("Cannot use Resource as 'string'.")
+  }
 }

@@ -1,5 +1,4 @@
-// Generated from MeritParser.g4 by ANTLR 4.10.1
-package org.merideum.merit.antlr;
+// Generated from /Users/christopherpoulsen/dev/git/merideum-kotlin/Parser.g4 by ANTLR 4.10.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MeritParser extends Parser {
+public class Parser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -89,7 +88,7 @@ public class MeritParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MeritParser.g4"; }
+	public String getGrammarFileName() { return "Parser.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -100,7 +99,7 @@ public class MeritParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public MeritParser(TokenStream input) {
+	public Parser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -109,22 +108,22 @@ public class MeritParser extends Parser {
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(MeritParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(Parser.EOF, 0); }
 		public ParseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parse; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterParse(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterParse(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitParse(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitParse(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitParse(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitParse(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -159,9 +158,9 @@ public class MeritParser extends Parser {
 		public ImportResourceContext importResource(int i) {
 			return getRuleContext(ImportResourceContext.class,i);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
@@ -175,15 +174,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_block; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterBlock(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterBlock(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitBlock(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitBlock(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitBlock(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitBlock(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -251,13 +250,13 @@ public class MeritParser extends Parser {
 	}
 
 	public static class ImportResourceContext extends ParserRuleContext {
-		public TerminalNode IMPORT() { return getToken(MeritParser.IMPORT, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(MeritParser.IDENTIFIER, 0); }
-		public TerminalNode COLON() { return getToken(MeritParser.COLON, 0); }
-		public TerminalNode RESOURCE_NAME() { return getToken(MeritParser.RESOURCE_NAME, 0); }
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public TerminalNode IMPORT() { return getToken(Parser.IMPORT, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(Parser.IDENTIFIER, 0); }
+		public TerminalNode COLON() { return getToken(Parser.COLON, 0); }
+		public TerminalNode RESOURCE_NAME() { return getToken(Parser.RESOURCE_NAME, 0); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public ResourcePathIdentifierContext resourcePathIdentifier() {
 			return getRuleContext(ResourcePathIdentifierContext.class,0);
@@ -268,15 +267,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_importResource; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterImportResource(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterImportResource(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitImportResource(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitImportResource(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitImportResource(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitImportResource(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -385,15 +384,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterStatement(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitStatement(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitStatement(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -454,13 +453,13 @@ public class MeritParser extends Parser {
 	}
 
 	public static class OutputAssignmentContext extends ParserRuleContext {
-		public TerminalNode OUTPUT() { return getToken(MeritParser.OUTPUT, 0); }
+		public TerminalNode OUTPUT() { return getToken(Parser.OUTPUT, 0); }
 		public SimpleIdentifierContext simpleIdentifier() {
 			return getRuleContext(SimpleIdentifierContext.class,0);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
@@ -471,15 +470,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_outputAssignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterOutputAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterOutputAssignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitOutputAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitOutputAssignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitOutputAssignment(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitOutputAssignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -547,16 +546,16 @@ public class MeritParser extends Parser {
 	}
 
 	public static class VariableDeclarationContext extends ParserRuleContext {
-		public TerminalNode VAR() { return getToken(MeritParser.VAR, 0); }
+		public TerminalNode VAR() { return getToken(Parser.VAR, 0); }
 		public SimpleIdentifierContext simpleIdentifier() {
 			return getRuleContext(SimpleIdentifierContext.class,0);
 		}
 		public TypeDeclarationContext typeDeclaration() {
 			return getRuleContext(TypeDeclarationContext.class,0);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public VariableDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -564,15 +563,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_variableDeclaration; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterVariableDeclaration(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterVariableDeclaration(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitVariableDeclaration(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitVariableDeclaration(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitVariableDeclaration(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitVariableDeclaration(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -641,9 +640,9 @@ public class MeritParser extends Parser {
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public VariableDeclarationAssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -651,15 +650,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_variableDeclarationAssignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterVariableDeclarationAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterVariableDeclarationAssignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitVariableDeclarationAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitVariableDeclarationAssignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitVariableDeclarationAssignment(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitVariableDeclarationAssignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -725,9 +724,9 @@ public class MeritParser extends Parser {
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public VariableReassignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -735,15 +734,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_variableReassignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterVariableReassignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterVariableReassignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitVariableReassignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitVariableReassignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitVariableReassignment(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitVariableReassignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -787,13 +786,13 @@ public class MeritParser extends Parser {
 	}
 
 	public static class AssignmentContext extends ParserRuleContext {
-		public TerminalNode ASSIGN() { return getToken(MeritParser.ASSIGN, 0); }
+		public TerminalNode ASSIGN() { return getToken(Parser.ASSIGN, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -801,15 +800,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_assignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterAssignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitAssignment(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitAssignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitAssignment(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitAssignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -866,9 +865,9 @@ public class MeritParser extends Parser {
 		}
 	}
 	public static class StringExpressionContext extends ExpressionContext {
-		public List<TerminalNode> QUOTE_DOUBLE() { return getTokens(MeritParser.QUOTE_DOUBLE); }
+		public List<TerminalNode> QUOTE_DOUBLE() { return getTokens(Parser.QUOTE_DOUBLE); }
 		public TerminalNode QUOTE_DOUBLE(int i) {
-			return getToken(MeritParser.QUOTE_DOUBLE, i);
+			return getToken(Parser.QUOTE_DOUBLE, i);
 		}
 		public List<StringContentContext> stringContent() {
 			return getRuleContexts(StringContentContext.class);
@@ -879,15 +878,15 @@ public class MeritParser extends Parser {
 		public StringExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterStringExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterStringExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitStringExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitStringExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitStringExpression(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitStringExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -901,15 +900,15 @@ public class MeritParser extends Parser {
 		public FunctionCallExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterFunctionCallExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterFunctionCallExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitFunctionCallExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitFunctionCallExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitFunctionCallExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -920,32 +919,32 @@ public class MeritParser extends Parser {
 		public SimpleIdentifierExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterSimpleIdentifierExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterSimpleIdentifierExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitSimpleIdentifierExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitSimpleIdentifierExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitSimpleIdentifierExpression(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitSimpleIdentifierExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 	public static class IntegerExpressionContext extends ExpressionContext {
-		public TerminalNode INTEGER() { return getToken(MeritParser.INTEGER, 0); }
+		public TerminalNode INTEGER() { return getToken(Parser.INTEGER, 0); }
 		public IntegerExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterIntegerExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterIntegerExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitIntegerExpression(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitIntegerExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitIntegerExpression(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitIntegerExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1053,12 +1052,12 @@ public class MeritParser extends Parser {
 	}
 
 	public static class FunctionCallContext extends ParserRuleContext {
-		public TerminalNode DOT() { return getToken(MeritParser.DOT, 0); }
+		public TerminalNode DOT() { return getToken(Parser.DOT, 0); }
 		public SimpleIdentifierContext simpleIdentifier() {
 			return getRuleContext(SimpleIdentifierContext.class,0);
 		}
-		public TerminalNode PAREN_L() { return getToken(MeritParser.PAREN_L, 0); }
-		public TerminalNode PAREN_R() { return getToken(MeritParser.PAREN_R, 0); }
+		public TerminalNode PAREN_L() { return getToken(Parser.PAREN_L, 0); }
+		public TerminalNode PAREN_R() { return getToken(Parser.PAREN_R, 0); }
 		public FunctionParametersContext functionParameters() {
 			return getRuleContext(FunctionParametersContext.class,0);
 		}
@@ -1068,15 +1067,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_functionCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterFunctionCall(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterFunctionCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitFunctionCall(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitFunctionCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitFunctionCall(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitFunctionCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1126,13 +1125,13 @@ public class MeritParser extends Parser {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(MeritParser.COMMA); }
+		public List<TerminalNode> COMMA() { return getTokens(Parser.COMMA); }
 		public TerminalNode COMMA(int i) {
-			return getToken(MeritParser.COMMA, i);
+			return getToken(Parser.COMMA, i);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public FunctionParametersContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1140,15 +1139,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_functionParameters; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterFunctionParameters(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterFunctionParameters(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitFunctionParameters(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitFunctionParameters(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitFunctionParameters(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitFunctionParameters(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1209,23 +1208,23 @@ public class MeritParser extends Parser {
 	}
 
 	public static class VariableModifierContext extends ParserRuleContext {
-		public TerminalNode CONST() { return getToken(MeritParser.CONST, 0); }
-		public TerminalNode VAR() { return getToken(MeritParser.VAR, 0); }
+		public TerminalNode CONST() { return getToken(Parser.CONST, 0); }
+		public TerminalNode VAR() { return getToken(Parser.VAR, 0); }
 		public VariableModifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_variableModifier; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterVariableModifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterVariableModifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitVariableModifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitVariableModifier(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitVariableModifier(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitVariableModifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1267,13 +1266,13 @@ public class MeritParser extends Parser {
 		public SimpleIdentifierContext simpleIdentifier(int i) {
 			return getRuleContext(SimpleIdentifierContext.class,i);
 		}
-		public List<TerminalNode> DOT() { return getTokens(MeritParser.DOT); }
+		public List<TerminalNode> DOT() { return getTokens(Parser.DOT); }
 		public TerminalNode DOT(int i) {
-			return getToken(MeritParser.DOT, i);
+			return getToken(Parser.DOT, i);
 		}
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public ResourcePathIdentifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1281,15 +1280,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_resourcePathIdentifier; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterResourcePathIdentifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterResourcePathIdentifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitResourcePathIdentifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitResourcePathIdentifier(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitResourcePathIdentifier(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitResourcePathIdentifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1352,22 +1351,22 @@ public class MeritParser extends Parser {
 	}
 
 	public static class SimpleIdentifierContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(MeritParser.IDENTIFIER, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(Parser.IDENTIFIER, 0); }
 		public SimpleIdentifierContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_simpleIdentifier; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterSimpleIdentifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterSimpleIdentifier(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitSimpleIdentifier(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitSimpleIdentifier(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitSimpleIdentifier(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitSimpleIdentifier(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1395,12 +1394,12 @@ public class MeritParser extends Parser {
 
 	public static class TypeDeclarationContext extends ParserRuleContext {
 		public Token type;
-		public TerminalNode COLON() { return getToken(MeritParser.COLON, 0); }
-		public TerminalNode TYPE_INT() { return getToken(MeritParser.TYPE_INT, 0); }
-		public TerminalNode TYPE_STRING() { return getToken(MeritParser.TYPE_STRING, 0); }
-		public List<TerminalNode> WS() { return getTokens(MeritParser.WS); }
+		public TerminalNode COLON() { return getToken(Parser.COLON, 0); }
+		public TerminalNode TYPE_INT() { return getToken(Parser.TYPE_INT, 0); }
+		public TerminalNode TYPE_STRING() { return getToken(Parser.TYPE_STRING, 0); }
+		public List<TerminalNode> WS() { return getTokens(Parser.WS); }
 		public TerminalNode WS(int i) {
-			return getToken(MeritParser.WS, i);
+			return getToken(Parser.WS, i);
 		}
 		public TypeDeclarationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1408,15 +1407,15 @@ public class MeritParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_typeDeclaration; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterTypeDeclaration(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterTypeDeclaration(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitTypeDeclaration(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitTypeDeclaration(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitTypeDeclaration(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitTypeDeclaration(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1469,68 +1468,28 @@ public class MeritParser extends Parser {
 	}
 
 	public static class StringContentContext extends ParserRuleContext {
+		public TerminalNode DOLLAR_CURLY_L() { return getToken(Parser.DOLLAR_CURLY_L, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode CURLY_R() { return getToken(Parser.CURLY_R, 0); }
+		public TerminalNode TEXT() { return getToken(Parser.TEXT, 0); }
+		public TerminalNode ESCAPE_SEQUENCE() { return getToken(Parser.ESCAPE_SEQUENCE, 0); }
 		public StringContentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_stringContent; }
-	 
-		public StringContentContext() { }
-		public void copyFrom(StringContentContext ctx) {
-			super.copyFrom(ctx);
-		}
-	}
-	public static class EscapeSequenceContext extends StringContentContext {
-		public TerminalNode ESCAPE_SEQUENCE() { return getToken(MeritParser.ESCAPE_SEQUENCE, 0); }
-		public EscapeSequenceContext(StringContentContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterEscapeSequence(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).enterStringContent(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitEscapeSequence(this);
+			if ( listener instanceof ParserListener ) ((ParserListener)listener).exitStringContent(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitEscapeSequence(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class EmbeddedExpressionContext extends StringContentContext {
-		public TerminalNode DOLLAR_CURLY_L() { return getToken(MeritParser.DOLLAR_CURLY_L, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
-		public TerminalNode CURLY_R() { return getToken(MeritParser.CURLY_R, 0); }
-		public EmbeddedExpressionContext(StringContentContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterEmbeddedExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitEmbeddedExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitEmbeddedExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class TextContext extends StringContentContext {
-		public TerminalNode TEXT() { return getToken(MeritParser.TEXT, 0); }
-		public TextContext(StringContentContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).enterText(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MeritParserListener ) ((MeritParserListener)listener).exitText(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MeritParserVisitor ) return ((MeritParserVisitor<? extends T>)visitor).visitText(this);
+			if ( visitor instanceof ParserVisitor ) return ((ParserVisitor<? extends T>)visitor).visitStringContent(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1543,7 +1502,6 @@ public class MeritParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case DOLLAR_CURLY_L:
-				_localctx = new EmbeddedExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(226);
@@ -1555,7 +1513,6 @@ public class MeritParser extends Parser {
 				}
 				break;
 			case TEXT:
-				_localctx = new TextContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(230);
@@ -1563,7 +1520,6 @@ public class MeritParser extends Parser {
 				}
 				break;
 			case ESCAPE_SEQUENCE:
-				_localctx = new EscapeSequenceContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(231);
