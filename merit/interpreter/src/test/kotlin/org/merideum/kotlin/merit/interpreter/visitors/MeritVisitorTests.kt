@@ -23,6 +23,7 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
+import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
@@ -623,6 +624,47 @@ class MeritVisitorTests: DescribeSpec({
               .shouldBeTypeOf<StringValue>()
               .get() shouldBe "Hello World!"
           }
+        }
+      }
+    }
+
+    describe("type checking") {
+      describe("assigning a variable to a value of different type") {
+        it("should throw exception") {
+          code = """
+          |var test: string
+          |test = 123
+        """.trimMargin()
+
+          val exception = shouldThrow<TypeMismatchedException> {
+            executeCode(code, variableScope)
+          }
+
+          exception.type shouldBe Type.STRING
+          exception.otherType shouldBe Type.INT
+
+          exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
+        }
+      }
+
+      describe("assigning a variable the result of a function") {
+        it("should throw exception") {
+          code = """
+          |var test: string
+          |test = 123
+          |
+          |var length: string
+          |length = test.length()
+        """.trimMargin()
+
+          val exception = shouldThrow<TypeMismatchedException> {
+            executeCode(code, variableScope)
+          }
+
+          exception.type shouldBe Type.STRING
+          exception.otherType shouldBe Type.INT
+
+          exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
         }
       }
     }

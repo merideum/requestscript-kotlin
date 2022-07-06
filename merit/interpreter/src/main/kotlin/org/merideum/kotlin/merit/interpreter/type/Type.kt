@@ -30,6 +30,8 @@ enum class Type(val declarationKey: String) {
 
   abstract fun declareVariable(scope: VariableScope, name: String)
 
+  fun typeName() = this.name.lowercase()
+
   companion object {
     fun fromDeclaration(key: String) = values().first { it.declarationKey == key }
   }
