@@ -408,7 +408,7 @@ class MeritVisitorTests: DescribeSpec({
           actualVariable.value
             .shouldNotBeNull()
             .shouldBeTypeOf<IntValue>()
-            .get() shouldBe 123
+            .get() shouldBe 4839218
         }
       }
     }
