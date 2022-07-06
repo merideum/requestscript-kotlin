@@ -555,6 +555,75 @@ class MeritVisitorTests: DescribeSpec({
               .get() shouldBe "The length of Merideum is 8."
           }
         }
+
+        it("can interpolate integer") {
+          code = """
+            |const age = "The age of this string is ${'$'}{1733}."
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("age")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "The age of this string is 1733."
+          }
+        }
+
+        it("can interpolate string") {
+          code = """
+            |const message = "Hello ${'$'}{"World"}!"
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("message")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "Hello World!"
+          }
+        }
+
+        it("can interpolate nested string interpolation") {
+          code = """
+            |const message = "Hello ${'$'}{"Wo${'$'}{"rld"}"}!"
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("message")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "Hello World!"
+          }
+        }
       }
     }
   }
