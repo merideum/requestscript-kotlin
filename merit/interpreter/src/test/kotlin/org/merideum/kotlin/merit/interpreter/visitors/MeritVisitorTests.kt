@@ -198,32 +198,6 @@ class MeritVisitorTests: DescribeSpec({
           }
         }
       }
-
-      it("cannot reassign with value of different type") {
-        code = """
-          |var test = 123
-          |test = "throws error"
-        """.trimMargin()
-
-        val variableScope = VariableScope(null, mutableMapOf())
-
-        executeCode(code, variableScope)
-
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value 123") {
-            size shouldBe 1
-
-            val actualValue = get("test")
-              .shouldNotBeNull()
-
-            actualValue.value
-              .shouldNotBeNull()
-              .shouldBeTypeOf<IntValue>()
-              .get()
-              .shouldBe(123)
-          }
-        }
-      }
     }
   }
 
@@ -279,7 +253,7 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("output value is not initialized") {
       code = """
-        |var test
+        |var test: string
         |output test
       """.trimMargin()
 
