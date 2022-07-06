@@ -10,6 +10,7 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.every
 import io.mockk.mockk
@@ -479,6 +480,30 @@ class MeritVisitorTests: DescribeSpec({
             .shouldNotBeNull()
             .shouldBeTypeOf<StringValue>()
             .get() shouldBe "dksAKdj3029d@klnv*#*&#"
+        }
+      }
+
+      it("value can be empty") {
+        code = """
+          |var test: string
+          |test = ""
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.STRING
+
+        withClue("should be Kotlin 'String' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<StringValue>()
+            .get().shouldBeEmpty()
         }
       }
 
