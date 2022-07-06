@@ -506,6 +506,30 @@ class MeritVisitorTests: DescribeSpec({
               .get() shouldBe "Hello Merideum!"
           }
         }
+
+        it("can interpolate function call") {
+          code = """
+            |const name = "Merideum"
+            |const length = "The length of ${'$'}{name} is ${'$'}{name.length()}."
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("length")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "The length of Merideum is 8."
+          }
+        }
       }
     }
   }
