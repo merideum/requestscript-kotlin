@@ -43,8 +43,7 @@ data class VariableScope(
 
     // Cannot reassign a constant variable.
     if (resolved.modifier == Modifier.CONST) throw IdentifierAlreadyDeclaredException(name)
-
-    // TODO throw error if the types do not match.
+    
     if (newValue.type != resolved.type) throw TypeMismatchedException(resolved.type, newValue.type)
 
     variables[name] = Variable(name, newValue, resolved.modifier, resolved.type)
