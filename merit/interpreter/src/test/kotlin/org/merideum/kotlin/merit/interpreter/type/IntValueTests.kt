@@ -5,29 +5,29 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 
-class StringValueTests: DescribeSpec({
-  var stringValue: StringValue
+class IntValueTests: DescribeSpec({
+  var intValue: IntValue
   describe("built-in functions") {
-    describe("length()") {
-      it("should get length of string") {
-        stringValue = StringValue("Merideum")
+    describe("min(other: int)") {
+      it("should return the min value between self and other") {
+        intValue = IntValue(12)
 
-        val functionResult = stringValue.callFunction("length", emptyList<Any?>())
+        val functionResult = intValue.callFunction("min", listOf(IntValue(10)))
 
         functionResult
           .shouldNotBeNull()
           .shouldBeTypeOf<IntValue>()
-          .get() shouldBe 8
+          .get() shouldBe 10
       }
     }
   }
 
   describe("stringify()") {
     it("should return readable string") {
-      stringValue = StringValue("Merideum")
-      val expected = "Merideum"
+      intValue = IntValue(12)
+      val expected = "12"
 
-      val actual = stringValue.stringify()
+      val actual = intValue.stringify()
 
       actual shouldBe expected
     }
