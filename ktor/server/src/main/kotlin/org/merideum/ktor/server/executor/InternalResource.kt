@@ -1,6 +1,8 @@
 package org.merideum.ktor.server.executor
 
 import org.merideum.kotlin.merit.interpreter.Resource
+import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.StringValue
 import kotlin.reflect.KVisibility
 
 class InternalResource<T>(
@@ -38,7 +40,18 @@ class InternalResource<T>(
         .toMap()
 
       if (reflectedParameters.size == calledParametersAndInstance.size) {
-        return foundFunction.callBy(functionParameters)
+        return when (val result = foundFunction.callBy(functionParameters)) {
+          is Int -> {
+            IntValue(result)
+          }
+          is String -> {
+            StringValue(result)
+          }
+          else -> {
+            // TODO throw more specific exception.
+            throw RuntimeException("Could not transform return value of function.")
+          }
+        }
       }
     }
 

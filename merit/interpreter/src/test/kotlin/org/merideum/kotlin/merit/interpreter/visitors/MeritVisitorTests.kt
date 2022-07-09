@@ -35,6 +35,17 @@ class MeritVisitorTests: DescribeSpec({
 
   class TestResource<T>(override val name: String, override val path: String, override val value: T?) : Resource<T> {
     override fun callFunction(functionName: String, parameters: List<*>): Any? {
+
+      if (functionName == "sayHello") {
+        if (parameters.isEmpty()) {
+          return StringValue("Hello!")
+        }
+
+        if (parameters.size == 1) {
+          return StringValue("Hello ${parameters.single()}!")
+        }
+      }
+
       return null
     }
 
@@ -43,7 +54,7 @@ class MeritVisitorTests: DescribeSpec({
     }
   }
 
-  beforeAny {
+  beforeEach {
     resourceResolver = mockk()
   }
 
@@ -214,7 +225,7 @@ class MeritVisitorTests: DescribeSpec({
 
         executeCode(code, outputContainer = outputContainer)
 
-        outputContainer.output().apply {
+        outputContainer.get().apply {
           withClue("should have one output set to 'test' with value 123") {
             size shouldBe 1
 
@@ -238,7 +249,7 @@ class MeritVisitorTests: DescribeSpec({
 
         executeCode(code, outputContainer = outputContainer)
 
-        outputContainer.output().apply {
+        outputContainer.get().apply {
           withClue("should have one output set to the 'test' 'const' variable") {
             size shouldBe 1
 
@@ -262,7 +273,7 @@ class MeritVisitorTests: DescribeSpec({
 
         executeCode(code, outputContainer = outputContainer)
 
-        outputContainer.output().apply {
+        outputContainer.get().apply {
           withClue("should not have any output") {
             shouldBeEmpty()
           }
@@ -271,89 +282,190 @@ class MeritVisitorTests: DescribeSpec({
     }
   }
 
-  describe("import resource") {
+  describe("resource") {
+    var code: String
     val resourceName = "TestResource"
     val resourcePath = "org.merideum"
-    var code: String = """
-          |import testResource: $resourceName
-        """.trimMargin()
-
     lateinit var variableScope: VariableScope
 
     beforeEach {
       variableScope = VariableScope(null, mutableMapOf())
     }
 
-    describe("when the resource is resolvable") {
+    describe("import resource") {
+      code = """
+        |import testResource: $resourceName
+      """.trimMargin()
 
-      it("should resolve the resource and not throw an error") {
-        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "", "123")
+      describe("when the resource is resolvable") {
 
-        shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
+        it("should resolve the resource and not throw an error") {
+          every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "", "123")
 
-        withClue("should add resource as a variable to the root scope") {
-          variableScope.variables.run {
-            shouldHaveSize(1)
+          shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-            get("testResource")
-              .shouldNotBeNull()
-              .modifier shouldBe Modifier.CONST
+          withClue("should add resource as a variable to the root scope") {
+            variableScope.variables.run {
+              shouldHaveSize(1)
+
+              get("testResource")
+                .shouldNotBeNull()
+                .modifier shouldBe Modifier.CONST
+            }
           }
         }
       }
-    }
 
-    describe("when the resource is unresolvable") {
+      describe("when the resource is unresolvable") {
 
-      it("should resolve the resource and not throw an error") {
-        every { resourceResolver.resolve(resourceName) } returns null
+        it("should resolve the resource and not throw an error") {
+          every { resourceResolver.resolve(resourceName) } returns null
 
-        val actualException = shouldThrow<ResourceResolutionException> { executeCode(code, variableScope) }
+          val actualException = shouldThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-        actualException.message shouldBe "Could not resolve resource: TestResource"
+          actualException.message shouldBe "Could not resolve resource: TestResource"
 
-        withClue("should not add resource as a variable") {
-          variableScope.variables.shouldBeEmpty()
+          withClue("should not add resource as a variable") {
+            variableScope.variables.shouldBeEmpty()
+          }
         }
       }
-    }
 
-    describe("when a path is included in the resource name") {
-      code = """
+      describe("when a path is included in the resource name") {
+        code = """
         |import test: $resourcePath.$resourceName
       """.trimMargin()
 
-      it("should resolve the resource and not throw an error") {
-        every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath, "123")
+        it("should resolve the resource and not throw an error") {
+          every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath, "123")
 
-        shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
+          shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope) }
 
-        withClue("should add resource as a variable to the root scope") {
-          variableScope.variables.run {
-            shouldHaveSize(1)
+          withClue("should add resource as a variable to the root scope") {
+            variableScope.variables.run {
+              shouldHaveSize(1)
 
-            get("test")
-              .shouldNotBeNull()
-              .modifier shouldBe Modifier.CONST
+              get("test")
+                .shouldNotBeNull()
+                .modifier shouldBe Modifier.CONST
+            }
           }
         }
       }
-    }
 
-    describe("when a variable is declared with the same name as an imported resource") {
-      code = """
+      describe("when a variable is declared with the same name as an imported resource") {
+        code = """
         |import test: $resourceName
         |const test = 123
       """.trimMargin()
 
-      it("should throw an exception") {
-        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
+        it("should throw an exception") {
+          every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
 
-        val actualException = shouldThrow<IdentifierAlreadyDeclaredException> {
+          val actualException = shouldThrow<IdentifierAlreadyDeclaredException> {
+            executeCode(code, variableScope)
+          }
+
+          actualException.message shouldBe "The identifier 'test' has already been declared."
+        }
+      }
+    }
+
+    describe("function call") {
+
+      beforeEach {
+        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
+      }
+
+      it("should call function of variable") {
+        code = """
+          |import test: $resourceName
+          |const greeting = test.sayHello()
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(2)
+
+        val actualVariable = variableScope
+          .resolveVariable("greeting")
+          .shouldNotBeNull()
+          .value
+          .shouldBeTypeOf<StringValue>()
+
+        actualVariable.get() shouldBe "Hello!"
+      }
+
+      it("should call function of TypedValue") {
+        code = """
+          |const testLength = "test".length()
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("testLength")
+          .shouldNotBeNull()
+          .value
+          .shouldBeTypeOf<IntValue>()
+
+        actualVariable.get() shouldBe 4
+      }
+
+      describe("with parameters") {
+        it("should call function with 'string' parameter value") {
+          code = """
+          |import test: $resourceName
+          |const greeting = test.sayHello("Merideum")
+        """.trimMargin()
+
           executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("greeting")
+            .shouldNotBeNull()
+            .value
+            .shouldBeTypeOf<StringValue>()
+
+          actualVariable.get() shouldBe "Hello Merideum!"
         }
 
-        actualException.message shouldBe "The identifier 'test' has already been declared."
+        it("should call function with variable parameter value") {
+          code = """
+          |import test: $resourceName
+          |const name = "Merideum"
+          |const greeting = test.sayHello(name)
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(3)
+
+          val actualVariable = variableScope
+            .resolveVariable("greeting")
+            .shouldNotBeNull()
+            .value
+            .shouldBeTypeOf<StringValue>()
+
+          actualVariable.get() shouldBe "Hello Merideum!"
+        }
+      }
+
+      describe("output assignment") {
+        it("should return value to output") {
+          code = """
+           |import test: $resourceName
+           |output greeting = test.sayHello("Merideum")
+          """.trimMargin()
+
+          val output = executeCode(code, variableScope)
+
+          output.get()["greeting"] shouldBe "Hello Merideum!"
+        }
       }
     }
   }
@@ -600,6 +712,13 @@ class MeritVisitorTests: DescribeSpec({
           }
         }
       }
+
+      // describe("output") {
+      //   code = """
+      //     |import test: $resourceName
+      //     |
+      //   """.trimMargin()
+      // }
     }
 
     describe("type checking") {
@@ -660,7 +779,7 @@ class MeritVisitorTests: DescribeSpec({
 
       val actualOutput = executeCode(code, variableScope)
 
-      actualOutput.output()["minimum"] shouldBe 300
+      actualOutput.get()["minimum"] shouldBe 300
     }
 
     describe("function not in expression") {

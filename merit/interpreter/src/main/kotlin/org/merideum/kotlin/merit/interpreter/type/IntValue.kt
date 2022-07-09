@@ -10,7 +10,7 @@ class IntValue(override val value: Int?) : TypedValue<Int> {
     if (value == null) throw FunctionNotFoundException(functionName)
 
     if (functionName == "min" && parameters.size == 1) {
-      val other = (parameters.first() as IntValue).value ?: throw FunctionNotFoundException(functionName)
+      val other = (parameters.first() as? Int) ?: throw FunctionNotFoundException(functionName)
 
       /**
        * We need to rewrap the value as an [IntValue].

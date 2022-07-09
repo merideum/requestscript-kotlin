@@ -86,34 +86,42 @@ class MeritVisitor(
   override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
     val functionCaller = this.visit(ctx.expression()).value
 
-    if (functionCaller is Variable<*>) {
-      val caller = functionCaller.value
+    val caller = if (functionCaller is Variable<*>) {
+      functionCaller.value
+    } else if (functionCaller is TypedValue<*>) {
+      functionCaller
+    } else {
+      // TODO Replace with better Exception class.
+      throw RuntimeException("Could not call function expression.")
+    }
 
-      // Cannot call functions of null values.
-      if (caller != null) {
-        val functionAttributes = this.visit(ctx.functionCall()).value as FunctionCallAttributes
-        val parameterValues = functionAttributes.parameters.map {
-          /**
-           * If the value of a parameter is not a TypedValue, then we need to get the TypedValue.
-           */
-          val parameterValue = it.value
+    // Cannot call functions of null values.
+    if (caller != null) {
+      val functionAttributes = this.visit(ctx.functionCall()).value as FunctionCallAttributes
+      val parameterValues = functionAttributes.parameters.map {
+        /**
+         * If the value of a parameter is not a TypedValue, then we need to get the TypedValue.
+         */
+        val parameterValue = it.value
 
-          if (parameterValue is Variable<*>) {
-            parameterValue.value
-          } else {
+        when (parameterValue) {
+          is Variable<*> -> {
+            parameterValue.value?.get()
+          }
+          is TypedValue<*> -> {
+            parameterValue.get()
+          }
+          else -> {
             parameterValue
           }
         }
-
-        return MeritValue(caller.callFunction(functionAttributes.name, parameterValues))
       }
 
+      return MeritValue(caller.callFunction(functionAttributes.name, parameterValues))
+    } else {
       // TODO Replace with better Exception class.
       throw RuntimeException("Cannot call function of null value.")
     }
-
-    // TODO Replace with better Exception class.
-    throw RuntimeException("Could not call function expression.")
   }
 
   override fun visitFunctionCall(ctx: MeritParser.FunctionCallContext): MeritValue<FunctionCallAttributes> {
