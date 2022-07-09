@@ -1,6 +1,9 @@
 package org.merideum.ktor.server.executor
 
 import org.merideum.kotlin.merit.interpreter.Resource
+import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import kotlin.reflect.KVisibility
 
 class InternalResource<T>(
@@ -12,7 +15,7 @@ class InternalResource<T>(
   override fun get(): T? {
     throw Exception("Cannot get a Resource.")
   }
-  override fun callFunction(functionName: String, parameters: List<*>): Any? {
+  override fun callFunction(functionName: String, parameters: List<*>): TypedValue<*> {
     val foundFunction = value!!::class.members.firstOrNull { member ->
 
       /**
@@ -38,10 +41,21 @@ class InternalResource<T>(
         .toMap()
 
       if (reflectedParameters.size == calledParametersAndInstance.size) {
-        return foundFunction.callBy(functionParameters)
+        return when (val result = foundFunction.callBy(functionParameters)) {
+          is Int -> {
+            IntValue(result)
+          }
+          is String -> {
+            StringValue(result)
+          }
+          else -> {
+            // TODO throw more specific exception.
+            throw RuntimeException("Could not transform return value of function.")
+          }
+        }
       }
     }
 
-    return null
+    return IntValue(null)
   }
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-grammarVersion="0.0.8"
+grammarVersion="0.0.9"
 
 domain="https://raw.githubusercontent.com"
 organization="merideum"

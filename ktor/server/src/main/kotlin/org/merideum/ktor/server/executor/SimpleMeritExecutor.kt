@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.kotlin.merit.execution.MeritExecutionResult
 import org.merideum.kotlin.merit.execution.MeritExecutor
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.Resource
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.visitors.MeritVisitor
@@ -30,6 +29,6 @@ class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor
 
     visitor.visit(parseTree)
 
-    return MeritExecutionResult(outputContainer.output())
+    return MeritExecutionResult(outputContainer.get())
   }
 }

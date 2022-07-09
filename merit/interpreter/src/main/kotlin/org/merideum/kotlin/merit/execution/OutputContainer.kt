@@ -10,7 +10,7 @@ class OutputContainer(
     output[key] = value
   }
 
-  fun output() = output.toMap()
+  fun get() = output.toMap()
 
   companion object {
     fun empty() = OutputContainer(mutableMapOf())

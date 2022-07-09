@@ -7,7 +7,11 @@ interface TypedValue <T> {
 
   val value: T?
 
+  val type: Type
+
   fun callFunction(functionName: String, parameters: List<*>): Any?
 
   fun get(): T?
+
+  fun stringify(): String
 }

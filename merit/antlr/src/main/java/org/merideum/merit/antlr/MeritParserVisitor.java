@@ -1,4 +1,4 @@
-// Generated from Merit.g4 by ANTLR 4.10.1
+// Generated from MeritParser.g4 by ANTLR 4.10.1
 package org.merideum.merit.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
+public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#parse}.
 	 * @param ctx the parse tree
@@ -41,17 +41,36 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOutputAssignment(MeritParser.OutputAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MeritParser#variableAssignment}.
+	 * Visit a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariableAssignment(MeritParser.VariableAssignmentContext ctx);
+	T visitVariableDeclaration(MeritParser.VariableDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#variableDeclarationAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#variableReassignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAssignment(MeritParser.AssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringExpression(MeritParser.StringExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -73,12 +92,6 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIntegerExpression(MeritParser.IntegerExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MeritParser#standaloneFunctionCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStandaloneFunctionCall(MeritParser.StandaloneFunctionCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#functionCall}.
 	 * @param ctx the parse tree
@@ -109,4 +122,31 @@ public interface MeritVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code embeddedExpression}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code text}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitText(MeritParser.TextContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code escapeSequence}
+	 * labeled alternative in {@link MeritParser#stringContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEscapeSequence(MeritParser.EscapeSequenceContext ctx);
 }

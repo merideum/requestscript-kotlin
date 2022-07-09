@@ -2,26 +2,25 @@ package org.merideum.kotlin.merit.interpreter.type
 
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
-class IntValue(override val value: Int?) : TypedValue<Int> {
+class StringValue(override val value: String?) : TypedValue<String> {
 
-  override val type = Type.INT
+  override val type = Type.STRING
 
-  override fun callFunction(functionName: String, parameters: List<*>): TypedValue<*>? {
+  override fun callFunction(functionName: String, parameters: List<*>): Any? {
     if (value == null) throw FunctionNotFoundException(functionName)
 
-    if (functionName == "min" && parameters.size == 1) {
-      val other = (parameters.first() as? Int) ?: throw FunctionNotFoundException(functionName)
+    if (functionName == "length" && parameters.isEmpty()) {
 
       /**
        * We need to rewrap the value as an [IntValue].
        */
-      return IntValue(minOf(value, other))
+      return IntValue(value.length)
     }
 
     throw FunctionNotFoundException(functionName)
   }
 
-  override fun get(): Int? {
+  override fun get(): String? {
     return value
   }
 
