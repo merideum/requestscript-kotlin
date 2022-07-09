@@ -12,7 +12,7 @@ class IntValueTests: DescribeSpec({
       it("should return the min value between self and other") {
         intValue = IntValue(12)
 
-        val functionResult = intValue.callFunction("min", listOf(IntValue(10)))
+        val functionResult = intValue.callFunction("min", listOf(10))
 
         functionResult
           .shouldNotBeNull()
