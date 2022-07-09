@@ -3,6 +3,7 @@ package org.merideum.ktor.server.executor
 import org.merideum.kotlin.merit.interpreter.Resource
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import kotlin.reflect.KVisibility
 
 class InternalResource<T>(
@@ -14,7 +15,7 @@ class InternalResource<T>(
   override fun get(): T? {
     throw Exception("Cannot get a Resource.")
   }
-  override fun callFunction(functionName: String, parameters: List<*>): Any? {
+  override fun callFunction(functionName: String, parameters: List<*>): TypedValue<*> {
     val foundFunction = value!!::class.members.firstOrNull { member ->
 
       /**
@@ -55,6 +56,6 @@ class InternalResource<T>(
       }
     }
 
-    return null
+    return IntValue(null)
   }
 }
