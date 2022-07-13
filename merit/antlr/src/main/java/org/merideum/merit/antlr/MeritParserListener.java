@@ -18,6 +18,46 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitParse(MeritParser.ParseContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MeritParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptDefinition(MeritParser.ScriptDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptDefinition(MeritParser.ScriptDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#scriptType}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptType(MeritParser.ScriptTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#scriptType}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptType(MeritParser.ScriptTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#scriptParameterBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#scriptParameterBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptParameters(MeritParser.ScriptParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptParameters(MeritParser.ScriptParametersContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MeritParser#block}.
 	 * @param ctx the parse tree
 	 */

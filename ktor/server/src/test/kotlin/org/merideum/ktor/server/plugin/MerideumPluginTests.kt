@@ -25,9 +25,11 @@ class MerideumPluginTests: DescribeSpec({
   describe("no configuration") {
     it("should accept simple Merit code input") {
       val code = """
-        |const test = 123
+        |request myRequest {
+        |  const test = 123
         |
-        |output test
+        |  output test
+        |}
       """.trimMargin()
 
       testApplication {

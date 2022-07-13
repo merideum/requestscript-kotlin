@@ -10,6 +10,7 @@ import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
+import org.merideum.kotlin.merit.interpreter.script.ScriptType
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
@@ -23,6 +24,30 @@ class MeritVisitor(
   val output: OutputContainer,
   val resourceResolver: ResourceResolver
 ): MeritParserBaseVisitor<MeritValue<*>>() {
+
+  /**
+   * Entrypoint for a script.
+   * For a contract call, parameters are already injected into the [VariableScope] when the [MeritVisitor] is instantiated.
+   * Parameters are not allowed on a Request [ScriptType].
+   */
+  override fun visitScriptDefinition(ctx: MeritParser.ScriptDefinitionContext): MeritValue<Unit> {
+    val scriptType = ScriptType.fromString(ctx.scriptType().text)
+
+    val scriptParameters = if (ctx.scriptParameterBlock() != null) {
+      this.visitScriptParameterBlock(ctx.scriptParameterBlock())
+    } else null
+
+    // TODO validate contract script definition
+    if (scriptType == ScriptType.REQUEST) {
+      // TODO throw named exception
+      if (scriptParameters != null) throw RuntimeException("Cannot declare parameters with script type 'request'")
+    }
+
+    // Interpret the script, executing all code within the block.
+    this.visit(ctx.block())
+
+    return MeritValue.nothing()
+  }
 
   override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
     return MeritValue(Type.fromDeclaration(ctx.type.text))

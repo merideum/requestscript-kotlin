@@ -17,6 +17,30 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParse(MeritParser.ParseContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MeritParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptDefinition(MeritParser.ScriptDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#scriptType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptType(MeritParser.ScriptTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#scriptParameterBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptParameters(MeritParser.ScriptParametersContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MeritParser#block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

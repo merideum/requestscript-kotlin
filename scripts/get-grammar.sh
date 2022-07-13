@@ -1,14 +1,23 @@
 #!/bin/bash
 
-grammarVersion="0.0.10"
+grammarVersion="0.0.11"
 
 domain="https://raw.githubusercontent.com"
 organization="merideum"
 repository="merit"
-grammarFile="Merit.g4"
+lexerFile="MeritLexer.g4"
+parserFile="MeritParser.g4"
 
-url="$domain/$organization/$repository/$grammarVersion/$grammarFile"
+url="$domain/$organization/$repository/$grammarVersion/$lexerFile"
 
-echo "Pulling $grammarFile from $url"
+echo "Pulling $lexerFile from $url"
 echo ""
-curl ${url} > Merit.g4
+curl ${url} > MeritLexer.g4
+
+echo ""
+
+url="$domain/$organization/$repository/$grammarVersion/$parserFile"
+
+echo "Pulling $parserFile from $url"
+echo ""
+curl ${url} > MeritParser.g4

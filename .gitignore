@@ -39,3 +39,4 @@ out/
 ### ANTLR ###
 *.g4
 gen/
+*.tokens
