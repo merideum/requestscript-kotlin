@@ -80,7 +80,9 @@ class MeritVisitorTests: DescribeSpec({
   describe("variable declaration") {
     describe("const") {
       var code = """
-        |const test = 123
+        |request myRequest {
+        |  const test = 123
+        |}
       """.trimMargin()
 
       it("should parse successfully and run") {
@@ -103,8 +105,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("should reject re-assignment") {
         code = """
-          |const test = 123
-          |test = 456
+          |request myRequest {
+          |  const test = 123
+          |  test = 456
+          |}
         """.trimMargin()
         val variableScope = VariableScope(null, mutableMapOf())
 
@@ -127,8 +131,9 @@ class MeritVisitorTests: DescribeSpec({
 
       it("should reject declaration without assignment") {
         code = """
-          |const test
-          |
+          |request myRequest {
+          |  const test
+          |}
         """.trimMargin()
         val variableScope = VariableScope(null, mutableMapOf())
 
@@ -143,7 +148,9 @@ class MeritVisitorTests: DescribeSpec({
 
       it("should allow type declaration") {
         code = """
-          |const test: string = "Foo"
+          |request myRequest {
+          |  const test: string = "Foo"
+          |}
         """.trimMargin()
         val variableScope = VariableScope(null, mutableMapOf())
 
@@ -165,7 +172,9 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("var") {
       var code = """
-        |var test = 123
+        |request myRequest {
+        |  var test = 123
+        |}
       """.trimMargin()
 
       it("should add variable with ${Modifier.VAR} modifier and assigned value") {
@@ -188,7 +197,9 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can declare without assignment") {
         code = """
-          |var test: int
+          |request myRequest {
+          |  var test: int
+          |}
         """.trimMargin()
 
         val variableScope = VariableScope(null, mutableMapOf())
@@ -210,8 +221,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can be reassigned") {
         code = """
-          |var test = 123
-          |test = 456
+          |request myRequest {
+          |  var test = 123
+          |  test = 456
+          |}
         """.trimMargin()
 
         val variableScope = VariableScope(null, mutableMapOf())
@@ -238,7 +251,9 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("output is assigned") {
       code = """
-        |output test = 123
+        |request myRequest {
+        |  output test = 123
+        |}
       """.trimMargin()
 
       it("should have output") {
@@ -261,8 +276,10 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("output value is already initialized") {
       code = """
-        |const test = 123
-        |output test
+        |request myRequest {
+        |  const test = 123
+        |  output test
+        |}
       """.trimMargin()
 
       it("should have output") {
@@ -285,8 +302,10 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("output value is not initialized") {
       code = """
-        |var test: string
-        |output test
+        |request myRequest {
+        |  var test: string
+        |  output test
+        |}
       """.trimMargin()
 
       it("should reject setting value") {
@@ -315,7 +334,9 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("import resource") {
       code = """
-        |import testResource: $resourceName
+        |request myRequest {
+        |  import testResource: $resourceName
+        |}
       """.trimMargin()
 
       describe("when the resource is resolvable") {
@@ -354,8 +375,10 @@ class MeritVisitorTests: DescribeSpec({
 
       describe("when a path is included in the resource name") {
         code = """
-        |import test: $resourcePath.$resourceName
-      """.trimMargin()
+          |request myRequest {
+          |  import test: $resourcePath.$resourceName
+          |}
+        """.trimMargin()
 
         it("should resolve the resource and not throw an error") {
           every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath, "123")
@@ -376,9 +399,11 @@ class MeritVisitorTests: DescribeSpec({
 
       describe("when a variable is declared with the same name as an imported resource") {
         code = """
-        |import test: $resourceName
-        |const test = 123
-      """.trimMargin()
+          |request myRequest {
+          |  import test: $resourceName
+          |  const test = 123
+          |}
+        """.trimMargin()
 
         it("should throw an exception") {
           every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
@@ -400,8 +425,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("should call function of variable") {
         code = """
-          |import test: $resourceName
-          |const greeting = test.sayHello()
+          |request myRequest {
+          |  import test: $resourceName
+          |  const greeting = test.sayHello()
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -419,7 +446,9 @@ class MeritVisitorTests: DescribeSpec({
 
       it("should call function of TypedValue") {
         code = """
-          |const testLength = "test".length()
+          |request myRequest {
+          |  const testLength = "test".length()
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -438,9 +467,11 @@ class MeritVisitorTests: DescribeSpec({
       describe("with parameters") {
         it("should call function with 'string' parameter value") {
           code = """
-          |import test: $resourceName
-          |const greeting = test.sayHello("Merideum")
-        """.trimMargin()
+            |request myRequest {
+            |  import test: $resourceName
+            |  const greeting = test.sayHello("Merideum")
+            |}
+          """.trimMargin()
 
           executeCode(code, variableScope)
 
@@ -457,10 +488,12 @@ class MeritVisitorTests: DescribeSpec({
 
         it("should call function with variable parameter value") {
           code = """
-          |import test: $resourceName
-          |const name = "Merideum"
-          |const greeting = test.sayHello(name)
-        """.trimMargin()
+            |request myRequest {
+            |  import test: $resourceName
+            |  const name = "Merideum"
+            |  const greeting = test.sayHello(name)
+            |}
+          """.trimMargin()
 
           executeCode(code, variableScope)
 
@@ -479,8 +512,10 @@ class MeritVisitorTests: DescribeSpec({
       describe("output assignment") {
         it("should return value to output") {
           code = """
-           |import test: $resourceName
-           |output greeting = test.sayHello("Merideum")
+            |request myRequest {
+            |  import test: $resourceName
+            |  output greeting = test.sayHello("Merideum")
+            |}
           """.trimMargin()
 
           val output = executeCode(code, variableScope)
@@ -503,7 +538,9 @@ class MeritVisitorTests: DescribeSpec({
     describe("int") {
       it("can declare 'var' variable with type") {
         code = """
-          |var test: int
+          |request myRequest {
+          |  var test: int
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -523,8 +560,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can declare and assign value") {
         code = """
-          |var test: int
-          |test = 4839218
+          |request myRequest {
+          |  var test: int
+          |  test = 4839218
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -547,8 +586,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can declare and assign negative value") {
         code = """
-          |var test: int
-          |test = -4839218
+          |request myRequest {
+          |  var test: int
+          |  test = -4839218
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -573,7 +614,9 @@ class MeritVisitorTests: DescribeSpec({
     describe("string") {
       it("can declare variable with type") {
         code = """
-          |var test: string
+          |request myRequest {
+          |  var test: string
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -593,8 +636,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("can declare variable and assign value") {
         code = """
-          |var test: string
-          |test = "dksAKdj3029d@klnv*#*&#"
+          |request myRequest {
+          |  var test: string
+          |  test = "dksAKdj3029d@klnv*#*&#"
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -617,8 +662,10 @@ class MeritVisitorTests: DescribeSpec({
 
       it("value can be empty") {
         code = """
-          |var test: string
-          |test = ""
+          |request myRequest {
+          |  var test: string
+          |  test = ""
+          |}
         """.trimMargin()
 
         executeCode(code, variableScope)
@@ -642,8 +689,10 @@ class MeritVisitorTests: DescribeSpec({
       describe("interpolation") {
         it("can interpolate variable") {
           code = """
-            |const name = "Merideum"
-            |const greeting = "Hello ${'$'}{name}!"
+            |request myRequest {
+            |  const name = "Merideum"
+            |  const greeting = "Hello ${'$'}{name}!"
+            |}
           """.trimMargin()
 
           executeCode(code, variableScope)
@@ -666,8 +715,10 @@ class MeritVisitorTests: DescribeSpec({
 
         it("can interpolate function call") {
           code = """
-            |const name = "Merideum"
-            |const length = "The length of ${'$'}{name} is ${'$'}{name.length()}."
+            |request myRequest {
+            |  const name = "Merideum"
+            |  const length = "The length of ${'$'}{name} is ${'$'}{name.length()}."
+            |}
           """.trimMargin()
 
           executeCode(code, variableScope)
@@ -690,7 +741,9 @@ class MeritVisitorTests: DescribeSpec({
 
         it("can interpolate integer") {
           code = """
-            |const age = "The age of this string is ${'$'}{1733}."
+            |request myRequest {
+            |  const age = "The age of this string is ${'$'}{1733}."
+            |}
           """.trimMargin()
 
           executeCode(code, variableScope)
@@ -713,7 +766,9 @@ class MeritVisitorTests: DescribeSpec({
 
         it("can interpolate string") {
           code = """
-            |const message = "Hello ${'$'}{"World"}!"
+            |request myRequest {
+            |  const message = "Hello ${'$'}{"World"}!"
+            |}
           """.trimMargin()
 
           executeCode(code, variableScope)
@@ -736,7 +791,9 @@ class MeritVisitorTests: DescribeSpec({
 
         it("can interpolate nested string interpolation") {
           code = """
-            |const message = "Hello ${'$'}{"Wo${'$'}{"rld"}"}!"
+            |request myRequest {
+            |  const message = "Hello ${'$'}{"Wo${'$'}{"rld"}"}!"
+            |}
           """.trimMargin()
 
           executeCode(code, variableScope)
@@ -763,7 +820,9 @@ class MeritVisitorTests: DescribeSpec({
       describe("declaring a variable with a value with a different type declaration") {
         it("should throw exception") {
           code = """
-            |const test: string = 123
+            |request myRequest {
+            |  const test: string = 123
+            |}
           """.trimMargin()
 
           val exception = shouldThrow<TypeMismatchedException> {
@@ -780,8 +839,10 @@ class MeritVisitorTests: DescribeSpec({
       describe("assigning a variable to a value of different type") {
         it("should throw exception") {
           code = """
-            |var test: string
-            |test = 123
+            |request myRequest {
+            |  var test: string
+            |  test = 123
+            |}
           """.trimMargin()
 
           val exception = shouldThrow<TypeMismatchedException> {
@@ -798,12 +859,14 @@ class MeritVisitorTests: DescribeSpec({
       describe("assigning a variable the result of a function") {
         it("should throw exception") {
           code = """
-          |var test: string
-          |test = 123
-          |
-          |var length: string
-          |length = test.length()
-        """.trimMargin()
+            |request myRequest {
+            |  var test: string
+            |  test = 123
+            |
+            |  var length: string
+            |  length = test.length()
+            |}
+          """.trimMargin()
 
           val exception = shouldThrow<TypeMismatchedException> {
             executeCode(code, variableScope)
@@ -820,13 +883,15 @@ class MeritVisitorTests: DescribeSpec({
 
   describe("function call") {
     var code = """
-      |const largest = 555
-      |const middle = 444
-      |const smallest = 300
+      |request myRequest {
+      |  const largest = 555
+      |  const middle = 444
+      |  const smallest = 300
       |
-      |const minimum = largest.min(middle.min(smallest))
+      |  const minimum = largest.min(middle.min(smallest))
       |
-      |output minimum
+      |  output minimum
+      |}
     """.trimMargin()
 
     it("should call function") {
@@ -839,10 +904,11 @@ class MeritVisitorTests: DescribeSpec({
 
     describe("function not in expression") {
       code = """
-        |const stepCounter = 1
+        |request myRequest {
+        |  const stepCounter = 1
         |
-        |stepCounter.min(300)
-        |
+        |  stepCounter.min(300)
+        |}
       """.trimMargin()
 
       it("should call function") {
