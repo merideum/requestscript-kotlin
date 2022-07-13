@@ -7,6 +7,7 @@ import io.kotest.matchers.types.shouldBeTypeOf
 
 class IntValueTests: DescribeSpec({
   var intValue: IntValue
+
   describe("built-in functions") {
     describe("min(other: int)") {
       it("should return the min value between self and other") {
