@@ -140,6 +140,27 @@ class MeritVisitorTests: DescribeSpec({
           }
         }
       }
+
+      it("should allow type declaration") {
+        code = """
+          |const test: string = "Foo"
+        """.trimMargin()
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have variable 'test' with value 'Foo'") {
+            size shouldBe 1
+
+            val actualConst = get("test")
+              .shouldNotBeNull()
+
+            actualConst.value!!.get() shouldBe "Foo"
+            actualConst.modifier shouldBe Modifier.CONST
+          }
+        }
+      }
     }
 
     describe("var") {
@@ -523,6 +544,30 @@ class MeritVisitorTests: DescribeSpec({
             .get() shouldBe 4839218
         }
       }
+
+      it("can declare and assign negative value") {
+        code = """
+          |var test: int
+          |test = -4839218
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.INT
+
+        withClue("should be Kotlin 'Int' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<IntValue>()
+            .get() shouldBe -4839218
+        }
+      }
     }
 
     describe("string") {
@@ -712,22 +757,32 @@ class MeritVisitorTests: DescribeSpec({
           }
         }
       }
-
-      // describe("output") {
-      //   code = """
-      //     |import test: $resourceName
-      //     |
-      //   """.trimMargin()
-      // }
     }
 
     describe("type checking") {
+      describe("declaring a variable with a value with a different type declaration") {
+        it("should throw exception") {
+          code = """
+            |const test: string = 123
+          """.trimMargin()
+
+          val exception = shouldThrow<TypeMismatchedException> {
+            executeCode(code, variableScope)
+          }
+
+          exception.type shouldBe Type.STRING
+          exception.otherType shouldBe Type.INT
+
+          exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
+        }
+      }
+
       describe("assigning a variable to a value of different type") {
         it("should throw exception") {
           code = """
-          |var test: string
-          |test = 123
-        """.trimMargin()
+            |var test: string
+            |test = 123
+          """.trimMargin()
 
           val exception = shouldThrow<TypeMismatchedException> {
             executeCode(code, variableScope)

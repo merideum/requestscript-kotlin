@@ -8,6 +8,7 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
+import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.interpreter.type.IntValue
@@ -160,6 +161,12 @@ class MeritVisitor(
     val value = this.visitAssignment(ctx.assignment()).value
 
     if (value is TypedValue<*>) {
+      val declaredType = if (ctx.typeDeclaration() != null) {
+        this.visitTypeDeclaration(ctx.typeDeclaration())
+      } else null
+
+      if (declaredType != null && value.type != declaredType.value) throw TypeMismatchedException(declaredType.value!!, value.type)
+
       scope.declareAndAssignVariable(name, value, modifier)
     }
 
