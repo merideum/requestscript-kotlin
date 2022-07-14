@@ -6,7 +6,9 @@ import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
@@ -58,4 +60,60 @@ class ExpressionVisitor(
 
     return MeritValue(found)
   }
+
+  override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<ObjectValue> {
+    val objectFields = if (ctx?.objectFields() == null) {
+      emptyList()
+    } else {
+      this.visitObjectFields(ctx.objectFields()).value!!
+    }
+
+    return MeritValue(buildObject(objectFields))
+  }
+
+  override fun visitObjectFields(ctx: MeritParser.ObjectFieldsContext): MeritValue<List<ObjectField>> {
+    val fields = ctx.objectField().map {
+      this.visitObjectField(it).value!!
+    }
+
+    // val fields = ctx.o
+
+    return MeritValue(fields)
+  }
+
+  override fun visitObjectField(ctx: MeritParser.ObjectFieldContext): MeritValue<ObjectField> {
+    val name = ctx.simpleIdentifier().text
+
+    val type = if (ctx.typeDeclaration() == null) {
+      null
+    } else {
+      parent.visitTypeDeclaration(ctx.typeDeclaration()).value
+    }
+
+    val value = when(val assignment = parent.visitAssignment(ctx.assignment()).value) {
+      is TypedValue<*> -> assignment.get()
+      // TODO throw exception if TypedValue is null because the variable value has not yet been set.
+      is Variable<*> -> assignment.value?.get()
+      else -> assignment
+    }
+
+    // TODO make sure type declaration, if included, matches the expression value
+
+    return MeritValue(ObjectField(name, value))
+  }
+
+  private fun buildObject(fields: List<ObjectField>): ObjectValue {
+    val mappedObject = mutableMapOf<String, Any?>()
+
+    fields.forEach {
+      mappedObject[it.name] = it.value
+    }
+
+    return ObjectValue(mappedObject)
+  }
+
+  class ObjectField(
+    val name: String,
+    val value: Any?
+  )
 }

@@ -12,6 +12,7 @@ import io.kotest.matchers.types.shouldBeTypeOf
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
@@ -306,6 +307,90 @@ class BuiltinTypeTests: DescribeSpec({
               .shouldBeTypeOf<StringValue>()
               .get() shouldBe "Hello World!"
           }
+        }
+      }
+    }
+
+    describe("object") {
+      it("can declare 'var' variable with type") {
+        code = """
+          |request myRequest {
+          |  var test: object
+          |}
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        actualVariable.type shouldBe Type.OBJECT
+
+        withClue("should have null 'value' since it is unassigned") {
+          actualVariable.value.shouldBeNull()
+        }
+      }
+
+      it("can declare and assign value") {
+        code = """
+          |request myRequest {
+          |  var test: object
+          |  test = {
+          |    foo = "bar"
+          |  }
+          |}
+        """.trimMargin()
+
+        val expectedMap = mutableMapOf("foo" to "bar")
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        withClue("should be Kotlin 'Map' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<ObjectValue>()
+            .get() shouldBe expectedMap
+        }
+      }
+
+      it("can declare and assign multiple fields") {
+        code = """
+          |request myRequest {
+          |  var test: object
+          |  test = {
+          |    foo: string = "bar",
+          |    fooInt = 1234,
+          |    fooObject = {
+          |      nestedFoo = "Nested!"
+          |    }
+          |  }
+          |}
+        """.trimMargin()
+
+        val expectedMap = mutableMapOf("foo" to "bar", "fooInt" to 1234, "fooObject" to mutableMapOf("nestedFoo" to "Nested!"))
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(1)
+
+        val actualVariable = variableScope
+          .resolveVariable("test")
+          .shouldNotBeNull()
+
+        withClue("should be Kotlin 'Map' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<ObjectValue>()
+            .get() shouldBe expectedMap
         }
       }
     }

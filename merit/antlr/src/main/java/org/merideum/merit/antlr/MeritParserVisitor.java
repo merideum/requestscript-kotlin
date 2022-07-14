@@ -89,6 +89,13 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(MeritParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code objectExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectExpression(MeritParser.ObjectExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code stringExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree
@@ -152,6 +159,18 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectFields}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFields(MeritParser.ObjectFieldsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectField}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectField(MeritParser.ObjectFieldContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code embeddedExpression}
 	 * labeled alternative in {@link MeritParser#stringContent}.

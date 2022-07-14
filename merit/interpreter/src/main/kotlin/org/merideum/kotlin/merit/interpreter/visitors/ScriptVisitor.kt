@@ -83,6 +83,10 @@ class ScriptVisitor(
     return expressionVisitor.visitStringExpression(ctx)
   }
 
+  override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<*> {
+    return expressionVisitor.visitObjectExpression(ctx)
+  }
+
   override fun visitEmbeddedExpression(ctx: MeritParser.EmbeddedExpressionContext): MeritValue<*> {
     return expressionVisitor.visitEmbeddedExpression(ctx)
   }

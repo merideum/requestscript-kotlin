@@ -138,6 +138,18 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitAssignment(MeritParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code objectExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterObjectExpression(MeritParser.ObjectExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code objectExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitObjectExpression(MeritParser.ObjectExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code stringExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree
@@ -245,6 +257,26 @@ public interface MeritParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#objectFields}.
+	 * @param ctx the parse tree
+	 */
+	void enterObjectFields(MeritParser.ObjectFieldsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#objectFields}.
+	 * @param ctx the parse tree
+	 */
+	void exitObjectFields(MeritParser.ObjectFieldsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MeritParser#objectField}.
+	 * @param ctx the parse tree
+	 */
+	void enterObjectField(MeritParser.ObjectFieldContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#objectField}.
+	 * @param ctx the parse tree
+	 */
+	void exitObjectField(MeritParser.ObjectFieldContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code embeddedExpression}
 	 * labeled alternative in {@link MeritParser#stringContent}.
