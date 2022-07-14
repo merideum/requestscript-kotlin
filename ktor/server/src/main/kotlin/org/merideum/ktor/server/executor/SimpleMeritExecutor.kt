@@ -8,7 +8,7 @@ import org.merideum.kotlin.merit.execution.MeritExecutor
 import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
-import org.merideum.kotlin.merit.interpreter.visitors.MeritVisitor
+import org.merideum.kotlin.merit.interpreter.visitors.ScriptVisitor
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
@@ -25,7 +25,7 @@ class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
     val outputContainer = OutputContainer(mutableMapOf())
-    val visitor = MeritVisitor(mainScope, outputContainer, resourceResolver)
+    val visitor = ScriptVisitor(mainScope, outputContainer, resourceResolver)
 
     visitor.visit(parseTree)
 
