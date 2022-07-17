@@ -109,7 +109,7 @@ class VariableVisitorTests : DescribeSpec({
     }
 
     describe("var") {
-      var code = """
+      code = """
         |request myRequest {
         |  var test = 123
         |}
