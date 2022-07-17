@@ -29,4 +29,11 @@ class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<Mu
 
     return value[name]
   }
+
+  fun setField(name: String, fieldValue: Any?) {
+    // TODO throw better exception.
+    if (value == null) throw RuntimeException("Cannot set field of 'null' 'object'.")
+
+    value[name] = fieldValue
+  }
 }

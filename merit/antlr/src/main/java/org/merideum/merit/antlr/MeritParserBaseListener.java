@@ -160,6 +160,18 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAssignment(MeritParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}

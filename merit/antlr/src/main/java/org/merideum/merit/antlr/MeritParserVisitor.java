@@ -83,6 +83,12 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectFieldAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -128,6 +128,16 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MeritParser#objectFieldAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MeritParser#objectFieldAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 */

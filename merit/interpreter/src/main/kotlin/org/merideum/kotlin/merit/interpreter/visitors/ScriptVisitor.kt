@@ -125,6 +125,10 @@ class ScriptVisitor(
     return MeritValue.nothing()
   }
 
+  override fun visitObjectFieldAssignment(ctx: MeritParser.ObjectFieldAssignmentContext): MeritValue<*> {
+    return variableVisitor.visitObjectFieldAssignment(ctx)
+  }
+
   override fun visitOutputAssignment(ctx: MeritParser.OutputAssignmentContext): MeritValue<*> {
     val outputAssignment: MeritValue<*> = if (ctx.assignment() == null) {
       MeritValue.nothing()
