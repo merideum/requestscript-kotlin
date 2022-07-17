@@ -19,7 +19,7 @@ class FunctionVisitor(
       val functionAttributes = this.visitFunctionCall(ctx.functionCall()).value as FunctionCallAttributes
       val parameterValues = mapFunctionParameterValues(functionAttributes.parameters)
 
-      return MeritValue(caller.callFunction(functionAttributes.name, parameterValues))
+      return MeritValue(caller.callFunction(parent.context, functionAttributes.name, parameterValues))
     } else {
       // TODO Replace with better Exception class.
       throw RuntimeException("Cannot call function of null value.")
@@ -55,19 +55,17 @@ class FunctionVisitor(
     }
   }
 
-  private fun mapFunctionParameterValues(parameters: List<MeritValue<*>>): List<Any?> {
+  private fun mapFunctionParameterValues(parameters: List<MeritValue<*>>): List<TypedValue<*>> {
     return parameters.map {
       when (val parameterValue = it.value) {
         is Variable<*> -> {
-          parameterValue.value?.get()
+          parameterValue.value
         }
         is TypedValue<*> -> {
-          parameterValue.get()
-        }
-        else -> {
           parameterValue
         }
-      }
+        else -> throw RuntimeException("Could not map function parameter value")
+      } as TypedValue<*>
     }
   }
 }

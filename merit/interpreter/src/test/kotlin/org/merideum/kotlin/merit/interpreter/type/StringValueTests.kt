@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
+import org.merideum.kotlin.merit.ScriptContext
 
 class StringValueTests: DescribeSpec({
   var stringValue: StringValue
@@ -12,7 +13,7 @@ class StringValueTests: DescribeSpec({
       it("should get length of string") {
         stringValue = StringValue("Merideum")
 
-        val functionResult = stringValue.callFunction("length", emptyList<Any?>())
+        val functionResult = stringValue.callFunction(ScriptContext(), "length", emptyList())
 
         functionResult
           .shouldNotBeNull()

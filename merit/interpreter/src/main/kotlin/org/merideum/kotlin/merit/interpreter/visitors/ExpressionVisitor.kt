@@ -4,11 +4,9 @@ import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
-import org.merideum.kotlin.merit.interpreter.toModifier
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
@@ -76,8 +74,6 @@ class ExpressionVisitor(
       this.visitObjectField(it).value!!
     }
 
-    // val fields = ctx.o
-
     return MeritValue(fields)
   }
 
@@ -90,23 +86,28 @@ class ExpressionVisitor(
       parent.visitTypeDeclaration(ctx.typeDeclaration()).value
     }
 
-    val value = when(val assignment = parent.visitAssignment(ctx.assignment()).value) {
-      is TypedValue<*> -> assignment.get()
+    val assignmentValue = when(val assignment = parent.visitAssignment(ctx.assignment()).value) {
+      is TypedValue<*> -> assignment
       // TODO throw exception if TypedValue is null because the variable value has not yet been set.
-      is Variable<*> -> assignment.value?.get()
-      else -> assignment
+      is Variable<*> -> assignment.value
+
+      // TODO better exception
+      else -> throw RuntimeException("Could not get value of type")
     }
 
     // TODO make sure type declaration, if included, matches the expression value
+    if (type != null && type != assignmentValue!!.type)
+      throw TypeMismatchedException(type, assignmentValue.type)
 
-    return MeritValue(ObjectField(name, value))
+    return MeritValue(ObjectField(name, assignmentValue as TypedValue<*>))
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
     val mappedObject = mutableMapOf<String, Any?>()
 
+    // TODO check that this is right.
     fields.forEach {
-      mappedObject[it.name] = it.value
+      mappedObject[it.name] = it.value.get()
     }
 
     return ObjectValue(mappedObject)
@@ -114,6 +115,6 @@ class ExpressionVisitor(
 
   class ObjectField(
     val name: String,
-    val value: Any?
+    val value: TypedValue<*>
   )
 }

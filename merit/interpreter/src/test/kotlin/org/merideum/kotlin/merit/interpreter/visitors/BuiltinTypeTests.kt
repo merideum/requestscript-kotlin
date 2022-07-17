@@ -393,6 +393,25 @@ class BuiltinTypeTests: DescribeSpec({
             .get() shouldBe expectedMap
         }
       }
+
+      it("cannot declare field with different type than value") {
+        code = """
+          |request myRequest {
+          |  const test = {
+          |    foo: string = 1234,
+          |  }
+          |}
+        """.trimMargin()
+
+        val exception = shouldThrow<TypeMismatchedException> {
+          executeCode(code, variableScope)
+        }
+
+        exception.type shouldBe Type.STRING
+        exception.otherType shouldBe Type.INT
+
+        exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
+      }
     }
 
     describe("type checking") {

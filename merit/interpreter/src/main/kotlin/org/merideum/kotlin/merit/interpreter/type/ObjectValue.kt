@@ -1,12 +1,13 @@
 package org.merideum.kotlin.merit.interpreter.type
 
+import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
 class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<MutableMap<String, Any?>> {
 
   override val type = Type.OBJECT
 
-  override fun callFunction(functionName: String, parameters: List<*>): Any? {
+  override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any? {
     if (value == null) throw FunctionNotFoundException(functionName)
 
     throw FunctionNotFoundException(functionName)

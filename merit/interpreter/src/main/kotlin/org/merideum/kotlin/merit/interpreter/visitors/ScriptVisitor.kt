@@ -1,7 +1,7 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
+import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.FunctionCallAttributes
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
@@ -22,7 +22,8 @@ import org.merideum.merit.antlr.MeritParserBaseVisitor
 class ScriptVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
-  val resourceResolver: ResourceResolver
+  val resourceResolver: ResourceResolver,
+  val context: ScriptContext
 ): MeritParserBaseVisitor<MeritValue<*>>() {
 
   val variableVisitor = VariableVisitor(this)
