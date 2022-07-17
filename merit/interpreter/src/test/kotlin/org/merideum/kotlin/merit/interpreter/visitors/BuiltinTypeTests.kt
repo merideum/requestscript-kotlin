@@ -376,7 +376,8 @@ class BuiltinTypeTests: DescribeSpec({
           |}
         """.trimMargin()
 
-        val expectedMap = mutableMapOf("foo" to "bar", "fooInt" to 1234, "fooObject" to mutableMapOf("nestedFoo" to "Nested!"))
+        val expectedMap =
+          mutableMapOf("foo" to "bar", "fooInt" to 1234, "fooObject" to mutableMapOf("nestedFoo" to "Nested!"))
 
         executeCode(code, variableScope)
 
@@ -411,6 +412,33 @@ class BuiltinTypeTests: DescribeSpec({
         exception.otherType shouldBe Type.INT
 
         exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
+      }
+
+      it("should return value of referenced field") {
+        code = """
+          |request myRequest {
+          |  const person = {
+          |    name = "Merideum"
+          |  }
+          |  
+          |  const name = person.name
+          |}
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(2)
+
+        val actualVariable = variableScope
+          .resolveVariable("name")
+          .shouldNotBeNull()
+
+        withClue("should be Kotlin 'String' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<StringValue>()
+            .get() shouldBe "Merideum"
+        }
       }
     }
 

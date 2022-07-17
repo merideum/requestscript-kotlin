@@ -196,6 +196,18 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}

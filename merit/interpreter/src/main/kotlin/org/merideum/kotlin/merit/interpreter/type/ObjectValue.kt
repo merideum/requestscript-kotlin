@@ -22,6 +22,7 @@ class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<Mu
     return value.toString()
   }
 
+  @Suppress("UNCHECKED_CAST")
   fun getField(name: String): Any? {
     // TODO throw better exception.
     if (value == null) throw RuntimeException("Cannot retrieve field of 'null' 'object'.")

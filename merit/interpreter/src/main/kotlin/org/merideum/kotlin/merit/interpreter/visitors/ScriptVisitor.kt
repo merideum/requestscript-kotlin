@@ -103,6 +103,10 @@ class ScriptVisitor(
     return functionVisitor.visitFunctionCallExpression(ctx)
   }
 
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+    return expressionVisitor.visitObjectFieldReferenceExpression(ctx)
+  }
+
   override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<*> {
     variableVisitor.visitVariableDeclaration(ctx)
 

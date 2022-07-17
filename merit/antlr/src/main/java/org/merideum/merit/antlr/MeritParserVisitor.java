@@ -103,6 +103,13 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringExpression(MeritParser.StringExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code objectFieldReferenceExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree

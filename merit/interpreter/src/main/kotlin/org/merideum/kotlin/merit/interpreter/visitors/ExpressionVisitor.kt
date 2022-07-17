@@ -7,6 +7,7 @@ import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierExce
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
@@ -100,6 +101,27 @@ class ExpressionVisitor(
       throw TypeMismatchedException(type, assignmentValue.type)
 
     return MeritValue(ObjectField(name, assignmentValue as TypedValue<*>))
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+    val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
+      is Variable<*> -> callerExpression.value
+      is ObjectValue -> callerExpression
+      //TODO throw better exception
+      else -> throw RuntimeException("Invalid type for field reference.")
+    }
+    // TODO should a null object field reference return null and not throw exception?
+      ?: throw RuntimeException("Could not get field of null value")
+
+    // TODO throw better exception
+    if (caller !is ObjectValue) throw RuntimeException("Invalid type for field reference.")
+
+    val fieldName = ctx.simpleIdentifier().text
+
+    val value = Type.wrap(caller.getField(fieldName))
+
+    return MeritValue(value)
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
