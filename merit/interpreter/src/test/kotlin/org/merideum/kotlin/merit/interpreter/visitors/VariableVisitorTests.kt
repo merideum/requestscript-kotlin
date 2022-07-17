@@ -13,9 +13,11 @@ import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredExce
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
 
 class VariableVisitorTests : DescribeSpec({
+  var code: String
+
   describe("variable declaration") {
     describe("const") {
-      var code = """
+      code = """
         |request myRequest {
         |  const test = 123
         |}
@@ -107,7 +109,7 @@ class VariableVisitorTests : DescribeSpec({
     }
 
     describe("var") {
-      var code = """
+      code = """
         |request myRequest {
         |  var test = 123
         |}
@@ -176,6 +178,72 @@ class VariableVisitorTests : DescribeSpec({
 
             actualValue.value.shouldNotBeNull().get() shouldBe 456
             actualValue.modifier shouldBe Modifier.VAR
+          }
+        }
+      }
+    }
+  }
+
+  describe("object field assignment") {
+    describe("field not already set") {
+      it("adds new field") {
+        code = """
+          |request myRequest {
+          |  const person = {
+          |    firstName = "Foo"
+          |  }
+          |  
+          |  person.lastName = "Bar"
+          |}
+        """.trimMargin()
+
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'person' with expected fields") {
+            size shouldBe 1
+
+            val actualValue = get("person")
+              .shouldNotBeNull()
+
+            actualValue
+              .value
+              .shouldNotBeNull()
+              .get() shouldBe mapOf("firstName" to "Foo", "lastName" to "Bar")
+          }
+        }
+      }
+    }
+
+    describe("field already set") {
+      it("can be reassigned") {
+        code = """
+          |request myRequest {
+          |  const person = {
+          |    firstName = "Foo"
+          |  }
+          |  
+          |  person.firstName = "Bar"
+          |}
+        """.trimMargin()
+
+        val variableScope = VariableScope(null, mutableMapOf())
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.apply {
+          withClue("should have one variable named 'person' with field 'firstName' value 'Bar'") {
+            size shouldBe 1
+
+            val actualValue = get("person")
+              .shouldNotBeNull()
+
+            actualValue
+              .value
+              .shouldNotBeNull()
+              .get() shouldBe mapOf("firstName" to "Bar")
           }
         }
       }

@@ -3,6 +3,7 @@ package org.merideum.kotlin.merit.interpreter.visitors
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.toModifier
+import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
@@ -48,6 +49,27 @@ class VariableVisitor(
 
     if (value is TypedValue<*>) {
       parent.scope.reassignVariable(name, value)
+    }
+
+    return MeritValue.nothing()
+  }
+
+  override fun visitObjectFieldAssignment(ctx: MeritParser.ObjectFieldAssignmentContext): MeritValue<*> {
+    val objectName = ctx.variableName.text
+    val fieldName = ctx.fieldName.text
+
+    val value = parent.visitAssignment(ctx.assignment()).value
+
+    // TODO make sure the new value and old value are the same type.
+    if (value is TypedValue<*>) {
+      // TODO throw better exception
+      val variable = parent.scope.resolveVariable(objectName) ?: throw RuntimeException("Could not find object for assignment")
+
+      val variableValue = variable.value
+      if (variableValue is ObjectValue) {
+        variableValue.setField(fieldName, value.get())
+      }
+      // TODO else throw exception because only objects have fields
     }
 
     return MeritValue.nothing()

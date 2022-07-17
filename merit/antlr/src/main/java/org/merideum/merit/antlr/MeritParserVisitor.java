@@ -83,11 +83,24 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableReassignment(MeritParser.VariableReassignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectFieldAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitAssignment(MeritParser.AssignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code objectExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectExpression(MeritParser.ObjectExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code stringExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -95,6 +108,13 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStringExpression(MeritParser.StringExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code objectFieldReferenceExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -152,6 +172,18 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTypeDeclaration(MeritParser.TypeDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectFields}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectFields(MeritParser.ObjectFieldsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MeritParser#objectField}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectField(MeritParser.ObjectFieldContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code embeddedExpression}
 	 * labeled alternative in {@link MeritParser#stringContent}.

@@ -1,7 +1,7 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
+import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.execution.OutputContainer
-import org.merideum.kotlin.merit.interpreter.FunctionCallAttributes
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
@@ -22,7 +22,8 @@ import org.merideum.merit.antlr.MeritParserBaseVisitor
 class ScriptVisitor(
   val scope: VariableScope,
   val output: OutputContainer,
-  val resourceResolver: ResourceResolver
+  val resourceResolver: ResourceResolver,
+  val context: ScriptContext
 ): MeritParserBaseVisitor<MeritValue<*>>() {
 
   val variableVisitor = VariableVisitor(this)
@@ -83,6 +84,10 @@ class ScriptVisitor(
     return expressionVisitor.visitStringExpression(ctx)
   }
 
+  override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<*> {
+    return expressionVisitor.visitObjectExpression(ctx)
+  }
+
   override fun visitEmbeddedExpression(ctx: MeritParser.EmbeddedExpressionContext): MeritValue<*> {
     return expressionVisitor.visitEmbeddedExpression(ctx)
   }
@@ -96,6 +101,10 @@ class ScriptVisitor(
 
   override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
     return functionVisitor.visitFunctionCallExpression(ctx)
+  }
+
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+    return expressionVisitor.visitObjectFieldReferenceExpression(ctx)
   }
 
   override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<*> {
@@ -114,6 +123,10 @@ class ScriptVisitor(
     variableVisitor.visitVariableReassignment(ctx)
 
     return MeritValue.nothing()
+  }
+
+  override fun visitObjectFieldAssignment(ctx: MeritParser.ObjectFieldAssignmentContext): MeritValue<*> {
+    return variableVisitor.visitObjectFieldAssignment(ctx)
   }
 
   override fun visitOutputAssignment(ctx: MeritParser.OutputAssignmentContext): MeritValue<*> {

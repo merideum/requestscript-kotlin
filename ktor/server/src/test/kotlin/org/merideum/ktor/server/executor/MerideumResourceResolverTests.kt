@@ -7,13 +7,14 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 
 class MerideumResourceResolverTests: DescribeSpec({
   lateinit var resourceResolver: ResourceResolver
+  lateinit var serializerResolver: SerializerResolver
 
   class SimpleResource
 
   describe("resolve(name)") {
     describe("when the resource exists") {
       it("should resolve resource") {
-        resourceResolver = MerideumResourceResolver(listOf(InternalResource("SimpleResource", "org.merideum.test", SimpleResource())))
+        resourceResolver = MerideumResourceResolver(listOf(InternalResource("SimpleResource", "org.merideum.test", SimpleResource(), emptyMap())))
 
         resourceResolver.resolve("SimpleResource").shouldNotBeNull()
       }
@@ -21,7 +22,7 @@ class MerideumResourceResolverTests: DescribeSpec({
 
     describe("when the resource does not exist") {
       it("should return null") {
-        resourceResolver = MerideumResourceResolver(listOf(InternalResource("WontResolve", "org.merideum.test", SimpleResource())))
+        resourceResolver = MerideumResourceResolver(listOf(InternalResource("WontResolve", "org.merideum.test", SimpleResource(), emptyMap())))
 
         resourceResolver.resolve("SimpleResource").shouldBeNull()
       }
@@ -33,8 +34,8 @@ class MerideumResourceResolverTests: DescribeSpec({
       it("should resolve resource") {
         resourceResolver = MerideumResourceResolver(
           listOf(
-            InternalResource("SimpleResource", "org.merideum.test", SimpleResource()),
-            InternalResource("SimpleResource", "org.merideum.test.not.it", SimpleResource())
+            InternalResource("SimpleResource", "org.merideum.test", SimpleResource(), emptyMap()),
+            InternalResource("SimpleResource", "org.merideum.test.not.it", SimpleResource(), emptyMap())
           )
         )
 
@@ -44,7 +45,7 @@ class MerideumResourceResolverTests: DescribeSpec({
 
     describe("when the resource does not exist") {
       it("should return null") {
-        resourceResolver = MerideumResourceResolver(listOf(InternalResource("WontResolve", "org.merideum.test", SimpleResource())))
+        resourceResolver = MerideumResourceResolver(listOf(InternalResource("WontResolve", "org.merideum.test", SimpleResource(), emptyMap())))
 
         resourceResolver.resolve("SimpleResource", "org.merideum.test").shouldBeNull()
       }

@@ -3,6 +3,7 @@ package org.merideum.ktor.server.executor
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTree
+import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.execution.MeritExecutionResult
 import org.merideum.kotlin.merit.execution.MeritExecutor
 import org.merideum.kotlin.merit.execution.OutputContainer
@@ -21,11 +22,11 @@ class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor
       buildParseTree = true
     }.parse()
 
-  override fun execute(code: String): MeritExecutionResult {
+  override fun execute(code: String, context: ScriptContext): MeritExecutionResult {
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
     val outputContainer = OutputContainer(mutableMapOf())
-    val visitor = ScriptVisitor(mainScope, outputContainer, resourceResolver)
+    val visitor = ScriptVisitor(mainScope, outputContainer, resourceResolver, context)
 
     visitor.visit(parseTree)
 

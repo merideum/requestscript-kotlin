@@ -7,6 +7,8 @@ import io.ktor.server.application.install
 import kotlinx.serialization.json.Json
 import org.merideum.ktor.server.plugin.Merideum
 import org.merideum.ktor.server.resources.Greeter
+import org.merideum.ktor.server.resources.Person
+import org.merideum.ktor.server.resources.PersonSerializer
 
 fun Application.module() {
 
@@ -19,6 +21,10 @@ fun Application.module() {
   }
 
   install(Merideum) {
+    objectSerializers {
+      add(PersonSerializer())
+    }
+
     resources {
       add(Greeter()) {
         name = "Greeter"

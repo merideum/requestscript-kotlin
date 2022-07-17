@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
+import org.merideum.kotlin.merit.ScriptContext
 
 class IntValueTests: DescribeSpec({
   var intValue: IntValue
@@ -13,7 +14,7 @@ class IntValueTests: DescribeSpec({
       it("should return the min value between self and other") {
         intValue = IntValue(12)
 
-        val functionResult = intValue.callFunction("min", listOf(10))
+        val functionResult = intValue.callFunction(ScriptContext(), "min", listOf(IntValue(10)))
 
         functionResult
           .shouldNotBeNull()
