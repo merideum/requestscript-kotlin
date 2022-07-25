@@ -15,7 +15,7 @@ class OutputSerializer {
   /**
    * Transforms a Kotlin [Map] into a [JsonObject].
    */
-  fun deserialize(output: Map<String, Any?>): JsonElement = jsonElement(output)
+  fun deserialize(output: Map<String, Any?>?): JsonElement = jsonElement(output)
 
   /**
    * Recursively transforms a Kotlin type to a [JsonElement]

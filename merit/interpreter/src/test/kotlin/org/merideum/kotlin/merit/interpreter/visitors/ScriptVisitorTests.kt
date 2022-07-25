@@ -1,18 +1,17 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
 import io.kotest.assertions.throwables.shouldNotThrow
-import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.every
 import io.mockk.mockk
-import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
@@ -30,26 +29,41 @@ class ScriptVisitorTests: DescribeSpec({
     resourceResolver = mockk()
   }
 
-  describe("output assignment") {
+  describe("return value") {
     lateinit var code: String
 
-    describe("output is assigned") {
-      code = """
+    describe("no return statement") {
+      it("should have null output") {
+        code = """
         |request myRequest {
-        |  output test = 123
+        |  "asdf".length()
         |}
       """.trimMargin()
 
-      it("should have output") {
-        val outputContainer = OutputContainer.empty()
+        executeCode(code)
+          .output
+          .shouldBeNull()
+      }
+    }
 
-        executeCode(code, outputContainer = outputContainer)
+    describe("raw value") {
 
-        outputContainer.get().apply {
-          withClue("should have one output set to 'test' with value 123") {
+      it("should have value of 123") {
+        code = """
+        |request myRequest {
+        |  return 123
+        |}
+      """.trimMargin()
+
+        val output = executeCode(code)
+          .output
+          .shouldNotBeNull()
+
+        output.apply {
+          withClue("should have one key of 'value' with value 123") {
             size shouldBe 1
 
-            val actualOutput = get("test")
+            val actualOutput = get("value")
               .shouldNotBeNull()
 
             actualOutput shouldBe 123
@@ -58,21 +72,23 @@ class ScriptVisitorTests: DescribeSpec({
       }
     }
 
-    describe("output value is already initialized") {
+    describe("return value is a variable") {
       code = """
         |request myRequest {
         |  const test = 123
-        |  output test
+        |  
+        |  return test
         |}
       """.trimMargin()
 
-      it("should have output") {
-        val outputContainer = OutputContainer.empty()
+      it("should have output value set to variable name") {
 
-        executeCode(code, outputContainer = outputContainer)
+        val output = executeCode(code)
+          .output
+          .shouldNotBeNull()
 
-        outputContainer.get().apply {
-          withClue("should have one output set to the 'test' 'const' variable") {
+        output.apply {
+          withClue("should have one output set to 'test' with value 123") {
             size shouldBe 1
 
             val actualOutput = get("test")
@@ -88,19 +104,14 @@ class ScriptVisitorTests: DescribeSpec({
       code = """
         |request myRequest {
         |  var test: string
-        |  output test
+        |  
+        |  return test
         |}
       """.trimMargin()
 
-      it("should reject setting value") {
-        val outputContainer = OutputContainer.empty()
-
-        executeCode(code, outputContainer = outputContainer)
-
-        outputContainer.get().apply {
-          withClue("should not have any output") {
-            shouldBeEmpty()
-          }
+      it("should reject returning value") {
+        shouldThrow<RuntimeException> {
+          executeCode(code)
         }
       }
     }
@@ -293,18 +304,25 @@ class ScriptVisitorTests: DescribeSpec({
         }
       }
 
-      describe("output assignment") {
+      describe("return value") {
         it("should return value to output") {
           code = """
             |request myRequest {
             |  import test: $resourceName
-            |  output greeting = test.sayHello("Merideum")
+            |  
+            |  return test.sayHello("Merideum")
             |}
           """.trimMargin()
 
-          val output = executeCode(code, variableScope, resourceResolver = resourceResolver)
+          val output = executeCode(
+            code,
+            variableScope,
+            resourceResolver = resourceResolver
+          )
+            .output
+            .shouldNotBeNull()
 
-          output.get()["greeting"] shouldBe "Hello Merideum!"
+          output["value"] shouldBe "Hello Merideum!"
         }
       }
     }

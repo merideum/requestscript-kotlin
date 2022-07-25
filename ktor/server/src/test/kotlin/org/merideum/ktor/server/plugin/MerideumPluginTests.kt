@@ -28,7 +28,7 @@ class MerideumPluginTests: DescribeSpec({
         |request myRequest {
         |  const test = 123
         |
-        |  output test
+        |  return test
         |}
       """.trimMargin()
 

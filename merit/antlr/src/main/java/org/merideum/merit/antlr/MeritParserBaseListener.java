@@ -112,13 +112,13 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOutputAssignment(MeritParser.OutputAssignmentContext ctx) { }
+	@Override public void enterReturnStatement(MeritParser.ReturnStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOutputAssignment(MeritParser.OutputAssignmentContext ctx) { }
+	@Override public void exitReturnStatement(MeritParser.ReturnStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -88,15 +88,15 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitStatement(MeritParser.StatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#outputAssignment}.
+	 * Enter a parse tree produced by {@link MeritParser#returnStatement}.
 	 * @param ctx the parse tree
 	 */
-	void enterOutputAssignment(MeritParser.OutputAssignmentContext ctx);
+	void enterReturnStatement(MeritParser.ReturnStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MeritParser#outputAssignment}.
+	 * Exit a parse tree produced by {@link MeritParser#returnStatement}.
 	 * @param ctx the parse tree
 	 */
-	void exitOutputAssignment(MeritParser.OutputAssignmentContext ctx);
+	void exitReturnStatement(MeritParser.ReturnStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree

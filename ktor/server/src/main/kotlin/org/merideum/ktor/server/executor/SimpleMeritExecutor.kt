@@ -6,13 +6,14 @@ import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.execution.MeritExecutionResult
 import org.merideum.kotlin.merit.execution.MeritExecutor
-import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
+import org.merideum.kotlin.merit.interpreter.ReturnTermination
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.visitors.ScriptVisitor
 import org.merideum.merit.antlr.MeritLexer
 import org.merideum.merit.antlr.MeritParser
 
+// TODO move into merit interpreter
 class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor {
 
   private fun lexer(code: String) = MeritLexer(CharStreams.fromString(code))
@@ -25,11 +26,17 @@ class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor
   override fun execute(code: String, context: ScriptContext): MeritExecutionResult {
     val parseTree: ParseTree = parse(code)
     val mainScope = VariableScope.main()
-    val outputContainer = OutputContainer(mutableMapOf())
-    val visitor = ScriptVisitor(mainScope, outputContainer, resourceResolver, context)
+    val visitor = ScriptVisitor(mainScope, resourceResolver, context)
 
-    visitor.visit(parseTree)
+    val returnValue: Map<String, Any?>? = try {
+      visitor.visit(parseTree)
 
-    return MeritExecutionResult(outputContainer.get())
+      null
+    } catch(rt: ReturnTermination) {
+      rt.value
+    }
+
+
+    return MeritExecutionResult(returnValue)
   }
 }

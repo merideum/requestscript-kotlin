@@ -1,15 +1,16 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
 import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.execution.OutputContainer
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
+import org.merideum.kotlin.merit.interpreter.ReturnTermination
 import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.script.ScriptType
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
@@ -21,7 +22,6 @@ import org.merideum.merit.antlr.MeritParserBaseVisitor
  */
 class ScriptVisitor(
   val scope: VariableScope,
-  val output: OutputContainer,
   val resourceResolver: ResourceResolver,
   val context: ScriptContext
 ): MeritParserBaseVisitor<MeritValue<*>>() {
@@ -129,28 +129,35 @@ class ScriptVisitor(
     return variableVisitor.visitObjectFieldAssignment(ctx)
   }
 
-  override fun visitOutputAssignment(ctx: MeritParser.OutputAssignmentContext): MeritValue<*> {
-    val outputAssignment: MeritValue<*> = if (ctx.assignment() == null) {
-      MeritValue.nothing()
-    } else this.visit(ctx.assignment())
-
-    val outputName = ctx.simpleIdentifier().text
-
-    // If the outputAssignment is not present, then we assume the IDENTIFIER points to a variable.
-    if (outputAssignment == MeritValue.nothing()) {
-      val resolved = scope.resolveVariable(outputName) ?: return MeritValue.nothing()
-
-      if (resolved.initialized) {
-        output.add(outputName, resolved.value!!.get())
+  /**
+   * Returning a value from the script throws [ReturnTermination] with the value.
+   * The implementation of [MeritExecutor] should catch it and return the value.
+   */
+  override fun visitReturnStatement(ctx: MeritParser.ReturnStatementContext): MeritValue<Unit> {
+    val returnValue: Map<String, Any?> =
+      when (val returnExpression = this.visit(ctx.expression()).value!!) {
+        is ObjectValue -> {
+          // TODO throw better exception
+          returnExpression.get()?.toMap() ?: throw RuntimeException("Unexpected value for return")
+        }
+      is Variable<*> -> {
+        // TODO throw if the variable has not been initialized
+        val variableValue = returnExpression.value ?: throw RuntimeException("Cannot return value of uninitialized variable")
+        // If the value is a variable, key the value to its variable name.
+        mapOf(returnExpression.name to variableValue.get())
       }
-      // TODO: throw error if the resolved variable is not initialized.
-    } else {
-      if (outputAssignment.value is TypedValue<*>) {
-        output.add(outputName, outputAssignment.value.get())
+      is TypedValue<*> -> {
+        // If the value is a "raw" value, then wrap it in a key called 'value'.
+        mapOf("value" to returnExpression.get())
+      }
+      else -> {
+        // TODO throw better exception
+        throw RuntimeException("Unexpected value for return")
       }
     }
 
-    return MeritValue.nothing()
+    // End the execution
+    throw ReturnTermination(returnValue)
   }
 
   override fun visitAssignment(ctx: MeritParser.AssignmentContext): MeritValue<*> {
