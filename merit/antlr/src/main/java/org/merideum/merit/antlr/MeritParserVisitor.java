@@ -59,11 +59,11 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(MeritParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MeritParser#outputAssignment}.
+	 * Visit a parse tree produced by {@link MeritParser#returnStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOutputAssignment(MeritParser.OutputAssignmentContext ctx);
+	T visitReturnStatement(MeritParser.ReturnStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MeritParser#variableDeclaration}.
 	 * @param ctx the parse tree

@@ -15,7 +15,7 @@ IMPORT=14
 ASSIGN=15
 MINUS=16
 DOT=17
-OUTPUT=18
+RETURN=18
 CONST=19
 VAR=20
 RESOURCE_NAME=21
@@ -32,7 +32,7 @@ CURLY_R=30
 'contract'=3
 'import'=14
 '='=15
-'output'=18
+'return'=18
 'const'=19
 'var'=20
 '${'=27

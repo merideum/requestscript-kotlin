@@ -2,6 +2,7 @@ package org.merideum.kotlin.merit.interpreter.visitors
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
@@ -16,7 +17,7 @@ class FunctionCallVisitorTests: DescribeSpec({
       |
       |  const minimum = largest.min(middle.min(smallest))
       |
-      |  output minimum
+      |  return minimum
       |}
     """.trimMargin()
 
@@ -24,8 +25,10 @@ class FunctionCallVisitorTests: DescribeSpec({
       val variableScope = VariableScope(null, mutableMapOf())
 
       val actualOutput = executeCode(code, variableScope)
+        .output
+        .shouldNotBeNull()
 
-      actualOutput.get()["minimum"] shouldBe 300
+      actualOutput["minimum"] shouldBe 300
     }
 
     describe("function not in expression") {
