@@ -26,6 +26,11 @@ enum class Type(val declarationKey: String) {
       scope.declareVariable<ObjectValue>(name, OBJECT)
     }
   },
+  LIST("list") {
+    override fun declareVariable(scope: VariableScope, name: String) {
+      scope.declareVariable<ListValue>(name, LIST)
+    }
+  },
   // Resources are declared without a type declaration.
   RESOURCE("") {
     override fun declareVariable(scope: VariableScope, name: String) {

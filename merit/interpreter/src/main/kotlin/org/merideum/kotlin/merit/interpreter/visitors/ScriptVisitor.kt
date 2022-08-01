@@ -73,7 +73,7 @@ class ScriptVisitor(
   }
 
   override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
-    return MeritValue(Type.fromDeclaration(ctx.type.text))
+    return MeritValue(Type.fromDeclaration(ctx.type().text))
   }
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<IntValue> {
