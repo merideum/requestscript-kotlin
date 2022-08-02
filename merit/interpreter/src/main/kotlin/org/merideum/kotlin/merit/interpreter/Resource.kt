@@ -1,21 +1,20 @@
 package org.merideum.kotlin.merit.interpreter
 
-import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.ResourceType
+import org.merideum.kotlin.merit.interpreter.type.value.TypedValue
 
-interface Resource<T>: TypedValue<T> {
+abstract class Resource<T>: TypedValue<T> {
   /**
    * The name of the Resource
    */
-  val name: String
+  abstract val name: String
 
   /**
    * The path of the Resource. The same path and name cannot be shared.
    */
-  val path: String
+  abstract val path: String
 
-  override val type: Type
-    get() = Type.RESOURCE
+  override val type = ResourceType()
 
   override fun stringify(): String {
     // TODO throw better exception.

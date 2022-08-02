@@ -3,8 +3,10 @@ package org.merideum.kotlin.merit.interpreter.visitors
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.toModifier
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.ListType
+import org.merideum.kotlin.merit.interpreter.type.value.ObjectValue
+import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.kotlin.merit.interpreter.type.value.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -14,9 +16,9 @@ class VariableVisitor(
 
   override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<Unit> {
     val name = ctx.simpleIdentifier().text
-    val type = parent.visitTypeDeclaration(ctx.typeDeclaration()).value!!
+    val type = visitTypeDeclaration(ctx.typeDeclaration()).value!!
 
-    type.declareVariable(parent.scope, name)
+    parent.scope.declareVariable(name, type)
 
     return MeritValue.nothing()
   }
@@ -25,6 +27,7 @@ class VariableVisitor(
     val name = ctx.simpleIdentifier().text
     val modifier = ctx.variableModifier().text.toModifier()
 
+    // TODO throw error
     // ANTLR4 may still report back a null assignment if the syntax is broken.
     if (ctx.assignment() == null) return MeritValue.nothing()
 
@@ -32,7 +35,7 @@ class VariableVisitor(
 
     if (value is TypedValue<*>) {
       val declaredType = if (ctx.typeDeclaration() != null) {
-        parent.visitTypeDeclaration(ctx.typeDeclaration())
+        visitTypeDeclaration(ctx.typeDeclaration())
       } else null
 
       if (declaredType != null && value.type != declaredType.value) throw TypeMismatchedException(declaredType.value!!, value.type)
@@ -67,11 +70,36 @@ class VariableVisitor(
 
       val variableValue = variable.value
       if (variableValue is ObjectValue) {
-        variableValue.setField(fieldName, value.get())
+        variableValue.setField(fieldName, value)
       }
       // TODO else throw exception because only objects have fields
     }
 
     return MeritValue.nothing()
+  }
+
+  override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
+    val typeDeclaration = visitType(ctx.type()).value!!
+    return MeritValue(typeDeclaration)
+  }
+
+  override fun visitType(ctx: MeritParser.TypeContext): MeritValue<Type> {
+    val typeValue = if (ctx.basicType() != null) {
+      visitBasicType(ctx.basicType()).value!!
+    } else if (ctx.listType() != null){
+      visitListType(ctx.listType()).value!!
+    } else throw RuntimeException()
+
+    return MeritValue(typeValue)
+  }
+
+  override fun visitBasicType(ctx: MeritParser.BasicTypeContext): MeritValue<Type> {
+    return MeritValue(Type.fromKey(ctx.text))
+  }
+
+  override fun visitListType(ctx: MeritParser.ListTypeContext): MeritValue<Type> {
+    val innerType = visitType(ctx.type()).value!!
+
+    return MeritValue(ListType(innerType))
   }
 }

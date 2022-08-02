@@ -1,19 +1,14 @@
 package org.merideum.kotlin.merit.interpreter.visitors
 
 import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.interpreter.MeritValue
-import org.merideum.kotlin.merit.interpreter.Modifier
-import org.merideum.kotlin.merit.interpreter.ResourceResolver
-import org.merideum.kotlin.merit.interpreter.ReturnTermination
-import org.merideum.kotlin.merit.interpreter.Variable
-import org.merideum.kotlin.merit.interpreter.VariableScope
+import org.merideum.kotlin.merit.interpreter.*
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.kotlin.merit.interpreter.script.ScriptType
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.*
+import org.merideum.kotlin.merit.interpreter.type.value.IntValue
+import org.merideum.kotlin.merit.interpreter.type.value.ObjectValue
+import org.merideum.kotlin.merit.interpreter.type.value.StringValue
+import org.merideum.kotlin.merit.interpreter.type.value.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -73,7 +68,7 @@ class ScriptVisitor(
   }
 
   override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
-    return MeritValue(Type.fromDeclaration(ctx.type().text))
+    return variableVisitor.visitTypeDeclaration(ctx)
   }
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<IntValue> {
@@ -95,7 +90,7 @@ class ScriptVisitor(
   /**
    * Return the variable for the identifier.
    */
-  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable<*>> {
+  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable> {
     return expressionVisitor.visitSimpleIdentifierExpression(ctx)
   }
 
@@ -105,6 +100,10 @@ class ScriptVisitor(
 
   override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
     return expressionVisitor.visitObjectFieldReferenceExpression(ctx)
+  }
+
+  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<*> {
+    return expressionVisitor.visitListExpression(ctx)
   }
 
   override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<*> {
@@ -140,7 +139,7 @@ class ScriptVisitor(
           // TODO throw better exception
           returnExpression.get()?.toMap() ?: throw RuntimeException("Unexpected value for return")
         }
-      is Variable<*> -> {
+      is Variable -> {
         // TODO throw if the variable has not been initialized
         val variableValue = returnExpression.value ?: throw RuntimeException("Cannot return value of uninitialized variable")
         // If the value is a variable, key the value to its variable name.

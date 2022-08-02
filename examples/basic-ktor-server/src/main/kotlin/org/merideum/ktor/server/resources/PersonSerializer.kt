@@ -1,8 +1,8 @@
 package org.merideum.ktor.server.resources
 
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.ktor.server.executor.serialization.MerideumSerializer
 
-class PersonSerializer: ObjectSerializer<Person> {
+class PersonSerializer: MerideumSerializer<Person> {
   override fun serialize(value: Person): Map<String, Any?> {
     return mapOf("firstName" to value.firstName, "lastName" to value.lastName)
   }

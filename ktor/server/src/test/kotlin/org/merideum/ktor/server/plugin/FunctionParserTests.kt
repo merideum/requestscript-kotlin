@@ -1,10 +1,10 @@
 package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
-import io.kotest.matchers.maps.shouldContain
-import io.kotest.matchers.maps.shouldHaveKey
 import io.kotest.matchers.shouldBe
+import org.merideum.kotlin.merit.interpreter.type.IntType
+import org.merideum.kotlin.merit.interpreter.type.ObjectType
+import org.merideum.kotlin.merit.interpreter.type.StringType
 import org.merideum.kotlin.merit.interpreter.type.Type
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.declaredMemberFunctions
@@ -22,10 +22,10 @@ class FunctionParserTests: DescribeSpec({
           "doThing",
           listOf(
             FunctionParameter(null, doThingFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }),
-            FunctionParameter(FunctionType(Type.STRING, "String"), doThingFunction.parameters.single { it.name == "name" }),
-            FunctionParameter(FunctionType(Type.INT, "Int"), doThingFunction.parameters.single { it.name == "thing" })
+            FunctionParameter(StringType(), doThingFunction.parameters.single { it.name == "name" }),
+            FunctionParameter(IntType(), doThingFunction.parameters.single { it.name == "thing" })
           ),
-          FunctionType(Type.OBJECT, "org.merideum.ktor.server.plugin.Bar"),
+          ObjectType("org.merideum.ktor.server.plugin.Bar"),
           doThingFunction
         )
       )

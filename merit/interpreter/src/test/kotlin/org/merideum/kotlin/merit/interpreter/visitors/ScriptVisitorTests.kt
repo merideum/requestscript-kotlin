@@ -17,8 +17,8 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.value.IntValue
+import org.merideum.kotlin.merit.interpreter.type.value.StringValue
 import org.merideum.kotlin.merit.interpreter.utils.TestResource
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
 

@@ -5,6 +5,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 import org.merideum.kotlin.merit.ScriptContext
+import org.merideum.kotlin.merit.interpreter.type.value.IntValue
 
 class IntValueTests: DescribeSpec({
   var intValue: IntValue

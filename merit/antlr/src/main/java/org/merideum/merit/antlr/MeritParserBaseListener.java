@@ -388,18 +388,6 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInnerType(MeritParser.InnerTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInnerType(MeritParser.InnerTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBasicType(MeritParser.BasicTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}

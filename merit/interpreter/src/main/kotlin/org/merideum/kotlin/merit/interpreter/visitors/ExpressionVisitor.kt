@@ -4,11 +4,8 @@ import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.*
+import org.merideum.kotlin.merit.interpreter.type.value.*
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -24,7 +21,7 @@ class ExpressionVisitor(
     val content = ctx.stringContent().joinToString("") {
       // TODO throw better exception
       when (val stringPart = parent.visit(it).value) {
-        is Variable<*> -> {
+        is Variable -> {
           stringPart.value?.stringify() ?: throw RuntimeException("Could not stringify null value")
         }
         is TypedValue<*> -> {
@@ -51,13 +48,37 @@ class ExpressionVisitor(
     return MeritValue(parent.visit(ctx.expression()).value)
   }
 
-  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable<*>> {
+  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable> {
     val expectedIdentifier = ctx.simpleIdentifier().text
 
     val found = parent.scope.resolveVariable(expectedIdentifier)
       ?: throw UnknownVariableIdentifierException(expectedIdentifier)
 
     return MeritValue(found)
+  }
+
+//  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<ListValue> {
+////    val elements = visitListElementAssignments(ctx.listElementAssignments()).value
+////
+////    if (elements == null) { return MeritValue(ListValue(elements, AnyType())) }
+////
+////    // A list may only have one inner type, or it must be 'any' type
+////    val elementsAreSame = elements.groupBy { it.type }.size == 1
+////
+////    // TODO Add 'any' type instead of 'null'
+////    val innerType = if (elementsAreSame) { elements.first().type } else { AnyType() }
+////
+////    return MeritValue(ListValue(elements, innerType))
+//  }
+
+  override fun visitListElementAssignments(ctx: MeritParser.ListElementAssignmentsContext): MeritValue<List<TypedValue<*>>> {
+    val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
+
+    return MeritValue(elements)
+  }
+
+  override fun visitListElementAssignment(ctx: MeritParser.ListElementAssignmentContext): MeritValue<TypedValue<*>> {
+    return MeritValue(parent.visit(ctx.expression()).value!! as TypedValue<*>)
   }
 
   override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<ObjectValue> {
@@ -90,7 +111,7 @@ class ExpressionVisitor(
     val assignmentValue = when(val assignment = parent.visitAssignment(ctx.assignment()).value) {
       is TypedValue<*> -> assignment
       // TODO throw exception if TypedValue is null because the variable value has not yet been set.
-      is Variable<*> -> assignment.value
+      is Variable -> assignment.value
 
       // TODO better exception
       else -> throw RuntimeException("Could not get value of type")
@@ -104,9 +125,9 @@ class ExpressionVisitor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<TypedValue<*>> {
     val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
-      is Variable<*> -> callerExpression.value
+      is Variable -> callerExpression.value
       is ObjectValue -> callerExpression
       //TODO throw better exception
       else -> throw RuntimeException("Invalid type for field reference.")
@@ -119,20 +140,22 @@ class ExpressionVisitor(
 
     val fieldName = ctx.simpleIdentifier().text
 
-    val value = Type.wrap(caller.getField(fieldName))
+    val value = caller.getField(fieldName)
 
-    return MeritValue(value)
+//    return MeritValue(value)
+    return MeritValue(IntType().new(null))
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
-    val mappedObject = mutableMapOf<String, Any?>()
+    val mappedObject = mutableMapOf<String, TypedValue<*>>()
 
     // TODO check that this is right.
     fields.forEach {
-      mappedObject[it.name] = it.value.get()
+      mappedObject[it.name] = it.value
     }
 
-    return ObjectValue(mappedObject)
+//    return ObjectValue(mappedObject)
+    return ObjectValue(null)
   }
 
   class ObjectField(

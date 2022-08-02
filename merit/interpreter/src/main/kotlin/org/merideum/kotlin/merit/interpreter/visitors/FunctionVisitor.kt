@@ -3,7 +3,7 @@ package org.merideum.kotlin.merit.interpreter.visitors
 import org.merideum.kotlin.merit.interpreter.FunctionCallAttributes
 import org.merideum.kotlin.merit.interpreter.MeritValue
 import org.merideum.kotlin.merit.interpreter.Variable
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.value.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -45,7 +45,7 @@ class FunctionVisitor(
 
   private fun getFunctionCaller(callerExpression: Any?): TypedValue<*>? {
     return when (callerExpression) {
-      is Variable<*> -> {
+      is Variable -> {
         callerExpression.value
       }
       is TypedValue<*> -> {
@@ -58,7 +58,7 @@ class FunctionVisitor(
   private fun mapFunctionParameterValues(parameters: List<MeritValue<*>>): List<TypedValue<*>> {
     return parameters.map {
       when (val parameterValue = it.value) {
-        is Variable<*> -> {
+        is Variable -> {
           parameterValue.value
         }
         is TypedValue<*> -> {

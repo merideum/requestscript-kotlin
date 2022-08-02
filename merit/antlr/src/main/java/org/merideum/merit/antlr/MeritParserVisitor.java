@@ -205,12 +205,6 @@ public interface MeritParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitListType(MeritParser.ListTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MeritParser#innerType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInnerType(MeritParser.InnerTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link MeritParser#basicType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

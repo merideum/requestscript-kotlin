@@ -11,10 +11,10 @@ import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.types.shouldBeTypeOf
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.kotlin.merit.interpreter.type.*
+import org.merideum.kotlin.merit.interpreter.type.value.IntValue
+import org.merideum.kotlin.merit.interpreter.type.value.ObjectValue
+import org.merideum.kotlin.merit.interpreter.type.value.StringValue
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
 
 /**
@@ -46,7 +46,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.INT
+        actualVariable.type shouldBe IntType()
 
         withClue("should have null 'value' since it is unassigned") {
           actualVariable.value.shouldBeNull()
@@ -69,7 +69,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.INT
+        actualVariable.type shouldBe IntType()
 
         withClue("should be Kotlin 'Int' with expected value") {
           actualVariable.value
@@ -95,7 +95,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.INT
+        actualVariable.type shouldBe IntType()
 
         withClue("should be Kotlin 'Int' with expected value") {
           actualVariable.value
@@ -122,7 +122,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.STRING
+        actualVariable.type shouldBe StringType()
 
         withClue("should have null 'value' since it is unassigned") {
           actualVariable.value.shouldBeNull()
@@ -145,7 +145,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.STRING
+        actualVariable.type shouldBe StringType()
 
         withClue("should be Kotlin 'String' with expected value") {
           actualVariable.value
@@ -171,7 +171,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.STRING
+        actualVariable.type shouldBe StringType()
 
         withClue("should be Kotlin 'String' with expected value") {
           actualVariable.value
@@ -198,7 +198,7 @@ class BuiltinTypeTests: DescribeSpec({
             .resolveVariable("greeting")
             .shouldNotBeNull()
 
-          actualVariable.type shouldBe Type.STRING
+          actualVariable.type shouldBe StringType()
 
           withClue("should be Kotlin 'String' with expected value") {
             actualVariable.value
@@ -224,7 +224,7 @@ class BuiltinTypeTests: DescribeSpec({
             .resolveVariable("length")
             .shouldNotBeNull()
 
-          actualVariable.type shouldBe Type.STRING
+          actualVariable.type shouldBe StringType()
 
           withClue("should be Kotlin 'String' with expected value") {
             actualVariable.value
@@ -249,7 +249,7 @@ class BuiltinTypeTests: DescribeSpec({
             .resolveVariable("age")
             .shouldNotBeNull()
 
-          actualVariable.type shouldBe Type.STRING
+          actualVariable.type shouldBe StringType()
 
           withClue("should be Kotlin 'String' with expected value") {
             actualVariable.value
@@ -274,7 +274,7 @@ class BuiltinTypeTests: DescribeSpec({
             .resolveVariable("message")
             .shouldNotBeNull()
 
-          actualVariable.type shouldBe Type.STRING
+          actualVariable.type shouldBe StringType()
 
           withClue("should be Kotlin 'String' with expected value") {
             actualVariable.value
@@ -299,7 +299,7 @@ class BuiltinTypeTests: DescribeSpec({
             .resolveVariable("message")
             .shouldNotBeNull()
 
-          actualVariable.type shouldBe Type.STRING
+          actualVariable.type shouldBe StringType()
 
           withClue("should be Kotlin 'String' with expected value") {
             actualVariable.value
@@ -327,7 +327,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.OBJECT
+        actualVariable.type shouldBe ObjectType()
 
         withClue("should have null 'value' since it is unassigned") {
           actualVariable.value.shouldBeNull()
@@ -408,8 +408,8 @@ class BuiltinTypeTests: DescribeSpec({
           executeCode(code, variableScope)
         }
 
-        exception.type shouldBe Type.STRING
-        exception.otherType shouldBe Type.INT
+        exception.type shouldBe StringType()
+        exception.otherType shouldBe IntType()
 
         exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
       }
@@ -458,7 +458,7 @@ class BuiltinTypeTests: DescribeSpec({
           .resolveVariable("test")
           .shouldNotBeNull()
 
-        actualVariable.type shouldBe Type.LIST
+        actualVariable.type shouldBe ListType(StringType())
 
         withClue("should have null 'value' since it is unassigned") {
           actualVariable.value.shouldBeNull()
@@ -539,8 +539,8 @@ class BuiltinTypeTests: DescribeSpec({
           executeCode(code, variableScope)
         }
 
-        exception.type shouldBe Type.STRING
-        exception.otherType shouldBe Type.INT
+        exception.type shouldBe StringType()
+        exception.otherType shouldBe IntType()
 
         exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
       }
@@ -586,8 +586,8 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
-          exception.otherType shouldBe Type.INT
+          exception.type shouldBe StringType()
+          exception.otherType shouldBe IntType()
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
         }
@@ -606,8 +606,8 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
-          exception.otherType shouldBe Type.INT
+          exception.type shouldBe StringType()
+          exception.otherType shouldBe IntType()
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
         }
@@ -629,8 +629,8 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
-          exception.otherType shouldBe Type.INT
+          exception.type shouldBe StringType()
+          exception.otherType shouldBe IntType()
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
         }

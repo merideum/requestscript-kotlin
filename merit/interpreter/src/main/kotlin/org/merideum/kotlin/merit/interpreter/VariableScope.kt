@@ -3,14 +3,14 @@ package org.merideum.kotlin.merit.interpreter
 import org.merideum.kotlin.merit.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.value.TypedValue
 
 /**
  * Contains variables with a scope.
  */
 data class VariableScope(
   val parent: VariableScope?,
-  val variables: MutableMap<String, Variable<*>>
+  val variables: MutableMap<String, Variable>
 ) {
 
   /**
@@ -20,15 +20,16 @@ data class VariableScope(
    */
   fun resolveVariable(name: String) = variables[name]
 
-  fun <T: TypedValue<*>> declareVariable(name: String, type: Type) {
+  fun declareVariable(name: String, type: Type) {
     val resolved = resolveVariable(name)
 
     // TODO throw exception because a variable should not be redeclared
     if (resolved != null) return
 
-    variables[name] = Variable<T>(name, null, Modifier.VAR, type)
+    variables[name] = Variable(name, null, Modifier.VAR, type)
   }
 
+  // TODO make sure type declaration matches value type if both are present
   fun declareAndAssignVariable(name: String, value: TypedValue<*>, modifier: Modifier) {
     val resolved = resolveVariable(name)
 

@@ -1,6 +1,7 @@
-package org.merideum.kotlin.merit.interpreter.type
+package org.merideum.kotlin.merit.interpreter.type.value
 
 import org.merideum.kotlin.merit.ScriptContext
+import org.merideum.kotlin.merit.interpreter.type.Type
 
 /**
  * A value that has an instance in memory.

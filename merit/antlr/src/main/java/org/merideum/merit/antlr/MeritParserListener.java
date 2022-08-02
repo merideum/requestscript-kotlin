@@ -334,16 +334,6 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitListType(MeritParser.ListTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#innerType}.
-	 * @param ctx the parse tree
-	 */
-	void enterInnerType(MeritParser.InnerTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MeritParser#innerType}.
-	 * @param ctx the parse tree
-	 */
-	void exitInnerType(MeritParser.InnerTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MeritParser#basicType}.
 	 * @param ctx the parse tree
 	 */

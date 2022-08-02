@@ -1,11 +1,15 @@
-package org.merideum.kotlin.merit.interpreter.type
+package org.merideum.kotlin.merit.interpreter.type.value
 
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
+import org.merideum.kotlin.merit.interpreter.type.ObjectType
 
-class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<MutableMap<String, Any?>> {
+class ObjectValue(
+  override val value: MutableMap<String, Any?>?
+): TypedValue<MutableMap<String, Any?>?> {
 
-  override val type = Type.OBJECT
+  // TODO revisit type name
+  override val type = ObjectType()
 
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any? {
     if (value == null) throw FunctionNotFoundException(functionName)
@@ -22,7 +26,6 @@ class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<Mu
     return value.toString()
   }
 
-  @Suppress("UNCHECKED_CAST")
   fun getField(name: String): Any? {
     // TODO throw better exception.
     if (value == null) throw RuntimeException("Cannot retrieve field of 'null' 'object'.")
@@ -30,10 +33,15 @@ class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<Mu
     return value[name]
   }
 
-  fun setField(name: String, fieldValue: Any?) {
+  fun setField(name: String, fieldValue: TypedValue<*>) {
+    // TODO check types
     // TODO throw better exception.
     if (value == null) throw RuntimeException("Cannot set field of 'null' 'object'.")
 
-    value[name] = fieldValue
+    value[name] = fieldValue.get()
   }
+
+//  fun fieldToTypedValue(value: Any?): TypedValue<*>? {
+//    when
+//  }
 }

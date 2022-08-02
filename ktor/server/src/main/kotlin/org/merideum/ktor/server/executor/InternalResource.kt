@@ -2,11 +2,8 @@ package org.merideum.ktor.server.executor
 
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.*
+import org.merideum.kotlin.merit.interpreter.type.value.*
 import org.merideum.ktor.server.plugin.ResourceFunction
 
 @Suppress("UNCHECKED_CAST")
@@ -15,7 +12,7 @@ class InternalResource<T>(
   override val path: String,
   override val value: T,
   private val functions: Map<String, ResourceFunction>
-) : Resource<T> {
+) : Resource<T>() {
 
   override fun get(): T? {
     throw Exception("Cannot get a Resource.")
@@ -41,7 +38,7 @@ class InternalResource<T>(
             val parameterValue = parameter.get()
 
             // TODO don't check for a serializer if the expected parameter is a Map (or assume a serializer does not exist for a map?)
-            if (parameter.type == Type.OBJECT && parameterValue is Map<*, *>) {
+            if (parameter.type.value == TypeOption.OBJECT && parameterValue is Map<*, *>) {
               val parameterSerializer = serializerResolver.resolveOrThrow(parameterValue, kParameter.type.toString())
 
               parameterSerializer.deserialize(parameterValue as Map<String, Any?>)
@@ -57,19 +54,35 @@ class InternalResource<T>(
         }
       .toMap()
 
-      return when (val result = foundFunction.function.callBy(functionParameters)) {
-        is Int -> {
-          IntValue(result)
-        }
-        is String -> {
-          StringValue(result)
-        }
-        else -> {
-          val returnSerializer = serializerResolver.resolveOrThrow(result, foundFunction.returnType.typeName)
+      val functionCallResult = foundFunction.function.callBy(functionParameters)
 
-          ObjectValue(returnSerializer.serialize(result).toMutableMap())
-        }
-      }
+      /**
+       * if string
+       */
+
+//      if (foundFunction.returnType.value == TypeOption.OBJECT) {
+//        val returnSerializer = serializerResolver.resolveOrThrow(functionCallResult, foundFunction.returnType.kTypeName)
+//
+//        ObjectValue(returnSerializer.serialize(functionCallResult).toMutableMap())
+//      }
+
+//      return when (val result = foundFunction.function.callBy(functionParameters)) {
+//
+//        is Int -> {
+//          IntValue(result)
+//        }
+//        is String -> {
+//          StringValue(result)
+//        }
+//        is List<*> -> {
+//          ListValue.fromKotlinList(result)
+//        }
+//        else -> {
+//          val returnSerializer = serializerResolver.resolveOrThrow(result, foundFunction.returnType.kTypeName)
+//
+//          ObjectValue(returnSerializer.serialize(result).toMutableMap())
+//        }
+//      }
     }
 
     // TODO throw better exception
@@ -83,9 +96,10 @@ class InternalResource<T>(
 
       val parametersKey = parameters
         .map { it.type }
-        .joinToString("-") { it.typeName() }
+        .joinToString("-") { it.value.typeName() }
 
       append(parametersKey)
     }
   }
+
 }

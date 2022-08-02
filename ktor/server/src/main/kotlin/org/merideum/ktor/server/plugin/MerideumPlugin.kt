@@ -20,7 +20,7 @@ import org.merideum.ktor.server.executor.InternalResource
 import org.merideum.ktor.server.executor.MerideumResourceResolver
 import org.merideum.ktor.server.executor.SerializerResolver
 import org.merideum.ktor.server.executor.SimpleMeritExecutor
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.ktor.server.executor.serialization.MerideumSerializer
 
 val Merideum = createApplicationPlugin(
   name = "Merideum",
@@ -58,7 +58,7 @@ val Merideum = createApplicationPlugin(
 
 class MerideumPluginConfiguration {
   val resources: MutableList<Resource<*>> = mutableListOf()
-  var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
+  var serializers: MutableMap<String, MerideumSerializer<*>> = mutableMapOf()
 
   fun resources(configuration: ResourcesConfiguration.() -> Unit) {
     val config = ResourcesConfiguration().apply(configuration)
@@ -96,14 +96,14 @@ class ResourcesConfiguration(
 }
 
 class ObjectSerializersConfiguration {
-  val serializers = mutableMapOf<String, ObjectSerializer<*>>()
+  val serializers = mutableMapOf<String, MerideumSerializer<*>>()
 
   /**
    * An internal resource is a resource that has an instance in memory.
    *
    * An external resource is a resource that requires a web client.
    */
-  inline fun <reified T> add(serializer: ObjectSerializer<T>) {
+  inline fun <reified T> add(serializer: MerideumSerializer<T>) {
     serializers[T::class.qualifiedName!!] = serializer
   }
 }

@@ -3,10 +3,10 @@ package org.merideum.ktor.server.executor
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.kotlin.merit.interpreter.type.value.IntValue
+import org.merideum.kotlin.merit.interpreter.type.value.ObjectValue
+import org.merideum.kotlin.merit.interpreter.type.value.StringValue
+import org.merideum.ktor.server.executor.serialization.MerideumSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
 
 class InternalResourceTests: DescribeSpec({
@@ -65,7 +65,7 @@ class InternalResourceTests: DescribeSpec({
 
 data class Person(val name: String)
 
-class PersonSerializer: ObjectSerializer<Person> {
+class PersonSerializer: MerideumSerializer<Person> {
   override fun serialize(value: Person): Map<String, Any?> {
     return mapOf("name" to value.name)
   }
@@ -79,7 +79,7 @@ class PersonSerializer: ObjectSerializer<Person> {
 
 data class Greeting(val message: String)
 
-class GreetingSerializer: ObjectSerializer<Greeting> {
+class GreetingSerializer: MerideumSerializer<Greeting> {
   override fun serialize(value: Greeting): Map<String, Any?> {
     return mapOf("message" to value.message)
   }

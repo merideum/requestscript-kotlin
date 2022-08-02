@@ -1,11 +1,10 @@
 package org.merideum.ktor.server.plugin
 
-import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.kotlin.merit.interpreter.type.*
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberFunctions
 
 class FunctionParser {
@@ -36,18 +35,26 @@ class FunctionParser {
     }
   }
 
-  private fun getType(returnType: KType): FunctionType {
-    return when (returnType) {
-      String::class.createType() -> {
-        FunctionType(Type.STRING, "String")
+  private fun getType(type: KType): Type {
+    return when (type.classifier) {
+      String::class -> {
+        StringType()
       }
-      Int::class.createType() -> {
-        FunctionType(Type.INT, "Int")
+      Int::class -> {
+        IntType()
+      }
+      List::class -> {
+        getListType(type)
       }
       else -> {
-        FunctionType(Type.OBJECT, returnType.toString())
+        ObjectType(type.toString())
       }
     }
+  }
+
+  private fun getListType(type: KType): Type {
+    val innerType = getType(type.arguments.single().type!!)
+    return ListType(innerType)
   }
 
   private fun buildMapKey(functionName: String, parameters: List<FunctionParameter>): String {
@@ -57,7 +64,7 @@ class FunctionParser {
 
       val parametersKey = parameters
         .filter { parameter -> parameter.type != null }
-        .joinToString("-") { functionParameter -> functionParameter.type!!.type.typeName() }
+        .joinToString("-") { functionParameter -> functionParameter.type!!.qualifiedTypeName() }
 
       append(parametersKey)
     }
@@ -67,16 +74,11 @@ class FunctionParser {
 data class ResourceFunction(
   val name: String,
   val parameters: List<FunctionParameter>,
-  val returnType: FunctionType,
+  val returnType: Type,
   val function: KFunction<*>
 )
 
-data class FunctionType(
-  val type: Type,
-  val typeName: String
-)
-
 data class FunctionParameter(
-  val type: FunctionType?,
+  val type: Type?,
   val kParameter: KParameter
 )
