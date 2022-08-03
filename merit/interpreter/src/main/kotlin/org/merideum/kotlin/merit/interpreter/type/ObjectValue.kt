@@ -3,7 +3,7 @@ package org.merideum.kotlin.merit.interpreter.type
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
-class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<MutableMap<String, Any?>> {
+data class ObjectValue(override val value: MutableMap<String, Any?>?, override val fieldType: ObjectType) : TypedValue<MutableMap<String, Any?>> {
 
   override val type = Type.OBJECT
 
@@ -23,17 +23,19 @@ class ObjectValue(override val value: MutableMap<String, Any?>?) : TypedValue<Mu
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun getField(name: String): Any? {
+  fun getField(name: String): TypedValue<*> {
     // TODO throw better exception.
     if (value == null) throw RuntimeException("Cannot retrieve field of 'null' 'object'.")
 
-    return value[name]
+    // TODO throw exception if a structure entry is not found for the value entry (there always should be one)
+    return fieldType.structure[name]!!.toTypedValue(value[name])
   }
 
-  fun setField(name: String, fieldValue: Any?) {
+  fun setField(key: String, fieldValue: TypedValue<*>) {
     // TODO throw better exception.
     if (value == null) throw RuntimeException("Cannot set field of 'null' 'object'.")
 
-    value[name] = fieldValue
+    value[key] = fieldValue
+    fieldType.add(key, fieldValue.fieldType)
   }
 }

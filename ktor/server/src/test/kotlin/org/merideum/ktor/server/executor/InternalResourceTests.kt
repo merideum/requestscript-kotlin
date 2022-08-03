@@ -4,8 +4,12 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.MeritObject
+import org.merideum.kotlin.merit.interpreter.type.ObjectType
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
+import org.merideum.kotlin.merit.interpreter.type.StringType
 import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.buildObject
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
 
@@ -51,7 +55,10 @@ class InternalResourceTests: DescribeSpec({
 
     describe("parameter is a class with a serializer") {
       it("should resolve and call function with deserialized parameter") {
-        variable.callFunction(context, "sayHello", listOf(ObjectValue(mutableMapOf("name" to "Merideum")))).get() shouldBe "Hello Merideum"
+        variable.callFunction(context, "sayHello", listOf(ObjectValue(mutableMapOf("name" to "Merideum"), ObjectType(
+          mutableMapOf("name" to StringType())
+        )
+        ))).get() shouldBe "Hello Merideum"
       }
     }
 
@@ -66,8 +73,8 @@ class InternalResourceTests: DescribeSpec({
 data class Person(val name: String)
 
 class PersonSerializer: ObjectSerializer<Person> {
-  override fun serialize(value: Person): Map<String, Any?> {
-    return mapOf("name" to value.name)
+  override fun serialize(value: Person): MeritObject {
+    return buildObject { this["name"] = value.name }
   }
 
   override fun deserialize(value: Map<String, Any?>): Person {
@@ -80,8 +87,8 @@ class PersonSerializer: ObjectSerializer<Person> {
 data class Greeting(val message: String)
 
 class GreetingSerializer: ObjectSerializer<Greeting> {
-  override fun serialize(value: Greeting): Map<String, Any?> {
-    return mapOf("message" to value.message)
+  override fun serialize(value: Greeting): MeritObject {
+    return buildObject { this["message"] = value.message }
   }
 
   override fun deserialize(value: Map<String, Any?>): Greeting {

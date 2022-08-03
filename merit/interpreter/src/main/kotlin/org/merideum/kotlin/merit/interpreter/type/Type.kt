@@ -1,7 +1,10 @@
 package org.merideum.kotlin.merit.interpreter.type
 
-import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.VariableScope
+import org.merideum.kotlin.merit.interpreter.type.list.IntListValue
+import org.merideum.kotlin.merit.interpreter.type.list.ListValue
+import org.merideum.kotlin.merit.interpreter.type.list.ObjectListValue
+import org.merideum.kotlin.merit.interpreter.type.list.StringListValue
 
 /**
  * This enum class represents the type system in Merit.
@@ -24,6 +27,21 @@ enum class Type(val declarationKey: String) {
   OBJECT("object") {
     override fun declareVariable(scope: VariableScope, name: String) {
       scope.declareVariable<ObjectValue>(name, OBJECT)
+    }
+  },
+  LIST_INT("") {
+    override fun declareVariable(scope: VariableScope, name: String) {
+      scope.declareVariable<IntListValue>(name, LIST_INT)
+    }
+  },
+  LIST_STRING("") {
+    override fun declareVariable(scope: VariableScope, name: String) {
+      scope.declareVariable<StringListValue>(name, LIST_STRING)
+    }
+  },
+  LIST_OBJECT("") {
+    override fun declareVariable(scope: VariableScope, name: String) {
+      scope.declareVariable<ObjectListValue>(name, LIST_OBJECT)
     }
   },
   // Resources are declared without a type declaration.
@@ -49,9 +67,14 @@ enum class Type(val declarationKey: String) {
         is Int -> {
           IntValue(value)
         }
-        is MutableMap<*, *> -> {
-          ObjectValue(value as? MutableMap<String, Any?>)
-        }
+//        is MutableMap<*, *> -> {
+//          ObjectValue(value as? MutableMap<String, Any?>)
+//        }
+//        is List<*> -> {
+//          when (value.) {
+//
+//          }
+//        }
         else -> {
           throw RuntimeException("Could not retrieve field value")
         }

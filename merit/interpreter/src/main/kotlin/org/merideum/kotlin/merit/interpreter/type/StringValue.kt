@@ -3,9 +3,11 @@ package org.merideum.kotlin.merit.interpreter.type
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
-class StringValue(override val value: String?) : TypedValue<String> {
+data class StringValue(override val value: String?) : TypedValue<String> {
 
   override val type = Type.STRING
+
+  override val fieldType: FieldType = StringType()
 
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any {
     if (value == null) throw FunctionNotFoundException(functionName)

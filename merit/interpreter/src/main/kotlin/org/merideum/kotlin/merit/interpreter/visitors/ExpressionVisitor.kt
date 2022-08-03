@@ -5,9 +5,9 @@ import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.kotlin.merit.interpreter.type.IntValue
+import org.merideum.kotlin.merit.interpreter.type.ObjectType
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
@@ -104,7 +104,7 @@ class ExpressionVisitor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<TypedValue<*>> {
     val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
       is Variable<*> -> callerExpression.value
       is ObjectValue -> callerExpression
@@ -119,24 +119,27 @@ class ExpressionVisitor(
 
     val fieldName = ctx.simpleIdentifier().text
 
-    val value = Type.wrap(caller.getField(fieldName))
+    val value = caller.getField(fieldName)
 
     return MeritValue(value)
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
     val mappedObject = mutableMapOf<String, Any?>()
+    val objectType = ObjectType()
 
     // TODO check that this is right.
     fields.forEach {
-      mappedObject[it.name] = it.value.get()
+      mappedObject[it.key] = it.value
+      objectType.add(it.key, it.value.fieldType)
     }
 
-    return ObjectValue(mappedObject)
+//    return ObjectValue(mappedObject)
+    return ObjectValue(mappedObject, objectType)
   }
 
   class ObjectField(
-    val name: String,
-    val value: TypedValue<*>
+    val key: String,
+    val value: TypedValue<*>,
   )
 }
