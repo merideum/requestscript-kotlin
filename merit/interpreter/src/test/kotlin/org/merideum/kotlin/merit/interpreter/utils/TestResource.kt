@@ -2,12 +2,10 @@ package org.merideum.kotlin.merit.interpreter.utils
 
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.type.NoFieldType
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 
 class TestResource<T>(override val name: String, override val path: String, override val value: T?) : Resource<T> {
-  override val fieldType = NoFieldType()
 
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any? {
 

@@ -2,7 +2,6 @@ package org.merideum.ktor.server.executor
 
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.type.FieldType
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
@@ -20,9 +19,6 @@ class InternalResource<T>(
   override fun get(): T? {
     throw Exception("Cannot get a Resource.")
   }
-
-  override val fieldType: FieldType
-    get() = TODO("Not yet implemented")
 
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): TypedValue<*> {
     val serializerResolver = context.getOrThrow<SerializerResolver>("serializerResolver")
@@ -45,10 +41,10 @@ class InternalResource<T>(
             val parameterValue = parameter.get()
 
             // TODO don't check for a serializer if the expected parameter is a Map (or assume a serializer does not exist for a map?)
-            if (parameter.type == Type.OBJECT && parameterValue is Map<*, *>) {
-              val parameterSerializer = serializerResolver.resolveOrThrow(parameterValue, kParameter.type.toString())
+            if (parameter.type == Type.OBJECT) {
+              val parameterSerializer = serializerResolver.resolveOrThrow(kParameter.type.toString())
 
-              parameterSerializer.deserialize(parameterValue as Map<String, Any?>)
+              parameterSerializer.deserialize(parameterValue as Map<String, TypedValue<*>>)
             }
             else {
               parameterValue
@@ -71,7 +67,7 @@ class InternalResource<T>(
         else -> {
           val returnSerializer = serializerResolver.resolveOrThrow(result, foundFunction.returnType.typeName)
 
-          returnSerializer.serialize(result).toObjectValue()
+          returnSerializer.serialize(result).getObjectValue()
         }
       }
     }

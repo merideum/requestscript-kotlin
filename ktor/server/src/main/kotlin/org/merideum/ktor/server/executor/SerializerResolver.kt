@@ -7,8 +7,24 @@ class SerializerResolver(
   val serializers: Map<String, ObjectSerializer<*>>
 ) {
 
-  inline fun <reified T> resolveOrThrow(instance: T, className: String): ObjectSerializer<T> {
+  /**
+   * Used to resolve a serializer for deserialization.
+   */
+  fun resolveOrThrow(className: String): ObjectSerializer<*> {
 
+    val found = serializers[className]
+
+    if (found != null) {
+      return found as? ObjectSerializer<*> ?: throw RuntimeException("Could not find serializer for $className")
+    }
+
+    throw RuntimeException("Could not find serializer for $className")
+  }
+
+  /**
+   * Used to resolve a serializer when the type parameter is required (for serialization).
+   */
+  fun <T> resolveOrThrow(instance: T, className: String): ObjectSerializer<T> {
     val found = serializers[className]
 
     if (found != null) {

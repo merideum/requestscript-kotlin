@@ -12,7 +12,7 @@ interface ListValue <T>: TypedValue<List<T>> {
     throw FunctionNotFoundException(functionName)
   }
 
-  override fun get(): List<T>? {
+  override fun get(): List<Any?>? {
     return value
   }
 

@@ -5,7 +5,6 @@ import org.merideum.kotlin.merit.interpreter.Variable
 import org.merideum.kotlin.merit.interpreter.error.TypeMismatchedException
 import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.ObjectType
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
@@ -125,17 +124,14 @@ class ExpressionVisitor(
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
-    val mappedObject = mutableMapOf<String, Any?>()
-    val objectType = ObjectType()
+    val mappedObject = mutableMapOf<String, TypedValue<*>>()
 
     // TODO check that this is right.
     fields.forEach {
       mappedObject[it.key] = it.value
-      objectType.add(it.key, it.value.fieldType)
     }
 
-//    return ObjectValue(mappedObject)
-    return ObjectValue(mappedObject, objectType)
+    return ObjectValue(mappedObject)
   }
 
   class ObjectField(

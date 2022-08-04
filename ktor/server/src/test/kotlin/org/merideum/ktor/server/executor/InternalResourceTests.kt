@@ -5,9 +5,7 @@ import io.kotest.matchers.shouldBe
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.MeritObject
-import org.merideum.kotlin.merit.interpreter.type.ObjectType
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringType
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.buildObject
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
@@ -55,10 +53,11 @@ class InternalResourceTests: DescribeSpec({
 
     describe("parameter is a class with a serializer") {
       it("should resolve and call function with deserialized parameter") {
-        variable.callFunction(context, "sayHello", listOf(ObjectValue(mutableMapOf("name" to "Merideum"), ObjectType(
-          mutableMapOf("name" to StringType())
-        )
-        ))).get() shouldBe "Hello Merideum"
+        variable.callFunction(
+          context,
+          "sayHello",
+          listOf(ObjectValue(mutableMapOf("name" to StringValue("Merideum"))))
+        ).get() shouldBe "Hello Merideum"
       }
     }
 

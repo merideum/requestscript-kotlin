@@ -7,8 +7,6 @@ data class StringValue(override val value: String?) : TypedValue<String> {
 
   override val type = Type.STRING
 
-  override val fieldType: FieldType = StringType()
-
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any {
     if (value == null) throw FunctionNotFoundException(functionName)
 

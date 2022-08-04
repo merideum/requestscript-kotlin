@@ -2,7 +2,6 @@ package org.merideum.kotlin.merit.interpreter.type
 
 import org.merideum.kotlin.merit.interpreter.VariableScope
 import org.merideum.kotlin.merit.interpreter.type.list.IntListValue
-import org.merideum.kotlin.merit.interpreter.type.list.ListValue
 import org.merideum.kotlin.merit.interpreter.type.list.ObjectListValue
 import org.merideum.kotlin.merit.interpreter.type.list.StringListValue
 
@@ -56,29 +55,7 @@ enum class Type(val declarationKey: String) {
   fun typeName() = this.name.lowercase()
 
   companion object {
-    fun fromDeclaration(key: String) = values().first { it.declarationKey == key }
+    fun fromDeclaration(key: String) = values().single { it.declarationKey == key }
 
-    @Suppress("UNCHECKED_CAST")
-    fun wrap(value: Any?): TypedValue<*> {
-      return when (value) {
-        is String -> {
-          StringValue(value)
-        }
-        is Int -> {
-          IntValue(value)
-        }
-//        is MutableMap<*, *> -> {
-//          ObjectValue(value as? MutableMap<String, Any?>)
-//        }
-//        is List<*> -> {
-//          when (value.) {
-//
-//          }
-//        }
-        else -> {
-          throw RuntimeException("Could not retrieve field value")
-        }
-      }
-    }
   }
 }

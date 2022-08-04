@@ -11,13 +11,11 @@ interface TypedValue <TValue> {
 
   val value: TValue?
 
-  val fieldType: FieldType
-
   val type: Type
 
   fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any?
 
-  fun get(): TValue?
+  fun get(): Any?
 
   fun stringify(): String
 }
