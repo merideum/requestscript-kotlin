@@ -7,6 +7,7 @@ import org.merideum.kotlin.merit.interpreter.error.UnknownVariableIdentifierExce
 import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
+import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
 import org.merideum.kotlin.merit.interpreter.type.list.ListValue
 import org.merideum.merit.antlr.MeritParser
@@ -176,4 +177,42 @@ class ExpressionVisitor(
     val key: String,
     val value: TypedValue<*>,
   )
+
+  override fun visitElementExpression(ctx: MeritParser.ElementExpressionContext): MeritValue<TypedValue<*>> {
+    val value = when(val result = parent.visit(ctx.value).value!!) {
+      is Variable<*> -> result.value
+      else -> result
+    }
+    val elementIndex = parent.visit(ctx.index).value!!
+
+    val indexValue = if (elementIndex is TypedValue<*>) {
+      elementIndex
+    } else if (elementIndex is Variable<*>) {
+      elementIndex.value
+    } else {
+      // TODO throw better error
+      throw RuntimeException("Cannot use value as index")
+    }
+
+    val elementValue = if (value is ListValue<*>) {
+      if (indexValue!!.type == Type.INT) {
+        value.getValue(indexValue.get() as Int)
+      } else {
+        // TODO throw better error
+        throw RuntimeException("Only type 'int' allowed for list index")
+      }
+    } else if (value is ObjectValue) {
+      if (indexValue!!.type == Type.STRING) {
+        value.getField(indexValue.get() as String)
+      } else {
+        // TODO throw better error
+        throw RuntimeException("Only type 'string' allowed for object index")
+      }
+    } else {
+      // TODO throw better error
+      throw RuntimeException("Could not index expression")
+    }
+
+    return MeritValue(elementValue)
+  }
 }

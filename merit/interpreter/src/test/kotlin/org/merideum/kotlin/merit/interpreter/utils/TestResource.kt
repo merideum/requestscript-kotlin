@@ -25,4 +25,9 @@ class TestResource<T>(override val name: String, override val path: String, over
     override fun get(): T? {
       return value
     }
+
+  override fun getValue(): TypedValue<*> {
+    // TODO throw better exception
+    throw RuntimeException("Cannot get value of Resource")
   }
+}

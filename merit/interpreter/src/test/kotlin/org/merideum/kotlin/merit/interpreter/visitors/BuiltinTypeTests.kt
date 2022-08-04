@@ -556,6 +556,33 @@ class BuiltinTypeTests: DescribeSpec({
               .get() shouldBe listOf(123, 456, 789)
           }
         }
+
+        it("should get element at index") {
+          code = """
+            |request myRequest {
+            |  const test = [123, 456]
+            |  
+            |  const first = test[0]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("first")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.INT
+
+          withClue("should be Kotlin 'Int' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntValue>()
+              .get() shouldBe 123
+          }
+        }
       }
     }
 

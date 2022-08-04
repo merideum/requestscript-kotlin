@@ -26,6 +26,19 @@ interface ListValue <T>: TypedValue<List<T>> {
     return value
   }
 
+  override fun getValue(): TypedValue<*> {
+    return type.newValue(value)
+  }
+
+  // TODO check that value is not null and that index is not out of bounds
+  fun getValue(index: Int): TypedValue<*> {
+    return type.innerType()!!.newValue(value!![index])
+  }
+
+  fun get(index: Int): Any? {
+    return getValue(index)
+  }
+
   override fun stringify(): String {
     return "[${value?.joinToString { it.toString() } ?: ""}]"
   }

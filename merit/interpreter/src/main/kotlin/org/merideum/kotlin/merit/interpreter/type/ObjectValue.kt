@@ -25,6 +25,10 @@ data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
     return newMap
   }
 
+  override fun getValue(): TypedValue<*> {
+    return type.newValue(value)
+  }
+
   // TODO map the fields without TypedValue wrappers.
   override fun stringify(): String {
     return buildString {

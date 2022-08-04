@@ -26,6 +26,10 @@ data class IntValue(override val value: Int?) : TypedValue<Int> {
     return value
   }
 
+  override fun getValue(): TypedValue<*> {
+    return type.newValue(value)
+  }
+
   override fun stringify(): String {
     return value.toString()
   }

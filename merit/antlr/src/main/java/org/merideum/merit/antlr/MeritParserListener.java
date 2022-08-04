@@ -184,6 +184,18 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code elementExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterElementExpression(MeritParser.ElementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code elementExpression}
+	 * labeled alternative in {@link MeritParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitElementExpression(MeritParser.ElementExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
 	 * @param ctx the parse tree

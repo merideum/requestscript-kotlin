@@ -20,6 +20,10 @@ class InternalResource<T>(
     throw Exception("Cannot get a Resource.")
   }
 
+  override fun getValue(): TypedValue<*> {
+    throw RuntimeException("Cannot get value of internal resource")
+  }
+
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): TypedValue<*> {
     val serializerResolver = context.getOrThrow<SerializerResolver>("serializerResolver")
 
