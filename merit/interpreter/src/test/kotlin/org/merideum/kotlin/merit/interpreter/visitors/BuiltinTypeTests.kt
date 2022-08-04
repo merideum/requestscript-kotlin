@@ -441,6 +441,33 @@ class BuiltinTypeTests: DescribeSpec({
             .get() shouldBe "Merideum"
         }
       }
+
+      it("should return value of field referenced by indexing") {
+        code = """
+          |request myRequest {
+          |  const person = {
+          |    name = "Merideum"
+          |  }
+          |  
+          |  const name = person["name"]
+          |}
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(2)
+
+        val actualVariable = variableScope
+          .resolveVariable("name")
+          .shouldNotBeNull()
+
+        withClue("should be Kotlin 'String' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<StringValue>()
+            .get() shouldBe "Merideum"
+        }
+      }
     }
 
     describe("list") {
