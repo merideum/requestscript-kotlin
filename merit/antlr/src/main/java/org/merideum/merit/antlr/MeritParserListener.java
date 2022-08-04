@@ -138,16 +138,6 @@ public interface MeritParserListener extends ParseTreeListener {
 	 */
 	void exitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MeritParser#elementIndexAssignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterElementIndexAssignment(MeritParser.ElementIndexAssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MeritParser#elementIndexAssignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitElementIndexAssignment(MeritParser.ElementIndexAssignmentContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MeritParser#assignment}.
 	 * @param ctx the parse tree
 	 */
@@ -193,18 +183,6 @@ public interface MeritParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code elementIndexExpression}
-	 * labeled alternative in {@link MeritParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterElementIndexExpression(MeritParser.ElementIndexExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code elementIndexExpression}
-	 * labeled alternative in {@link MeritParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitElementIndexExpression(MeritParser.ElementIndexExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MeritParser#expression}.
@@ -383,16 +361,6 @@ public interface MeritParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitListElementAssignment(MeritParser.ListElementAssignmentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MeritParser#elementIndex}.
-	 * @param ctx the parse tree
-	 */
-	void enterElementIndex(MeritParser.ElementIndexContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MeritParser#elementIndex}.
-	 * @param ctx the parse tree
-	 */
-	void exitElementIndex(MeritParser.ElementIndexContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code embeddedExpression}
 	 * labeled alternative in {@link MeritParser#stringContent}.

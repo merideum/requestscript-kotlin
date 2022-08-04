@@ -15,6 +15,7 @@ import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.kotlin.merit.interpreter.type.list.IntListValue
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
 
 /**
@@ -438,6 +439,122 @@ class BuiltinTypeTests: DescribeSpec({
             .shouldNotBeNull()
             .shouldBeTypeOf<StringValue>()
             .get() shouldBe "Merideum"
+        }
+      }
+    }
+
+    describe("list") {
+
+      describe("[int]") {
+        it("can declare 'var' variable with type") {
+          code = """
+          |request myRequest {
+          |  var test: [int]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should have null 'value' since it is unassigned") {
+            actualVariable.value.shouldBeNull()
+          }
+        }
+
+        it("can declare and assign value") {
+          code = """
+          |request myRequest {
+          |  var test: [int]
+          |  test = [123]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123)
+          }
+        }
+
+        it("stores many values") {
+          code = """
+            |request myRequest {
+            |  var test: [int]
+            |  test = [
+            |    123,
+            |    456,
+            |    789
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123, 456, 789)
+          }
+        }
+
+        it("should allow expression as value") {
+          code = """
+            |request myRequest {
+            |  var test: [int]
+            |  
+            |  const second = 456
+            |  
+            |  test = [
+            |    123,
+            |    second,
+            |    789
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123, 456, 789)
+          }
         }
       }
     }

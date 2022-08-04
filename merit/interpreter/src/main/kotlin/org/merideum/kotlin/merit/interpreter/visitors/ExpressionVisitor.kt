@@ -8,6 +8,7 @@ import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.list.ListValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -58,6 +59,43 @@ class ExpressionVisitor(
 
     return MeritValue(found)
   }
+
+  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<ListValue<*>?> {
+    val elements =
+      visitListElementAssignments(ctx.listElementAssignments()).value ?: return MeritValue(null)
+
+    // Check that the list elements are the same type
+    val elementsAreSame = elements.groupBy { it.type }.size == 1
+
+    // TODO Throw better exception
+    val innerType = if (elementsAreSame) { elements.first().type } else throw RuntimeException("Lists must be singleton")
+
+    // TODO throw better exception
+    val listType = innerType.listType() ?: throw RuntimeException("Could not create list from inner type $innerType")
+
+    // TODO make sure this cast succeeds
+    return MeritValue(listType.newValue(elements.map { it.get() }) as ListValue<*>?)
+  }
+
+    override fun visitListElementAssignments(ctx: MeritParser.ListElementAssignmentsContext): MeritValue<List<TypedValue<*>>> {
+      val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
+
+      return MeritValue(elements)
+    }
+
+    override fun visitListElementAssignment(ctx: MeritParser.ListElementAssignmentContext): MeritValue<TypedValue<*>> {
+      val expression = parent.visit(ctx.expression()).value!!
+
+      val value = if (expression is Variable<*>) {
+        expression.value
+      } else if (expression is TypedValue<*>) {
+        expression
+      } else {
+        // TODO throw better exception
+        throw RuntimeException("Could not get value from expression")
+      }
+      return MeritValue(value)
+    }
 
   override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<ObjectValue> {
     val objectFields = if (ctx?.objectFields() == null) {

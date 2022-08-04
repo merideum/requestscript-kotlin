@@ -9,6 +9,16 @@ interface ListValue <T>: TypedValue<List<T>> {
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): TypedValue<*> {
     if (value == null) throw FunctionNotFoundException(functionName)
 
+    // TODO check for index out of bounds
+    if (functionName == "at") {
+      val indexParameter = parameters.single().get()
+      if (indexParameter is Int) {
+        return type.innerType()!!.newValue(value!![indexParameter])
+      } else {
+        throw RuntimeException("Cannot call function $functionName with parameters $parameters")
+      }
+    }
+
     throw FunctionNotFoundException(functionName)
   }
 
@@ -17,6 +27,6 @@ interface ListValue <T>: TypedValue<List<T>> {
   }
 
   override fun stringify(): String {
-    return value.toString()
+    return "[${value?.joinToString { it.toString() } ?: ""}]"
   }
 }

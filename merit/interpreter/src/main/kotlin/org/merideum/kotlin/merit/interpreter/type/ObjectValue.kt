@@ -27,7 +27,18 @@ data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
 
   // TODO map the fields without TypedValue wrappers.
   override fun stringify(): String {
-    return value.toString()
+    return buildString {
+      append("{")
+      value?.forEach { (key, keyValue) ->
+        append(key)
+        append("=")
+        append(keyValue.stringify())
+        append(",")
+      }
+      // Remove last comma
+      replace(length - 1, length, "")
+      append("}")
+    }
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -44,5 +55,9 @@ data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
     if (value == null) throw RuntimeException("Cannot set field of 'null' 'object'.")
 
     value[key] = fieldValue
+  }
+
+  override fun toString(): String {
+    return stringify()
   }
 }

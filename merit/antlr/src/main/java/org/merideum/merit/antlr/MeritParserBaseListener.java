@@ -172,18 +172,6 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterElementIndexAssignment(MeritParser.ElementIndexAssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitElementIndexAssignment(MeritParser.ElementIndexAssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAssignment(MeritParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -227,18 +215,6 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterElementIndexExpression(MeritParser.ElementIndexExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitElementIndexExpression(MeritParser.ElementIndexExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -443,18 +419,6 @@ public class MeritParserBaseListener implements MeritParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitListElementAssignment(MeritParser.ListElementAssignmentContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterElementIndex(MeritParser.ElementIndexContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitElementIndex(MeritParser.ElementIndexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
