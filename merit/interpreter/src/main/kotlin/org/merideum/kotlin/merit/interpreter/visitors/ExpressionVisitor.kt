@@ -141,7 +141,6 @@ class ExpressionVisitor(
     return MeritValue(ObjectField(name, assignmentValue as TypedValue<*>))
   }
 
-  @Suppress("UNCHECKED_CAST")
   override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<TypedValue<*>> {
     val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
       is Variable<*> -> callerExpression.value
@@ -183,15 +182,20 @@ class ExpressionVisitor(
       is Variable<*> -> result.value
       else -> result
     }
-    val elementIndex = parent.visit(ctx.index).value!!
 
-    val indexValue = if (elementIndex is TypedValue<*>) {
-      elementIndex
-    } else if (elementIndex is Variable<*>) {
-      elementIndex.value
-    } else {
-      // TODO throw better error
-      throw RuntimeException("Cannot use value as index")
+    val indexValue = when (val elementIndex = parent.visit(ctx.index).value!!) {
+      is TypedValue<*> -> {
+        elementIndex
+      }
+
+      is Variable<*> -> {
+        elementIndex.value
+      }
+
+      else -> {
+        // TODO throw better error
+        throw RuntimeException("Cannot use value as index")
+      }
     }
 
     val elementValue = if (value is ListValue<*, *>) {

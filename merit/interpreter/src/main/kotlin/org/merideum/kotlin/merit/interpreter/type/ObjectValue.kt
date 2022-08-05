@@ -26,7 +26,7 @@ data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
   }
 
   override fun getValue(): TypedValue<*> {
-    return type.newValue(value)
+    return this
   }
 
   // TODO map the fields without TypedValue wrappers.
