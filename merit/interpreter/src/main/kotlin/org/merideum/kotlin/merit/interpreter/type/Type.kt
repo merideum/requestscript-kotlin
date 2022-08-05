@@ -23,7 +23,7 @@ enum class Type(val declarationKey: String) {
       return IntValue(value as Int?)
     }
 
-    override fun listType(): Type? {
+    override fun listType(): Type {
       return LIST_INT
     }
 
@@ -40,7 +40,7 @@ enum class Type(val declarationKey: String) {
       return StringValue(value as String?)
     }
 
-    override fun listType(): Type? {
+    override fun listType(): Type {
       return LIST_STRING
     }
 
@@ -78,7 +78,7 @@ enum class Type(val declarationKey: String) {
     }
 
     override fun newValue(value: Any?): TypedValue<*> {
-      return IntListValue(value as List<Int>?)
+      return IntListValue(value as List<IntValue>)
     }
 
     override fun listType(): Type? {
@@ -89,24 +89,24 @@ enum class Type(val declarationKey: String) {
       return INT
     }
   },
-  LIST_STRING("") {
+  LIST_STRING("[string]") {
     override fun declareVariable(scope: VariableScope, name: String) {
       scope.declareVariable<StringListValue>(name, LIST_STRING)
     }
 
     override fun newValue(value: Any?): TypedValue<*> {
-      return StringListValue(value as List<String>)
+      return StringListValue(value as List<StringValue>)
     }
 
     override fun listType(): Type? {
       return null
     }
 
-    override fun innerType(): Type? {
+    override fun innerType(): Type {
       return STRING
     }
   },
-  LIST_OBJECT("") {
+  LIST_OBJECT("[object]") {
     override fun declareVariable(scope: VariableScope, name: String) {
       scope.declareVariable<ObjectListValue>(name, LIST_OBJECT)
     }
@@ -119,7 +119,7 @@ enum class Type(val declarationKey: String) {
       return null
     }
 
-    override fun innerType(): Type? {
+    override fun innerType(): Type {
       return OBJECT
     }
   },

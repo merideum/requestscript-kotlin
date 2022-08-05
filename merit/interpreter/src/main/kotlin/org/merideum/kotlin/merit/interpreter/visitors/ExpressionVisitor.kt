@@ -61,7 +61,7 @@ class ExpressionVisitor(
     return MeritValue(found)
   }
 
-  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<ListValue<*>?> {
+  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<TypedValue<*>> {
     val elements =
       visitListElementAssignments(ctx.listElementAssignments()).value ?: return MeritValue(null)
 
@@ -75,7 +75,7 @@ class ExpressionVisitor(
     val listType = innerType.listType() ?: throw RuntimeException("Could not create list from inner type $innerType")
 
     // TODO make sure this cast succeeds
-    return MeritValue(listType.newValue(elements.map { it.get() }) as ListValue<*>?)
+    return MeritValue(listType.newValue(elements))
   }
 
     override fun visitListElementAssignments(ctx: MeritParser.ListElementAssignmentsContext): MeritValue<List<TypedValue<*>>> {
@@ -194,7 +194,7 @@ class ExpressionVisitor(
       throw RuntimeException("Cannot use value as index")
     }
 
-    val elementValue = if (value is ListValue<*>) {
+    val elementValue = if (value is ListValue<*, *>) {
       if (indexValue!!.type == Type.INT) {
         value.getValue(indexValue.get() as Int)
       } else {

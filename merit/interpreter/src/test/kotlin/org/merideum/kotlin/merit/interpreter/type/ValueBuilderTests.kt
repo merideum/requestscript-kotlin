@@ -48,8 +48,8 @@ class ValueBuilderTests : DescribeSpec({
         "int" to IntValue(123),
         "string" to StringValue("Bar"),
         "object" to ObjectValue(mutableMapOf("int2" to IntValue(456))),
-        "intList" to IntListValue(listOf(789)),
-        "stringList" to StringListValue(listOf("foobar")),
+        "intList" to IntListValue(listOf(IntValue(789))),
+        "stringList" to StringListValue(listOf(StringValue("foobar"))),
         "objectList" to ObjectListValue(listOf(
           ObjectValue(mutableMapOf("int3" to IntValue(101112))),
           ObjectValue(mutableMapOf("int4" to IntValue(131415)))
@@ -102,7 +102,7 @@ class ValueBuilderTests : DescribeSpec({
           this["foo"] = intList(listOf(123))
         }
 
-        meritObject shouldHaveValue mutableMapOf("foo" to IntListValue(listOf(123)))
+        meritObject shouldHaveValue mutableMapOf("foo" to IntListValue(listOf(IntValue(123))))
       }
     }
 
@@ -112,7 +112,7 @@ class ValueBuilderTests : DescribeSpec({
           this["foo"] = stringList(listOf("asdf"))
         }
 
-        meritObject shouldHaveValue mutableMapOf("foo" to StringListValue(listOf("asdf")))
+        meritObject shouldHaveValue mutableMapOf("foo" to StringListValue(listOf(StringValue("asdf"))))
       }
     }
 

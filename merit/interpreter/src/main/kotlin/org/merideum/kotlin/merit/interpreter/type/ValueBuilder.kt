@@ -19,7 +19,7 @@ class MeritObject {
     values[key] = StringValue(value)
   }
 
-  operator fun set(key: String, value: ListValue<*>) {
+  operator fun set(key: String, value: ListValue<*, *>) {
     values[key] = value
   }
 
@@ -40,9 +40,9 @@ class MeritObject {
   }
 }
 
-fun stringList(value: List<String>): StringListValue = StringListValue(value)
+fun stringList(value: List<String>): StringListValue = StringListValue(value.map { StringValue(it) })
 
-fun intList(value: List<Int>): IntListValue = IntListValue(value)
+fun intList(value: List<Int>): IntListValue = IntListValue(value.map { IntValue(it) })
 
 fun objectList(
   value: List<MeritObject>
