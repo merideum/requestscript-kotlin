@@ -12,14 +12,13 @@ import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
 
 class InternalResourceTests: DescribeSpec({
-
   val instance = HelloWorldService()
 
   val variable = InternalResource(
     "test",
     "org.merideum",
     instance,
-    FunctionParser().functionsForInstance(instance)
+    FunctionParser(mapOf("org.merideum.ktor.server.executor.Person" to PersonSerializer(), "org.merideum.ktor.server.executor.Greeting" to GreetingSerializer())).functionsForInstance(instance)
   )
 
   val context = ScriptContext(

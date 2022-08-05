@@ -61,7 +61,7 @@ class MerideumPluginConfiguration {
   var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
 
   fun resources(configuration: ResourcesConfiguration.() -> Unit) {
-    val config = ResourcesConfiguration().apply(configuration)
+    val config = ResourcesConfiguration(FunctionParser(serializers)).apply(configuration)
 
     resources.addAll(config.resources)
   }
@@ -77,7 +77,7 @@ class MerideumPluginConfiguration {
 }
 
 class ResourcesConfiguration(
-  private val functionParser: FunctionParser = FunctionParser()
+  private val functionParser: FunctionParser = FunctionParser(emptyMap())
 ) {
   val resources = mutableListOf<Resource<*>>()
 

@@ -1,14 +1,20 @@
 package org.merideum.ktor.server.plugin
 
 import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.KType
 import kotlin.reflect.KVisibility
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberFunctions
 
-class FunctionParser {
+class FunctionParser(val serializers: Map<String, ObjectSerializer<*>>) {
+  private val kotlinList = "kotlin.collections.List"
+  private val kotlinInt = "kotlin.Int"
+  private val kotlinString = "kotlin.String"
+
+  private val kotlinListInt = "$kotlinList<$kotlinInt>"
+  private val kotlinListString = "$kotlinList<$kotlinString>"
+
   fun functionsForInstance(instance: Any): Map<String, ResourceFunction> {
     // By default, assume all public functions are usable.
     val functions = instance::class.declaredMemberFunctions.filter { it.visibility == KVisibility.PUBLIC }
@@ -16,7 +22,7 @@ class FunctionParser {
 
     functions.forEach {
       val parameters = functionParameters(it.parameters)
-      val returnType = getType(it.returnType)
+      val returnType = getType(it.returnType.toString())
 
       val mapKey = buildMapKey(it.name, parameters)
 
@@ -31,22 +37,27 @@ class FunctionParser {
       if (it.kind == KParameter.Kind.INSTANCE) {
         FunctionParameter(null, it)
       } else {
-        FunctionParameter(getType(it.type), it)
+        FunctionParameter(getType(it.type.toString()), it)
       }
     }
   }
 
-  private fun getType(returnType: KType): FunctionType {
-    return when (returnType) {
-      String::class.createType() -> {
-        FunctionType(Type.STRING, "String")
+  private fun getType(type: String): FunctionType {
+    return if (type == kotlinString) {
+      FunctionType(Type.STRING, "String", null)
+    } else if (type == kotlinInt) {
+      FunctionType(Type.INT, "Int", null)
+    } else if (type.startsWith(kotlinList)) {
+      when (type) {
+        kotlinListInt -> FunctionType(Type.LIST_INT, "List<Int>", Type.INT)
+        kotlinListString -> FunctionType(Type.LIST_STRING, "List<String>", Type.STRING)
+        else -> {
+          val typeName = parseForListType(type)
+          FunctionType(Type.LIST_OBJECT, typeName, Type.OBJECT, serializers[parseInnerType(typeName)])
+        }
       }
-      Int::class.createType() -> {
-        FunctionType(Type.INT, "Int")
-      }
-      else -> {
-        FunctionType(Type.OBJECT, returnType.toString())
-      }
+    } else {
+      FunctionType(Type.OBJECT, type, null, serializers[type])
     }
   }
 
@@ -57,11 +68,14 @@ class FunctionParser {
 
       val parametersKey = parameters
         .filter { parameter -> parameter.type != null }
-        .joinToString("-") { functionParameter -> functionParameter.type!!.type.typeName() }
+        .joinToString("-") { functionParameter -> functionParameter.type!!.type.declarationKey }
 
       append(parametersKey)
     }
   }
+
+  private fun parseForListType(listType: String) = listType.replace("kotlin.collections.", "")
+  private fun parseInnerType(listType: String) = listType.substring(listType.indexOf("<") + 1, listType.lastIndexOf(">"))
 }
 
 data class ResourceFunction(
@@ -73,7 +87,9 @@ data class ResourceFunction(
 
 data class FunctionType(
   val type: Type,
-  val typeName: String
+  val typeName: String,
+  val innerType: Type? = null,
+  val serializer: ObjectSerializer<*>? = null
 )
 
 data class FunctionParameter(
