@@ -21,16 +21,7 @@ class InternalResourceTests: DescribeSpec({
     FunctionParser(mapOf("org.merideum.ktor.server.executor.Person" to PersonSerializer(), "org.merideum.ktor.server.executor.Greeting" to GreetingSerializer())).functionsForInstance(instance)
   )
 
-  val context = ScriptContext(
-    mapOf("serializerResolver" to
-      SerializerResolver(
-        mapOf(
-          "org.merideum.ktor.server.executor.Person" to PersonSerializer(),
-          "org.merideum.ktor.server.executor.Greeting" to GreetingSerializer(),
-        )
-      )
-    )
-  )
+  val context = ScriptContext()
 
   describe("callFunction") {
 

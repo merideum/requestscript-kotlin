@@ -7,7 +7,6 @@ import org.merideum.kotlin.merit.interpreter.ResourceResolver
 
 class MerideumResourceResolverTests: DescribeSpec({
   lateinit var resourceResolver: ResourceResolver
-  lateinit var serializerResolver: SerializerResolver
 
   class SimpleResource
 
