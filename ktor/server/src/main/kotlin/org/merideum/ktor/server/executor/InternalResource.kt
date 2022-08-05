@@ -99,7 +99,7 @@ class InternalResource<T>(
 
       val parametersKey = parameters
         .map { it.type }
-        .joinToString("-") { it.typeName() }
+        .joinToString("-") { it.declarationKey }
 
       append(parametersKey)
     }

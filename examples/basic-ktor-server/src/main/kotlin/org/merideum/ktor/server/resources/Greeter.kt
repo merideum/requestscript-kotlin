@@ -3,6 +3,7 @@ package org.merideum.ktor.server.resources
 class Greeter {
 
   fun greetPerson(person: Person) = "Hello ${person.firstName} ${person.lastName}!"
+  fun greetPeople(people: List<Person>) = people.map { "Hello ${it.firstName} ${it.lastName}!" }
 
   fun happyBirthday(age: Int): String {
     val ageModTen = age % 10
