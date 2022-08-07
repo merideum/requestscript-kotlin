@@ -3,7 +3,7 @@ package org.merideum.kotlin.merit.interpreter.type
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.error.FunctionNotFoundException
 
-class IntValue(override val value: Int?) : TypedValue<Int> {
+data class IntValue(override val value: Int?) : TypedValue<Int> {
 
   override val type = Type.INT
 
@@ -24,6 +24,10 @@ class IntValue(override val value: Int?) : TypedValue<Int> {
 
   override fun get(): Int? {
     return value
+  }
+
+  override fun getValue(): TypedValue<*> {
+    return this
   }
 
   override fun stringify(): String {

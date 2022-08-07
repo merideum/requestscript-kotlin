@@ -1,11 +1,10 @@
 package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
-import io.kotest.matchers.maps.shouldContain
-import io.kotest.matchers.maps.shouldHaveKey
 import io.kotest.matchers.shouldBe
+import org.merideum.kotlin.merit.interpreter.type.MeritObject
 import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.declaredMemberFunctions
 
@@ -30,7 +29,32 @@ class FunctionParserTests: DescribeSpec({
         )
       )
 
-      val actualFunctions = FunctionParser().functionsForInstance(instance)
+      val actualFunctions = FunctionParser(emptyMap()).functionsForInstance(instance)
+
+      actualFunctions shouldBe expected
+    }
+
+    it("should map list parameters and return values") {
+      val instance = TestList()
+      val fooSerializer = FooSerializer()
+
+      val checkListsFunction = TestList()::class.declaredMemberFunctions.single { it.name == "checkLists" }
+
+      val expected = mapOf(
+        "checkLists-[int]-[string]-[object]" to ResourceFunction(
+          "checkLists",
+          listOf(
+            FunctionParameter(null, checkListsFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }),
+            FunctionParameter(FunctionType(Type.LIST_INT, "List<Int>", Type.INT), checkListsFunction.parameters.single { it.name == "intList" }),
+            FunctionParameter(FunctionType(Type.LIST_STRING, "List<String>", Type.STRING), checkListsFunction.parameters.single { it.name == "stringList" }),
+            FunctionParameter(FunctionType(Type.LIST_OBJECT, "List<org.merideum.ktor.server.plugin.Foo>", Type.OBJECT, fooSerializer), checkListsFunction.parameters.single { it.name == "objectList" })
+          ),
+          FunctionType(Type.LIST_STRING, "List<String>", Type.STRING),
+          checkListsFunction
+        )
+      )
+
+      val actualFunctions = FunctionParser(mapOf("org.merideum.ktor.server.plugin.Foo" to fooSerializer)).functionsForInstance(instance)
 
       actualFunctions shouldBe expected
     }
@@ -39,3 +63,15 @@ class FunctionParserTests: DescribeSpec({
 
 class Bar(val asdf: String)
 class Foo { fun doThing(name: String, thing: Int) = Bar("asdf") }
+
+class FooSerializer: ObjectSerializer<Foo> {
+  override fun serialize(value: Foo): MeritObject {
+    TODO("Not yet implemented")
+  }
+
+  override fun deserialize(value: Map<String, Any?>): Foo {
+    TODO("Not yet implemented")
+  }
+}
+
+class TestList { fun checkLists (intList: List<Int>, stringList: List<String>, objectList: List<Foo>) = listOf("asdf") }

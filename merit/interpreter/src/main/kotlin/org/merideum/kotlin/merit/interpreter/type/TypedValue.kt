@@ -4,16 +4,23 @@ import org.merideum.kotlin.merit.ScriptContext
 
 /**
  * A value that has an instance in memory.
+ *
+ * TValue = the Kotlin value.
  */
-interface TypedValue <T> {
+interface TypedValue <TValue> {
 
-  val value: T?
+  val value: TValue?
 
   val type: Type
 
   fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any?
 
-  fun get(): T?
+  /**
+   * Gets the Kotlin value stored in the TypedValue
+   */
+  fun get(): Any?
+
+  fun getValue(): TypedValue<*>
 
   fun stringify(): String
 }

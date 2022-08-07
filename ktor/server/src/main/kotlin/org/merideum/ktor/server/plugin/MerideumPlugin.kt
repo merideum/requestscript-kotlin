@@ -18,7 +18,6 @@ import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
 import org.merideum.ktor.server.executor.MerideumResourceResolver
-import org.merideum.ktor.server.executor.SerializerResolver
 import org.merideum.ktor.server.executor.SimpleMeritExecutor
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 
@@ -27,7 +26,6 @@ val Merideum = createApplicationPlugin(
   createConfiguration = ::MerideumPluginConfiguration
 ) {
   val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
-  val serializerResolver = SerializerResolver(pluginConfig.serializers)
   val executor = SimpleMeritExecutor(resourceResolver)
 
   application.install(StatusPages) {
@@ -46,7 +44,7 @@ val Merideum = createApplicationPlugin(
       post {
         val requestRaw = this.call.receiveText()
 
-        val executionResult = executor.execute(requestRaw, ScriptContext(mapOf("serializerResolver" to serializerResolver)))
+        val executionResult = executor.execute(requestRaw, ScriptContext())
 
         val responseBody = SerializableResponseBody(OutputSerializer().deserialize(executionResult.output))
 
@@ -61,7 +59,7 @@ class MerideumPluginConfiguration {
   var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
 
   fun resources(configuration: ResourcesConfiguration.() -> Unit) {
-    val config = ResourcesConfiguration().apply(configuration)
+    val config = ResourcesConfiguration(FunctionParser(serializers)).apply(configuration)
 
     resources.addAll(config.resources)
   }
@@ -77,7 +75,7 @@ class MerideumPluginConfiguration {
 }
 
 class ResourcesConfiguration(
-  private val functionParser: FunctionParser = FunctionParser()
+  private val functionParser: FunctionParser = FunctionParser(emptyMap())
 ) {
   val resources = mutableListOf<Resource<*>>()
 

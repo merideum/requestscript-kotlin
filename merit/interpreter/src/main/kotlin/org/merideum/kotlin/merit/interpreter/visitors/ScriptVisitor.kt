@@ -73,7 +73,7 @@ class ScriptVisitor(
   }
 
   override fun visitTypeDeclaration(ctx: MeritParser.TypeDeclarationContext): MeritValue<Type> {
-    return MeritValue(Type.fromDeclaration(ctx.type.text))
+    return MeritValue(Type.fromDeclaration(ctx.type().text))
   }
 
   override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<IntValue> {
@@ -82,6 +82,10 @@ class ScriptVisitor(
 
   override fun visitStringExpression(ctx: MeritParser.StringExpressionContext): MeritValue<StringValue> {
     return expressionVisitor.visitStringExpression(ctx)
+  }
+
+  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<*> {
+    return expressionVisitor.visitListExpression(ctx)
   }
 
   override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<*> {
@@ -106,6 +110,12 @@ class ScriptVisitor(
   override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
     return expressionVisitor.visitObjectFieldReferenceExpression(ctx)
   }
+
+  override fun visitElementExpression(ctx: MeritParser.ElementExpressionContext): MeritValue<*> {
+    return expressionVisitor.visitElementExpression(ctx)
+  }
+
+  // End expressions
 
   override fun visitVariableDeclaration(ctx: MeritParser.VariableDeclarationContext): MeritValue<*> {
     variableVisitor.visitVariableDeclaration(ctx)

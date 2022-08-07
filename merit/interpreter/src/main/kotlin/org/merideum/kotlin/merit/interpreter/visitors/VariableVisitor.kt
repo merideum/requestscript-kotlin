@@ -60,16 +60,17 @@ class VariableVisitor(
 
     val value = parent.visitAssignment(ctx.assignment()).value
 
-    // TODO make sure the new value and old value are the same type.
     if (value is TypedValue<*>) {
+      // TODO make sure the new value and old value are the same type
       // TODO throw better exception
       val variable = parent.scope.resolveVariable(objectName) ?: throw RuntimeException("Could not find object for assignment")
 
       val variableValue = variable.value
+
+      // TODO throw exception if the variableValue's type is not ObjectValue
       if (variableValue is ObjectValue) {
-        variableValue.setField(fieldName, value.get())
+        variableValue.setField(fieldName, value)
       }
-      // TODO else throw exception because only objects have fields
     }
 
     return MeritValue.nothing()

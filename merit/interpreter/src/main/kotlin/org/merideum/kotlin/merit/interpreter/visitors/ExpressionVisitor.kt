@@ -9,6 +9,7 @@ import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.list.ListValue
 import org.merideum.merit.antlr.MeritParser
 import org.merideum.merit.antlr.MeritParserBaseVisitor
 
@@ -60,6 +61,43 @@ class ExpressionVisitor(
     return MeritValue(found)
   }
 
+  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<TypedValue<*>> {
+    val elements =
+      visitListElementAssignments(ctx.listElementAssignments()).value ?: return MeritValue(null)
+
+    // Check that the list elements are the same type
+    val elementsAreSame = elements.groupBy { it.type }.size == 1
+
+    // TODO Throw better exception
+    val innerType = if (elementsAreSame) { elements.first().type } else throw RuntimeException("Lists must be singleton")
+
+    // TODO throw better exception
+    val listType = innerType.listType() ?: throw RuntimeException("Could not create list from inner type $innerType")
+
+    // TODO make sure this cast succeeds
+    return MeritValue(listType.newValue(elements))
+  }
+
+    override fun visitListElementAssignments(ctx: MeritParser.ListElementAssignmentsContext): MeritValue<List<TypedValue<*>>> {
+      val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
+
+      return MeritValue(elements)
+    }
+
+    override fun visitListElementAssignment(ctx: MeritParser.ListElementAssignmentContext): MeritValue<TypedValue<*>> {
+      val expression = parent.visit(ctx.expression()).value!!
+
+      val value = if (expression is Variable<*>) {
+        expression.value
+      } else if (expression is TypedValue<*>) {
+        expression
+      } else {
+        // TODO throw better exception
+        throw RuntimeException("Could not get value from expression")
+      }
+      return MeritValue(value)
+    }
+
   override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<ObjectValue> {
     val objectFields = if (ctx?.objectFields() == null) {
       emptyList()
@@ -103,8 +141,7 @@ class ExpressionVisitor(
     return MeritValue(ObjectField(name, assignmentValue as TypedValue<*>))
   }
 
-  @Suppress("UNCHECKED_CAST")
-  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<*> {
+  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<TypedValue<*>> {
     val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
       is Variable<*> -> callerExpression.value
       is ObjectValue -> callerExpression
@@ -119,24 +156,67 @@ class ExpressionVisitor(
 
     val fieldName = ctx.simpleIdentifier().text
 
-    val value = Type.wrap(caller.getField(fieldName))
+    val value = caller.getField(fieldName)
 
     return MeritValue(value)
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
-    val mappedObject = mutableMapOf<String, Any?>()
+    val mappedObject = mutableMapOf<String, TypedValue<*>>()
 
     // TODO check that this is right.
     fields.forEach {
-      mappedObject[it.name] = it.value.get()
+      mappedObject[it.key] = it.value
     }
 
     return ObjectValue(mappedObject)
   }
 
   class ObjectField(
-    val name: String,
-    val value: TypedValue<*>
+    val key: String,
+    val value: TypedValue<*>,
   )
+
+  override fun visitElementExpression(ctx: MeritParser.ElementExpressionContext): MeritValue<TypedValue<*>> {
+    val value = when(val result = parent.visit(ctx.value).value!!) {
+      is Variable<*> -> result.value
+      else -> result
+    }
+
+    val indexValue = when (val elementIndex = parent.visit(ctx.index).value!!) {
+      is TypedValue<*> -> {
+        elementIndex
+      }
+
+      is Variable<*> -> {
+        elementIndex.value
+      }
+
+      else -> {
+        // TODO throw better error
+        throw RuntimeException("Cannot use value as index")
+      }
+    }
+
+    val elementValue = if (value is ListValue<*, *>) {
+      if (indexValue!!.type == Type.INT) {
+        value.getValue(indexValue.get() as Int)
+      } else {
+        // TODO throw better error
+        throw RuntimeException("Only type 'int' allowed for list index")
+      }
+    } else if (value is ObjectValue) {
+      if (indexValue!!.type == Type.STRING) {
+        value.getField(indexValue.get() as String)
+      } else {
+        // TODO throw better error
+        throw RuntimeException("Only type 'string' allowed for object index")
+      }
+    } else {
+      // TODO throw better error
+      throw RuntimeException("Could not index expression")
+    }
+
+    return MeritValue(elementValue)
+  }
 }

@@ -10,7 +10,7 @@ dependencies {
   val kotlinSerializationJsonVersion: String by project
   val kotestKtorVersion: String by project
 
-  implementation(project(":merit:interpreter"))
+  api(project(":merit:interpreter"))
 
   implementation("io.ktor:ktor-server-core:$ktorVersion")
   implementation("io.ktor:ktor-server-cio:$ktorVersion")

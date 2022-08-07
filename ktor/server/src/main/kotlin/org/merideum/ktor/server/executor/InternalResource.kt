@@ -2,11 +2,11 @@ package org.merideum.ktor.server.executor
 
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.kotlin.merit.interpreter.type.TypedValue
+import org.merideum.kotlin.merit.interpreter.type.list.ObjectListValue
+import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.ResourceFunction
 
 @Suppress("UNCHECKED_CAST")
@@ -20,31 +20,40 @@ class InternalResource<T>(
   override fun get(): T? {
     throw Exception("Cannot get a Resource.")
   }
+
+  override fun getValue(): TypedValue<*> {
+    throw RuntimeException("Cannot get value of internal resource")
+  }
+
   override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): TypedValue<*> {
-    val serializerResolver = context.getOrThrow<SerializerResolver>("serializerResolver")
 
     val mapKey = buildMapKey(functionName, parameters)
 
     val foundFunction = functions[mapKey]
 
     if (foundFunction != null) {
-      val kotlinParameters = foundFunction.parameters.map {
-        it.kParameter
-      }
+      val functionParameters = foundFunction.parameters
 
       /**
        * Associate the parameters passed by the caller with the parameters of the function.
        */
-      val functionParameters = kotlinParameters.zip(listOf(value) + parameters) { kParameter, parameter ->
+      val functionParameterValues = functionParameters.zip(listOf(value) + parameters) { functionParameter, parameter ->
           val parameterValue = if (parameter is TypedValue<*>) {
 
             val parameterValue = parameter.get()
 
-            // TODO don't check for a serializer if the expected parameter is a Map (or assume a serializer does not exist for a map?)
-            if (parameter.type == Type.OBJECT && parameterValue is Map<*, *>) {
-              val parameterSerializer = serializerResolver.resolveOrThrow(parameterValue, kParameter.type.toString())
+            if (parameter.type == Type.OBJECT) {
 
-              parameterSerializer.deserialize(parameterValue as Map<String, Any?>)
+              functionParameter.type!!.serializer!!.deserialize(parameterValue as Map<String, TypedValue<*>>)
+            } else if (parameter.type == Type.LIST_OBJECT) {
+              val parameterSerializer = functionParameter.type!!.serializer!!
+
+              val mappedValue = parameter.value as List<ObjectValue>
+
+              mappedValue.map {
+                // TODO support nullable value
+                parameterSerializer.deserialize(it.get()!!.toMap())
+              }
             }
             else {
               parameterValue
@@ -53,22 +62,29 @@ class InternalResource<T>(
             parameter
           }
 
-          kParameter to parameterValue
+          functionParameter.kParameter to parameterValue
         }
       .toMap()
 
-      return when (val result = foundFunction.function.callBy(functionParameters)) {
-        is Int -> {
-          IntValue(result)
-        }
-        is String -> {
-          StringValue(result)
-        }
-        else -> {
-          val returnSerializer = serializerResolver.resolveOrThrow(result, foundFunction.returnType.typeName)
+      val result = foundFunction.function.callBy(functionParameterValues)
 
-          ObjectValue(returnSerializer.serialize(result).toMutableMap())
+      return if (foundFunction.returnType.type == Type.OBJECT) {
+        val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
+
+        returnSerializer.serialize(result).getObjectValue()
+      } else if (foundFunction.returnType.innerType != null) {
+        val listResult = result as List<*>
+
+        if (foundFunction.returnType.innerType == Type.OBJECT) {
+          val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
+
+          ObjectListValue(listResult.map { returnSerializer.serialize(it).getObjectValue() })
+        } else {
+          foundFunction.returnType.type.newValue(listResult.map { foundFunction.returnType.innerType.newValue(it) })
         }
+      }
+      else {
+        foundFunction.returnType.type.newValue(result)
       }
     }
 
@@ -83,9 +99,16 @@ class InternalResource<T>(
 
       val parametersKey = parameters
         .map { it.type }
-        .joinToString("-") { it.typeName() }
+        .joinToString("-") { it.declarationKey }
 
       append(parametersKey)
     }
+  }
+
+  private fun typeFromList(listType: String): String {
+    val start = listType.indexOf("<")
+    val end = listType.lastIndexOf(">")
+
+    return listType.substring(start..end)
   }
 }

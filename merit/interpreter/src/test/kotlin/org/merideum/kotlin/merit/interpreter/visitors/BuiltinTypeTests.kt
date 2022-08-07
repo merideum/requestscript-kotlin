@@ -15,6 +15,9 @@ import org.merideum.kotlin.merit.interpreter.type.IntValue
 import org.merideum.kotlin.merit.interpreter.type.ObjectValue
 import org.merideum.kotlin.merit.interpreter.type.StringValue
 import org.merideum.kotlin.merit.interpreter.type.Type
+import org.merideum.kotlin.merit.interpreter.type.list.IntListValue
+import org.merideum.kotlin.merit.interpreter.type.list.ObjectListValue
+import org.merideum.kotlin.merit.interpreter.type.list.StringListValue
 import org.merideum.kotlin.merit.interpreter.utils.executeCode
 
 /**
@@ -438,6 +441,465 @@ class BuiltinTypeTests: DescribeSpec({
             .shouldNotBeNull()
             .shouldBeTypeOf<StringValue>()
             .get() shouldBe "Merideum"
+        }
+      }
+
+      it("should return value of field referenced by indexing") {
+        code = """
+          |request myRequest {
+          |  const person = {
+          |    name = "Merideum"
+          |  }
+          |  
+          |  const name = person["name"]
+          |}
+        """.trimMargin()
+
+        executeCode(code, variableScope)
+
+        variableScope.variables.shouldHaveSize(2)
+
+        val actualVariable = variableScope
+          .resolveVariable("name")
+          .shouldNotBeNull()
+
+        withClue("should be Kotlin 'String' with expected value") {
+          actualVariable.value
+            .shouldNotBeNull()
+            .shouldBeTypeOf<StringValue>()
+            .get() shouldBe "Merideum"
+        }
+      }
+    }
+
+    describe("list") {
+
+      describe("[int]") {
+        it("can declare 'var' variable with type") {
+          code = """
+          |request myRequest {
+          |  var test: [int]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should have null 'value' since it is unassigned") {
+            actualVariable.value.shouldBeNull()
+          }
+        }
+
+        it("can declare and assign value") {
+          code = """
+          |request myRequest {
+          |  var test: [int]
+          |  test = [123]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123)
+          }
+        }
+
+        it("stores many values") {
+          code = """
+            |request myRequest {
+            |  var test: [int]
+            |  test = [
+            |    123,
+            |    456,
+            |    789
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123, 456, 789)
+          }
+        }
+
+        it("should allow expression as value") {
+          code = """
+            |request myRequest {
+            |  var test: [int]
+            |  
+            |  const second = 456
+            |  
+            |  test = [
+            |    123,
+            |    second,
+            |    789
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_INT
+
+          withClue("should be Kotlin 'List<Int>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntListValue>()
+              .get() shouldBe listOf(123, 456, 789)
+          }
+        }
+
+        it("should get element at index") {
+          code = """
+            |request myRequest {
+            |  const test = [123, 456]
+            |  
+            |  const first = test[0]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("first")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.INT
+
+          withClue("should be Kotlin 'Int' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<IntValue>()
+              .get() shouldBe 123
+          }
+        }
+      }
+
+      describe("[string]") {
+        it("can declare 'var' variable with type") {
+          code = """
+          |request myRequest {
+          |  var test: [string]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_STRING
+
+          withClue("should have null 'value' since it is unassigned") {
+            actualVariable.value.shouldBeNull()
+          }
+        }
+
+        it("can declare and assign value") {
+          code = """
+          |request myRequest {
+          |  var test: [string]
+          |  test = ["foo"]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_STRING
+
+          withClue("should be Kotlin 'List<String>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringListValue>()
+              .get() shouldBe listOf("foo")
+          }
+        }
+
+        it("stores many values") {
+          code = """
+            |request myRequest {
+            |  var test: [string]
+            |  test = [
+            |    "foo",
+            |    "bar",
+            |    "asdf"
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_STRING
+
+          withClue("should be Kotlin 'List<String>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringListValue>()
+              .get() shouldBe listOf("foo", "bar", "asdf")
+          }
+        }
+
+        it("should allow expression as value") {
+          code = """
+            |request myRequest {
+            |  var test: [string]
+            |  
+            |  const second = "bar"
+            |  
+            |  test = [
+            |    "foo",
+            |    second,
+            |    "asdf"
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_STRING
+
+          withClue("should be Kotlin 'List<String>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringListValue>()
+              .get() shouldBe listOf("foo", "bar", "asdf")
+          }
+        }
+
+        it("should get element at index") {
+          code = """
+            |request myRequest {
+            |  const test = ["foo", "bar"]
+            |  
+            |  const first = test[0]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("first")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "foo"
+          }
+        }
+      }
+
+      describe("[object]") {
+        it("can declare 'var' variable with type") {
+          code = """
+          |request myRequest {
+          |  var test: [object]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_OBJECT
+
+          withClue("should have null 'value' since it is unassigned") {
+            actualVariable.value.shouldBeNull()
+          }
+        }
+
+        it("can declare and assign value") {
+          code = """
+          |request myRequest {
+          |  var test: [object]
+          |  test = [
+          |      {
+          |         foo = "bar",
+          |         test = 123
+          |      }
+          |  ]
+          |}
+        """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_OBJECT
+
+          withClue("should be Kotlin 'List<Map<String, Any?>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<ObjectListValue>()
+              .get() shouldBe listOf(mapOf("foo" to "bar", "test" to 123))
+          }
+        }
+
+        it("stores many values") {
+          code = """
+            |request myRequest {
+            |  var test: [object]
+            |  test = [
+            |      {
+            |         foo = "bar",
+            |         test = 123
+            |      },
+            |      {
+            |         another = "asdf"
+            |      }
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(1)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_OBJECT
+
+          withClue("should be Kotlin 'List<String>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<ObjectListValue>()
+              .get() shouldBe listOf(mapOf("foo" to "bar", "test" to 123), mapOf("another" to "asdf"))
+          }
+        }
+
+        it("should allow expression as value") {
+          code = """
+            |request myRequest {
+            |  var test: [string]
+            |  
+            |  const second = "bar"
+            |  
+            |  test = [
+            |    "foo",
+            |    second,
+            |    "asdf"
+            |  ]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("test")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.LIST_STRING
+
+          withClue("should be Kotlin 'List<String>' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringListValue>()
+              .get() shouldBe listOf("foo", "bar", "asdf")
+          }
+        }
+
+        it("should get element at index") {
+          code = """
+            |request myRequest {
+            |  const test = ["foo", "bar"]
+            |  
+            |  const first = test[0]
+            |}
+          """.trimMargin()
+
+          executeCode(code, variableScope)
+
+          variableScope.variables.shouldHaveSize(2)
+
+          val actualVariable = variableScope
+            .resolveVariable("first")
+            .shouldNotBeNull()
+
+          actualVariable.type shouldBe Type.STRING
+
+          withClue("should be Kotlin 'String' with expected value") {
+            actualVariable.value
+              .shouldNotBeNull()
+              .shouldBeTypeOf<StringValue>()
+              .get() shouldBe "foo"
+          }
         }
       }
     }
