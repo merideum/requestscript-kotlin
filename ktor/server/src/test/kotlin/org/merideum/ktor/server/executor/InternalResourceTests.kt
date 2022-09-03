@@ -2,14 +2,14 @@ package org.merideum.ktor.server.executor
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.interpreter.type.IntValue
-import org.merideum.kotlin.merit.interpreter.type.MeritObject
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.StringValue
-import org.merideum.kotlin.merit.interpreter.type.buildObject
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
+import org.merideum.server.interpreter.ScriptContext
+import org.merideum.server.interpreter.type.IntValue
+import org.merideum.server.interpreter.type.MerideumObject
+import org.merideum.server.interpreter.type.ObjectValue
+import org.merideum.server.interpreter.type.StringValue
+import org.merideum.server.interpreter.type.buildObject
 
 class InternalResourceTests: DescribeSpec({
   val instance = HelloWorldService()
@@ -62,7 +62,7 @@ class InternalResourceTests: DescribeSpec({
 data class Person(val name: String)
 
 class PersonSerializer: ObjectSerializer<Person> {
-  override fun serialize(value: Person): MeritObject {
+  override fun serialize(value: Person): MerideumObject {
     return buildObject { this["name"] = value.name }
   }
 
@@ -76,7 +76,7 @@ class PersonSerializer: ObjectSerializer<Person> {
 data class Greeting(val message: String)
 
 class GreetingSerializer: ObjectSerializer<Greeting> {
-  override fun serialize(value: Greeting): MeritObject {
+  override fun serialize(value: Greeting): MerideumObject {
     return buildObject { this["message"] = value.message }
   }
 
