@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.kotlin.merit.ScriptContext
 import org.merideum.kotlin.merit.execution.MeritExecutionResult
 import org.merideum.kotlin.merit.execution.MeritExecutor
+import org.merideum.kotlin.merit.interpreter.Modifier
 import org.merideum.kotlin.merit.interpreter.ResourceResolver
 import org.merideum.kotlin.merit.interpreter.ReturnTermination
 import org.merideum.kotlin.merit.interpreter.VariableScope
@@ -25,7 +26,14 @@ class SimpleMeritExecutor(val resourceResolver: ResourceResolver): MeritExecutor
 
   override fun execute(code: String, context: ScriptContext): MeritExecutionResult {
     val parseTree: ParseTree = parse(code)
-    val mainScope = VariableScope.main()
+
+    val mainScope = VariableScope
+      .main()
+      .apply {
+        addRequest(Request(mapOf()))
+      }
+
+
     val visitor = ScriptVisitor(mainScope, resourceResolver, context)
 
     val returnValue: Map<String, Any?>? = try {
