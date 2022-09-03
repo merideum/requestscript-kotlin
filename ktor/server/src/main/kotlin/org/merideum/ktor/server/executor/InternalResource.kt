@@ -1,11 +1,11 @@
 package org.merideum.ktor.server.executor
 
-import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.type.ObjectValue
-import org.merideum.kotlin.merit.interpreter.type.Type
-import org.merideum.kotlin.merit.interpreter.type.TypedValue
-import org.merideum.kotlin.merit.interpreter.type.list.ObjectListValue
+import org.merideum.server.interpreter.ScriptContext
+import org.merideum.server.interpreter.Resource
+import org.merideum.server.interpreter.type.ObjectValue
+import org.merideum.server.interpreter.type.Type
+import org.merideum.server.interpreter.type.TypedValue
+import org.merideum.server.interpreter.type.list.ObjectListValue
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.ResourceFunction
 

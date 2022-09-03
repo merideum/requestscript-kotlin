@@ -11,22 +11,22 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import org.merideum.kotlin.merit.ScriptContext
-import org.merideum.kotlin.merit.interpreter.Resource
-import org.merideum.kotlin.merit.interpreter.error.ResourceResolutionException
 import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
-import org.merideum.ktor.server.executor.MerideumResourceResolver
-import org.merideum.ktor.server.executor.SimpleMeritExecutor
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.api.executor.MerideumResourceResolver
+import org.merideum.server.api.executor.SimpleScriptExecutor
+import org.merideum.server.interpreter.Resource
+import org.merideum.server.interpreter.ScriptContext
+import org.merideum.server.interpreter.error.ResourceResolutionException
 
 val Merideum = createApplicationPlugin(
   name = "Merideum",
   createConfiguration = ::MerideumPluginConfiguration
 ) {
   val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
-  val executor = SimpleMeritExecutor(resourceResolver)
+  val executor = SimpleScriptExecutor(resourceResolver)
 
   application.install(StatusPages) {
     exception<Throwable> { call, cause ->

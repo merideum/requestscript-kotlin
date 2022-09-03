@@ -2,6 +2,7 @@ package org.merideum.ktor.server.resources
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import org.merideum.examples.ktor.server.resources.Greeter
 
 class GreeterTests: DescribeSpec({
   val greeter = Greeter()

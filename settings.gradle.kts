@@ -1,7 +1,8 @@
 rootProject.name = "merideum-kotlin"
 
-include("merit:antlr")
-include("merit:interpreter")
+include("server:antlr")
+include("server:interpreter")
+include("server:api")
 include("ktor:server")
 
 include("examples:basic-ktor-server")

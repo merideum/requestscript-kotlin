@@ -2,9 +2,9 @@ package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.merideum.kotlin.merit.interpreter.type.MeritObject
-import org.merideum.kotlin.merit.interpreter.type.Type
 import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.interpreter.type.MerideumObject
+import org.merideum.server.interpreter.type.Type
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.declaredMemberFunctions
 
@@ -65,7 +65,7 @@ class Bar(val asdf: String)
 class Foo { fun doThing(name: String, thing: Int) = Bar("asdf") }
 
 class FooSerializer: ObjectSerializer<Foo> {
-  override fun serialize(value: Foo): MeritObject {
+  override fun serialize(value: Foo): MerideumObject {
     TODO("Not yet implemented")
   }
 
