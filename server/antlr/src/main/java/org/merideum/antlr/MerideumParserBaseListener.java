@@ -1,472 +1,472 @@
-// Generated from MeritParser.g4 by ANTLR 4.10.1
-package org.merideum.merit.antlr;
+// Generated from MerideumParser.g4 by ANTLR 4.10.1
+package org.merideum.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link MeritParserListener},
+ * This class provides an empty implementation of {@link MerideumParserListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class MeritParserBaseListener implements MeritParserListener {
+public class MerideumParserBaseListener implements MerideumParserListener {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParse(MeritParser.ParseContext ctx) { }
+	@Override public void enterParse(MerideumParser.ParseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParse(MeritParser.ParseContext ctx) { }
+	@Override public void exitParse(MerideumParser.ParseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScriptDefinition(MeritParser.ScriptDefinitionContext ctx) { }
+	@Override public void enterScriptDefinition(MerideumParser.ScriptDefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitScriptDefinition(MeritParser.ScriptDefinitionContext ctx) { }
+	@Override public void exitScriptDefinition(MerideumParser.ScriptDefinitionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScriptType(MeritParser.ScriptTypeContext ctx) { }
+	@Override public void enterScriptType(MerideumParser.ScriptTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitScriptType(MeritParser.ScriptTypeContext ctx) { }
+	@Override public void exitScriptType(MerideumParser.ScriptTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx) { }
+	@Override public void enterScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx) { }
+	@Override public void exitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScriptParameters(MeritParser.ScriptParametersContext ctx) { }
+	@Override public void enterScriptParameters(MerideumParser.ScriptParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitScriptParameters(MeritParser.ScriptParametersContext ctx) { }
+	@Override public void exitScriptParameters(MerideumParser.ScriptParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBlock(MeritParser.BlockContext ctx) { }
+	@Override public void enterBlock(MerideumParser.BlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBlock(MeritParser.BlockContext ctx) { }
+	@Override public void exitBlock(MerideumParser.BlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterImportResource(MeritParser.ImportResourceContext ctx) { }
+	@Override public void enterImportResource(MerideumParser.ImportResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitImportResource(MeritParser.ImportResourceContext ctx) { }
+	@Override public void exitImportResource(MerideumParser.ImportResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(MeritParser.StatementContext ctx) { }
+	@Override public void enterStatement(MerideumParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStatement(MeritParser.StatementContext ctx) { }
+	@Override public void exitStatement(MerideumParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturnStatement(MeritParser.ReturnStatementContext ctx) { }
+	@Override public void enterReturnStatement(MerideumParser.ReturnStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReturnStatement(MeritParser.ReturnStatementContext ctx) { }
+	@Override public void exitReturnStatement(MerideumParser.ReturnStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableDeclaration(MeritParser.VariableDeclarationContext ctx) { }
+	@Override public void enterVariableDeclaration(MerideumParser.VariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableDeclaration(MeritParser.VariableDeclarationContext ctx) { }
+	@Override public void exitVariableDeclaration(MerideumParser.VariableDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx) { }
+	@Override public void enterVariableDeclarationAssignment(MerideumParser.VariableDeclarationAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx) { }
+	@Override public void exitVariableDeclarationAssignment(MerideumParser.VariableDeclarationAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableReassignment(MeritParser.VariableReassignmentContext ctx) { }
+	@Override public void enterVariableReassignment(MerideumParser.VariableReassignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableReassignment(MeritParser.VariableReassignmentContext ctx) { }
+	@Override public void exitVariableReassignment(MerideumParser.VariableReassignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx) { }
+	@Override public void enterObjectFieldAssignment(MerideumParser.ObjectFieldAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx) { }
+	@Override public void exitObjectFieldAssignment(MerideumParser.ObjectFieldAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignment(MeritParser.AssignmentContext ctx) { }
+	@Override public void enterAssignment(MerideumParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignment(MeritParser.AssignmentContext ctx) { }
+	@Override public void exitAssignment(MerideumParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObjectExpression(MeritParser.ObjectExpressionContext ctx) { }
+	@Override public void enterObjectExpression(MerideumParser.ObjectExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObjectExpression(MeritParser.ObjectExpressionContext ctx) { }
+	@Override public void exitObjectExpression(MerideumParser.ObjectExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStringExpression(MeritParser.StringExpressionContext ctx) { }
+	@Override public void enterStringExpression(MerideumParser.StringExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStringExpression(MeritParser.StringExpressionContext ctx) { }
+	@Override public void exitStringExpression(MerideumParser.StringExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { }
+	@Override public void enterObjectFieldReferenceExpression(MerideumParser.ObjectFieldReferenceExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { }
+	@Override public void exitObjectFieldReferenceExpression(MerideumParser.ObjectFieldReferenceExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterElementExpression(MeritParser.ElementExpressionContext ctx) { }
+	@Override public void enterElementExpression(MerideumParser.ElementExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitElementExpression(MeritParser.ElementExpressionContext ctx) { }
+	@Override public void exitElementExpression(MerideumParser.ElementExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx) { }
+	@Override public void enterFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx) { }
+	@Override public void exitFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListExpression(MeritParser.ListExpressionContext ctx) { }
+	@Override public void enterListExpression(MerideumParser.ListExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListExpression(MeritParser.ListExpressionContext ctx) { }
+	@Override public void exitListExpression(MerideumParser.ListExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx) { }
+	@Override public void enterSimpleIdentifierExpression(MerideumParser.SimpleIdentifierExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx) { }
+	@Override public void exitSimpleIdentifierExpression(MerideumParser.SimpleIdentifierExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIntegerExpression(MeritParser.IntegerExpressionContext ctx) { }
+	@Override public void enterIntegerExpression(MerideumParser.IntegerExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIntegerExpression(MeritParser.IntegerExpressionContext ctx) { }
+	@Override public void exitIntegerExpression(MerideumParser.IntegerExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionCall(MeritParser.FunctionCallContext ctx) { }
+	@Override public void enterFunctionCall(MerideumParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionCall(MeritParser.FunctionCallContext ctx) { }
+	@Override public void exitFunctionCall(MerideumParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionParameters(MeritParser.FunctionParametersContext ctx) { }
+	@Override public void enterFunctionParameters(MerideumParser.FunctionParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionParameters(MeritParser.FunctionParametersContext ctx) { }
+	@Override public void exitFunctionParameters(MerideumParser.FunctionParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableModifier(MeritParser.VariableModifierContext ctx) { }
+	@Override public void enterVariableModifier(MerideumParser.VariableModifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableModifier(MeritParser.VariableModifierContext ctx) { }
+	@Override public void exitVariableModifier(MerideumParser.VariableModifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { }
+	@Override public void enterResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { }
+	@Override public void exitResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { }
+	@Override public void enterSimpleIdentifier(MerideumParser.SimpleIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { }
+	@Override public void exitSimpleIdentifier(MerideumParser.SimpleIdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTypeDeclaration(MeritParser.TypeDeclarationContext ctx) { }
+	@Override public void enterTypeDeclaration(MerideumParser.TypeDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTypeDeclaration(MeritParser.TypeDeclarationContext ctx) { }
+	@Override public void exitTypeDeclaration(MerideumParser.TypeDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterType(MeritParser.TypeContext ctx) { }
+	@Override public void enterType(MerideumParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitType(MeritParser.TypeContext ctx) { }
+	@Override public void exitType(MerideumParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListType(MeritParser.ListTypeContext ctx) { }
+	@Override public void enterListType(MerideumParser.ListTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListType(MeritParser.ListTypeContext ctx) { }
+	@Override public void exitListType(MerideumParser.ListTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBasicType(MeritParser.BasicTypeContext ctx) { }
+	@Override public void enterBasicType(MerideumParser.BasicTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBasicType(MeritParser.BasicTypeContext ctx) { }
+	@Override public void exitBasicType(MerideumParser.BasicTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObjectFields(MeritParser.ObjectFieldsContext ctx) { }
+	@Override public void enterObjectFields(MerideumParser.ObjectFieldsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObjectFields(MeritParser.ObjectFieldsContext ctx) { }
+	@Override public void exitObjectFields(MerideumParser.ObjectFieldsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObjectField(MeritParser.ObjectFieldContext ctx) { }
+	@Override public void enterObjectField(MerideumParser.ObjectFieldContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObjectField(MeritParser.ObjectFieldContext ctx) { }
+	@Override public void exitObjectField(MerideumParser.ObjectFieldContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListElementAssignments(MeritParser.ListElementAssignmentsContext ctx) { }
+	@Override public void enterListElementAssignments(MerideumParser.ListElementAssignmentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListElementAssignments(MeritParser.ListElementAssignmentsContext ctx) { }
+	@Override public void exitListElementAssignments(MerideumParser.ListElementAssignmentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListElementAssignment(MeritParser.ListElementAssignmentContext ctx) { }
+	@Override public void enterListElementAssignment(MerideumParser.ListElementAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListElementAssignment(MeritParser.ListElementAssignmentContext ctx) { }
+	@Override public void exitListElementAssignment(MerideumParser.ListElementAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx) { }
+	@Override public void enterEmbeddedExpression(MerideumParser.EmbeddedExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx) { }
+	@Override public void exitEmbeddedExpression(MerideumParser.EmbeddedExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterText(MeritParser.TextContext ctx) { }
+	@Override public void enterText(MerideumParser.TextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitText(MeritParser.TextContext ctx) { }
+	@Override public void exitText(MerideumParser.TextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEscapeSequence(MeritParser.EscapeSequenceContext ctx) { }
+	@Override public void enterEscapeSequence(MerideumParser.EscapeSequenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEscapeSequence(MeritParser.EscapeSequenceContext ctx) { }
+	@Override public void exitEscapeSequence(MerideumParser.EscapeSequenceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

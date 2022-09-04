@@ -1,12 +1,12 @@
-package org.merideum.server.execution
+package org.merideum.server.interpreter.execution
 
 import org.merideum.server.interpreter.ScriptContext
 
 interface ScriptExecutor {
   /**
-   * Executes the Merit code and returns the [ScriptExecutionResult].
+   * Executes the Merideum script code and returns the [ScriptExecutionResult].
    *
-   * @param code The Merit code to run.
+   * @param code The Merideum script code to run.
    */
-  fun execute(code: String, context: ScriptContext): org.merideum.server.execution.ScriptExecutionResult
+  fun execute(code: String, context: ScriptContext): ScriptExecutionResult
 }

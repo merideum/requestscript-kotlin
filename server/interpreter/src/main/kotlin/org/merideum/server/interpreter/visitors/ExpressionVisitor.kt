@@ -1,9 +1,9 @@
 package org.merideum.server.interpreter.visitors
 
-import org.merideum.merit.antlr.MeritParser
-import org.merideum.merit.antlr.MeritParserBaseVisitor
-import org.merideum.server.interpreter.MeritValue
+import org.merideum.antlr.MerideumParser
+import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.server.interpreter.Variable
+import org.merideum.server.interpreter.WrappedValue
 import org.merideum.server.interpreter.error.TypeMismatchedException
 import org.merideum.server.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.server.interpreter.type.IntValue
@@ -15,13 +15,13 @@ import org.merideum.server.interpreter.type.list.ListValue
 
 class ExpressionVisitor(
   private val parent: ScriptVisitor
-): MeritParserBaseVisitor<MeritValue<*>>() {
+): MerideumParserBaseVisitor<WrappedValue<*>>() {
 
-  override fun visitIntegerExpression(ctx: MeritParser.IntegerExpressionContext): MeritValue<IntValue> {
-    return MeritValue(IntValue(ctx.text.toInt()))
+  override fun visitIntegerExpression(ctx: MerideumParser.IntegerExpressionContext): WrappedValue<IntValue> {
+    return WrappedValue(IntValue(ctx.text.toInt()))
   }
 
-  override fun visitStringExpression(ctx: MeritParser.StringExpressionContext): MeritValue<StringValue> {
+  override fun visitStringExpression(ctx: MerideumParser.StringExpressionContext): WrappedValue<StringValue> {
     val content = ctx.stringContent().joinToString("") {
       // TODO throw better exception
       when (val stringPart = parent.visit(it).value) {
@@ -38,32 +38,32 @@ class ExpressionVisitor(
       }
     }
 
-    return MeritValue(StringValue(content))
+    return WrappedValue(StringValue(content))
   }
 
   /**
-   * Merit code that has been embedded into a string.
+   * Merideum code that has been embedded into a string.
    *
    * Example:
    * const name = "World"
    * const greeting = "Hello ${name}!"
    */
-  override fun visitEmbeddedExpression(ctx: MeritParser.EmbeddedExpressionContext): MeritValue<*> {
-    return MeritValue(parent.visit(ctx.expression()).value)
+  override fun visitEmbeddedExpression(ctx: MerideumParser.EmbeddedExpressionContext): WrappedValue<*> {
+    return WrappedValue(parent.visit(ctx.expression()).value)
   }
 
-  override fun visitSimpleIdentifierExpression(ctx: MeritParser.SimpleIdentifierExpressionContext): MeritValue<Variable<*>> {
+  override fun visitSimpleIdentifierExpression(ctx: MerideumParser.SimpleIdentifierExpressionContext): WrappedValue<Variable<*>> {
     val expectedIdentifier = ctx.simpleIdentifier().text
 
     val found = parent.scope.resolveVariable(expectedIdentifier)
       ?: throw UnknownVariableIdentifierException(expectedIdentifier)
 
-    return MeritValue(found)
+    return WrappedValue(found)
   }
 
-  override fun visitListExpression(ctx: MeritParser.ListExpressionContext): MeritValue<TypedValue<*>> {
+  override fun visitListExpression(ctx: MerideumParser.ListExpressionContext): WrappedValue<TypedValue<*>> {
     val elements =
-      visitListElementAssignments(ctx.listElementAssignments()).value ?: return MeritValue(
+      visitListElementAssignments(ctx.listElementAssignments()).value ?: return WrappedValue(
         null
       )
 
@@ -77,16 +77,16 @@ class ExpressionVisitor(
     val listType = innerType.listType() ?: throw RuntimeException("Could not create list from inner type $innerType")
 
     // TODO make sure this cast succeeds
-    return MeritValue(listType.newValue(elements))
+    return WrappedValue(listType.newValue(elements))
   }
 
-    override fun visitListElementAssignments(ctx: MeritParser.ListElementAssignmentsContext): MeritValue<List<TypedValue<*>>> {
+    override fun visitListElementAssignments(ctx: MerideumParser.ListElementAssignmentsContext): WrappedValue<List<TypedValue<*>>> {
       val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
 
-      return MeritValue(elements)
+      return WrappedValue(elements)
     }
 
-    override fun visitListElementAssignment(ctx: MeritParser.ListElementAssignmentContext): MeritValue<TypedValue<*>> {
+    override fun visitListElementAssignment(ctx: MerideumParser.ListElementAssignmentContext): WrappedValue<TypedValue<*>> {
       val expression = parent.visit(ctx.expression()).value!!
 
       val value = if (expression is Variable<*>) {
@@ -97,28 +97,28 @@ class ExpressionVisitor(
         // TODO throw better exception
         throw RuntimeException("Could not get value from expression")
       }
-      return MeritValue(value)
+      return WrappedValue(value)
     }
 
-  override fun visitObjectExpression(ctx: MeritParser.ObjectExpressionContext?): MeritValue<ObjectValue> {
+  override fun visitObjectExpression(ctx: MerideumParser.ObjectExpressionContext?): WrappedValue<ObjectValue> {
     val objectFields = if (ctx?.objectFields() == null) {
       emptyList()
     } else {
       this.visitObjectFields(ctx.objectFields()).value!!
     }
 
-    return MeritValue(buildObject(objectFields))
+    return WrappedValue(buildObject(objectFields))
   }
 
-  override fun visitObjectFields(ctx: MeritParser.ObjectFieldsContext): MeritValue<List<ObjectField>> {
+  override fun visitObjectFields(ctx: MerideumParser.ObjectFieldsContext): WrappedValue<List<ObjectField>> {
     val fields = ctx.objectField().map {
       this.visitObjectField(it).value!!
     }
 
-    return MeritValue(fields)
+    return WrappedValue(fields)
   }
 
-  override fun visitObjectField(ctx: MeritParser.ObjectFieldContext): MeritValue<ObjectField> {
+  override fun visitObjectField(ctx: MerideumParser.ObjectFieldContext): WrappedValue<ObjectField> {
     val name = ctx.simpleIdentifier().text
 
     val type = if (ctx.typeDeclaration() == null) {
@@ -140,10 +140,10 @@ class ExpressionVisitor(
     if (type != null && type != assignmentValue!!.type)
       throw TypeMismatchedException(type, assignmentValue.type)
 
-    return MeritValue(ObjectField(name, assignmentValue as TypedValue<*>))
+    return WrappedValue(ObjectField(name, assignmentValue as TypedValue<*>))
   }
 
-  override fun visitObjectFieldReferenceExpression(ctx: MeritParser.ObjectFieldReferenceExpressionContext): MeritValue<TypedValue<*>> {
+  override fun visitObjectFieldReferenceExpression(ctx: MerideumParser.ObjectFieldReferenceExpressionContext): WrappedValue<TypedValue<*>> {
     val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
       is Variable<*> -> callerExpression.value
       is ObjectValue -> callerExpression
@@ -160,7 +160,7 @@ class ExpressionVisitor(
 
     val value = caller.getField(fieldName)
 
-    return MeritValue(value)
+    return WrappedValue(value)
   }
 
   private fun buildObject(fields: List<ObjectField>): ObjectValue {
@@ -179,7 +179,7 @@ class ExpressionVisitor(
     val value: TypedValue<*>,
   )
 
-  override fun visitElementExpression(ctx: MeritParser.ElementExpressionContext): MeritValue<TypedValue<*>> {
+  override fun visitElementExpression(ctx: MerideumParser.ElementExpressionContext): WrappedValue<TypedValue<*>> {
     val value = when(val result = parent.visit(ctx.value).value!!) {
       is Variable<*> -> result.value
       else -> result
@@ -219,6 +219,6 @@ class ExpressionVisitor(
       throw RuntimeException("Could not index expression")
     }
 
-    return MeritValue(elementValue)
+    return WrappedValue(elementValue)
   }
 }

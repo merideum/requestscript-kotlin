@@ -1,6 +1,6 @@
 package org.merideum.examples.ktor.server.resources
 
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.server.interpreter.type.MerideumObject
 import org.merideum.server.interpreter.type.buildObject
 

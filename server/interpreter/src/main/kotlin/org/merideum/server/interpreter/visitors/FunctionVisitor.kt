@@ -1,17 +1,17 @@
 package org.merideum.server.interpreter.visitors
 
-import org.merideum.merit.antlr.MeritParser
-import org.merideum.merit.antlr.MeritParserBaseVisitor
+import org.merideum.antlr.MerideumParser
+import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.server.interpreter.FunctionCallAttributes
-import org.merideum.server.interpreter.MeritValue
+import org.merideum.server.interpreter.WrappedValue
 import org.merideum.server.interpreter.Variable
 import org.merideum.server.interpreter.type.TypedValue
 
 class FunctionVisitor(
   private val parent: ScriptVisitor
-): MeritParserBaseVisitor<MeritValue<*>>() {
+): MerideumParserBaseVisitor<WrappedValue<*>>() {
 
-  override fun visitFunctionCallExpression(ctx: MeritParser.FunctionCallExpressionContext): MeritValue<*> {
+  override fun visitFunctionCallExpression(ctx: MerideumParser.FunctionCallExpressionContext): WrappedValue<*> {
     val caller = getFunctionCaller(parent.visit(ctx.expression()).value)
 
     // Cannot call functions of null values.
@@ -19,7 +19,7 @@ class FunctionVisitor(
       val functionAttributes = this.visitFunctionCall(ctx.functionCall()).value as FunctionCallAttributes
       val parameterValues = mapFunctionParameterValues(functionAttributes.parameters)
 
-      return MeritValue(
+      return WrappedValue(
         caller.callFunction(
           parent.context,
           functionAttributes.name,
@@ -32,7 +32,7 @@ class FunctionVisitor(
     }
   }
 
-  override fun visitFunctionCall(ctx: MeritParser.FunctionCallContext): MeritValue<FunctionCallAttributes> {
+  override fun visitFunctionCall(ctx: MerideumParser.FunctionCallContext): WrappedValue<FunctionCallAttributes> {
     val name = ctx.simpleIdentifier().text
     val parameters = if (ctx.functionParameters() == null) {
       emptyList()
@@ -40,7 +40,7 @@ class FunctionVisitor(
       this.visitFunctionParameters(ctx.functionParameters()).value!!
     }
 
-    return MeritValue(
+    return WrappedValue(
       FunctionCallAttributes(
         name,
         parameters
@@ -48,10 +48,10 @@ class FunctionVisitor(
     )
   }
 
-  override fun visitFunctionParameters(ctx: MeritParser.FunctionParametersContext): MeritValue<List<MeritValue<*>>> {
+  override fun visitFunctionParameters(ctx: MerideumParser.FunctionParametersContext): WrappedValue<List<WrappedValue<*>>> {
     val parameters = ctx.expression().map { parent.visit(it) }
 
-    return MeritValue(parameters)
+    return WrappedValue(parameters)
   }
 
   private fun getFunctionCaller(callerExpression: Any?): TypedValue<*>? {
@@ -66,7 +66,7 @@ class FunctionVisitor(
     }
   }
 
-  private fun mapFunctionParameterValues(parameters: List<MeritValue<*>>): List<TypedValue<*>> {
+  private fun mapFunctionParameterValues(parameters: List<WrappedValue<*>>): List<TypedValue<*>> {
     return parameters.map {
       when (val parameterValue = it.value) {
         is Variable<*> -> {
