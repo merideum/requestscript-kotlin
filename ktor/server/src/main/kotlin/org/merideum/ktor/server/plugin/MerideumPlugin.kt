@@ -14,7 +14,7 @@ import io.ktor.server.routing.routing
 import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.server.api.executor.MerideumResourceResolver
 import org.merideum.server.api.executor.SimpleScriptExecutor
 import org.merideum.server.interpreter.Resource

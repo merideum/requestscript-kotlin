@@ -6,7 +6,7 @@ import org.merideum.server.interpreter.type.ObjectValue
 import org.merideum.server.interpreter.type.Type
 import org.merideum.server.interpreter.type.TypedValue
 import org.merideum.server.interpreter.type.list.ObjectListValue
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.ResourceFunction
 
 @Suppress("UNCHECKED_CAST")

@@ -1,4 +1,4 @@
-package org.merideum.ktor.server.executor.serializer
+package org.merideum.server.api.executor.serializer
 
 import org.merideum.server.interpreter.type.MerideumObject
 

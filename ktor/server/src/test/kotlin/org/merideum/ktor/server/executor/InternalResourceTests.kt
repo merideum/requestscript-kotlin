@@ -2,7 +2,7 @@ package org.merideum.ktor.server.executor
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.merideum.ktor.server.executor.serializer.ObjectSerializer
+import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
 import org.merideum.server.interpreter.ScriptContext
 import org.merideum.server.interpreter.type.IntValue
