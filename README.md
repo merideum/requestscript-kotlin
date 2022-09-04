@@ -1,6 +1,7 @@
 # merideum-kotlin
-Kotlin implementation of the Merideum protocol.
+Reference implementation of Merideum in Kotlin.
 
+Read the [project introduction](/docs/project-introduction.md) to learn more.
 
 ## Dependencies
 JDK: Amazon Corretto 17 (see `.jabbarc`)
