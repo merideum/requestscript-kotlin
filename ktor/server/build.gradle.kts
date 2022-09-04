@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+  val kotlinVersion: String by project
   val kotestVersion: String by project
   val ktorVersion: String by project
   val logbackVersion: String by project
@@ -20,7 +21,7 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationJsonVersion")
   implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 
-  implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.0")
+  implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
   testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
   testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
