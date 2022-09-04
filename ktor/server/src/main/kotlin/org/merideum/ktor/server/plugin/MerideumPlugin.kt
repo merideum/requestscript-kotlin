@@ -14,12 +14,12 @@ import io.ktor.server.routing.routing
 import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
-import org.merideum.server.api.executor.MerideumResourceResolver
-import org.merideum.server.api.executor.SimpleScriptExecutor
-import org.merideum.server.api.executor.serializer.ObjectSerializer
-import org.merideum.server.interpreter.Resource
-import org.merideum.server.interpreter.ScriptContext
-import org.merideum.server.interpreter.error.ResourceResolutionException
+import org.merideum.core.api.executor.MerideumResourceResolver
+import org.merideum.core.api.executor.SimpleScriptExecutor
+import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.interpreter.Resource
+import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.error.ResourceResolutionException
 
 val Merideum = createApplicationPlugin(
   name = "Merideum",

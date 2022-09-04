@@ -2,14 +2,14 @@ package org.merideum.ktor.server.executor
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.merideum.server.api.executor.serializer.ObjectSerializer
+import org.merideum.core.api.executor.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.FunctionParser
-import org.merideum.server.interpreter.ScriptContext
-import org.merideum.server.interpreter.type.IntValue
-import org.merideum.server.interpreter.type.MerideumObject
-import org.merideum.server.interpreter.type.ObjectValue
-import org.merideum.server.interpreter.type.StringValue
-import org.merideum.server.interpreter.type.buildObject
+import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.type.IntValue
+import org.merideum.core.interpreter.type.MerideumObject
+import org.merideum.core.interpreter.type.ObjectValue
+import org.merideum.core.interpreter.type.StringValue
+import org.merideum.core.interpreter.type.buildObject
 
 class InternalResourceTests: DescribeSpec({
   val instance = HelloWorldService()

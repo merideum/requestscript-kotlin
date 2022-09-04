@@ -1,8 +1,8 @@
 package org.merideum.examples.ktor.server.resources
 
-import org.merideum.server.api.executor.serializer.ObjectSerializer
-import org.merideum.server.interpreter.type.MerideumObject
-import org.merideum.server.interpreter.type.buildObject
+import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.interpreter.type.MerideumObject
+import org.merideum.core.interpreter.type.buildObject
 
 class PersonSerializer: ObjectSerializer<Person> {
   override fun serialize(value: Person): MerideumObject {
