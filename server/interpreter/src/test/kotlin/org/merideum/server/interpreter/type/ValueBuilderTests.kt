@@ -17,8 +17,8 @@ class ValueBuilderTests : DescribeSpec({
     this.getObjectValue() shouldBe value
   }
 
-  describe("MeritObject") {
-    it("should build MeritObject") {
+  describe("MerideumObject") {
+    it("should build MerideumObject") {
       merideumObject = buildObject {
         this["int"] = 123
 

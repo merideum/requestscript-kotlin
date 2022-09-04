@@ -1,280 +1,280 @@
-// Generated from MeritParser.g4 by ANTLR 4.10.1
-package org.merideum.merit.antlr;
+// Generated from MerideumParser.g4 by ANTLR 4.10.1
+package org.merideum.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
- * This class provides an empty implementation of {@link MeritParserVisitor},
+ * This class provides an empty implementation of {@link MerideumParserVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public class MeritParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements MeritParserVisitor<T> {
+public class MerideumParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements MerideumParserVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse(MeritParser.ParseContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParse(MerideumParser.ParseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptDefinition(MeritParser.ScriptDefinitionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitScriptDefinition(MerideumParser.ScriptDefinitionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptType(MeritParser.ScriptTypeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitScriptType(MerideumParser.ScriptTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptParameterBlock(MeritParser.ScriptParameterBlockContext ctx) { return visitChildren(ctx); }
+	@Override public T visitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptParameters(MeritParser.ScriptParametersContext ctx) { return visitChildren(ctx); }
+	@Override public T visitScriptParameters(MerideumParser.ScriptParametersContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBlock(MeritParser.BlockContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlock(MerideumParser.BlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitImportResource(MeritParser.ImportResourceContext ctx) { return visitChildren(ctx); }
+	@Override public T visitImportResource(MerideumParser.ImportResourceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStatement(MeritParser.StatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStatement(MerideumParser.StatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitReturnStatement(MeritParser.ReturnStatementContext ctx) { return visitChildren(ctx); }
+	@Override public T visitReturnStatement(MerideumParser.ReturnStatementContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVariableDeclaration(MeritParser.VariableDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariableDeclaration(MerideumParser.VariableDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVariableDeclarationAssignment(MeritParser.VariableDeclarationAssignmentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariableDeclarationAssignment(MerideumParser.VariableDeclarationAssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVariableReassignment(MeritParser.VariableReassignmentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariableReassignment(MerideumParser.VariableReassignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectFieldAssignment(MeritParser.ObjectFieldAssignmentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectFieldAssignment(MerideumParser.ObjectFieldAssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitAssignment(MeritParser.AssignmentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitAssignment(MerideumParser.AssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectExpression(MeritParser.ObjectExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectExpression(MerideumParser.ObjectExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStringExpression(MeritParser.StringExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStringExpression(MerideumParser.StringExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectFieldReferenceExpression(MeritParser.ObjectFieldReferenceExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectFieldReferenceExpression(MerideumParser.ObjectFieldReferenceExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitElementExpression(MeritParser.ElementExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitElementExpression(MerideumParser.ElementExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctionCallExpression(MeritParser.FunctionCallExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitListExpression(MeritParser.ListExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitListExpression(MerideumParser.ListExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSimpleIdentifierExpression(MeritParser.SimpleIdentifierExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSimpleIdentifierExpression(MerideumParser.SimpleIdentifierExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIntegerExpression(MeritParser.IntegerExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIntegerExpression(MerideumParser.IntegerExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctionCall(MeritParser.FunctionCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionCall(MerideumParser.FunctionCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctionParameters(MeritParser.FunctionParametersContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionParameters(MerideumParser.FunctionParametersContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVariableModifier(MeritParser.VariableModifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitVariableModifier(MerideumParser.VariableModifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitResourcePathIdentifier(MeritParser.ResourcePathIdentifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSimpleIdentifier(MeritParser.SimpleIdentifierContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSimpleIdentifier(MerideumParser.SimpleIdentifierContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTypeDeclaration(MeritParser.TypeDeclarationContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTypeDeclaration(MerideumParser.TypeDeclarationContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitType(MeritParser.TypeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitType(MerideumParser.TypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitListType(MeritParser.ListTypeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitListType(MerideumParser.ListTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBasicType(MeritParser.BasicTypeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBasicType(MerideumParser.BasicTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectFields(MeritParser.ObjectFieldsContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectFields(MerideumParser.ObjectFieldsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitObjectField(MeritParser.ObjectFieldContext ctx) { return visitChildren(ctx); }
+	@Override public T visitObjectField(MerideumParser.ObjectFieldContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitListElementAssignments(MeritParser.ListElementAssignmentsContext ctx) { return visitChildren(ctx); }
+	@Override public T visitListElementAssignments(MerideumParser.ListElementAssignmentsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitListElementAssignment(MeritParser.ListElementAssignmentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitListElementAssignment(MerideumParser.ListElementAssignmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEmbeddedExpression(MeritParser.EmbeddedExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitEmbeddedExpression(MerideumParser.EmbeddedExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitText(MeritParser.TextContext ctx) { return visitChildren(ctx); }
+	@Override public T visitText(MerideumParser.TextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEscapeSequence(MeritParser.EscapeSequenceContext ctx) { return visitChildren(ctx); }
+	@Override public T visitEscapeSequence(MerideumParser.EscapeSequenceContext ctx) { return visitChildren(ctx); }
 }

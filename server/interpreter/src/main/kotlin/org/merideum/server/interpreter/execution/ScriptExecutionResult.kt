@@ -1,7 +1,7 @@
-package org.merideum.server.execution
+package org.merideum.server.interpreter.execution
 
 /**
- * The result of a Merit script run.
+ * The result of a Merideum script run.
  */
 data class ScriptExecutionResult(
   val output: Map<String, Any?>?

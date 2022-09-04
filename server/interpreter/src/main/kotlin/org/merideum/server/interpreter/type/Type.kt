@@ -6,11 +6,11 @@ import org.merideum.server.interpreter.type.list.ObjectListValue
 import org.merideum.server.interpreter.type.list.StringListValue
 
 /**
- * This enum class represents the type system in Merit.
+ * This enum class represents the type system in Merideum.
  * Since variables can be declared without assignment,
  * this enum is needed to tell the Variable Scope what type T will be.
  *
- * @param declarationKey the key of the type inside a Merit type declaration.
+ * @param declarationKey the key of the type inside a Merideum type declaration.
  */
 // TODO check these casts
 enum class Type(val declarationKey: String) {

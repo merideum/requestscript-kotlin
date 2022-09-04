@@ -2,9 +2,9 @@ package org.merideum.server.interpreter.utils
 
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import org.merideum.merit.antlr.MeritLexer
-import org.merideum.merit.antlr.MeritParser
-import org.merideum.server.execution.ScriptExecutionResult
+import org.merideum.antlr.MerideumLexer
+import org.merideum.antlr.MerideumParser
+import org.merideum.server.interpreter.execution.ScriptExecutionResult
 import org.merideum.server.interpreter.Resource
 import org.merideum.server.interpreter.ResourceResolver
 import org.merideum.server.interpreter.ReturnTermination
@@ -25,8 +25,8 @@ fun executeCode(
     }
   }
 ): ScriptExecutionResult {
-  val lexer = MeritLexer(CharStreams.fromString(code))
-  val parser = MeritParser(CommonTokenStream(lexer))
+  val lexer = MerideumLexer(CharStreams.fromString(code))
+  val parser = MerideumParser(CommonTokenStream(lexer))
 
   parser.buildParseTree = true
 

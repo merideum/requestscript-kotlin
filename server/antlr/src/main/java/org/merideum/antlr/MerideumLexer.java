@@ -1,5 +1,5 @@
-// Generated from MeritLexer.g4 by ANTLR 4.10.1
-package org.merideum.merit.antlr;
+// Generated from MerideumLexer.g4 by ANTLR 4.10.1
+package org.merideum.antlr;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MeritLexer extends Lexer {
+public class MerideumLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -106,13 +106,13 @@ public class MeritLexer extends Lexer {
 	}
 
 
-	public MeritLexer(CharStream input) {
+	public MerideumLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MeritLexer.g4"; }
+	public String getGrammarFileName() { return "MerideumLexer.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

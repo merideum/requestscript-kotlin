@@ -11,10 +11,10 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 
 @kotlinx.serialization.Serializable
 class ResponseBody(
@@ -23,7 +23,7 @@ class ResponseBody(
 
 class MerideumPluginTests: DescribeSpec({
   describe("no configuration") {
-    it("should accept simple Merit code input") {
+    it("should accept simple Merideum code input") {
       val code = """
         |request myRequest {
         |  const test = 123

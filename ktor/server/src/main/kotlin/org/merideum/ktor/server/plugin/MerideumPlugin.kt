@@ -14,9 +14,9 @@ import io.ktor.server.routing.routing
 import org.merideum.ktor.server.OutputSerializer
 import org.merideum.ktor.server.SerializableResponseBody
 import org.merideum.ktor.server.executor.InternalResource
-import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.server.api.executor.MerideumResourceResolver
 import org.merideum.server.api.executor.SimpleScriptExecutor
+import org.merideum.server.api.executor.serializer.ObjectSerializer
 import org.merideum.server.interpreter.Resource
 import org.merideum.server.interpreter.ScriptContext
 import org.merideum.server.interpreter.error.ResourceResolutionException
@@ -65,7 +65,7 @@ class MerideumPluginConfiguration {
   }
 
   /**
-   * Object Serializers make Kotlin classes compatible with Merit objects and vice-versa.
+   * Object Serializers make Kotlin classes compatible with Merideum objects and vice-versa.
    */
   fun objectSerializers(configuration: ObjectSerializersConfiguration.() -> Unit) {
     val config = ObjectSerializersConfiguration().apply(configuration)
