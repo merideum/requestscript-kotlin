@@ -16,3 +16,6 @@ Adding another web framework implementation (Spring or Micronaut, etc.) should b
 The project should seek to update dependency versions when immediately available to avoid falling behind.
 
 Kotlin and Gradle versions will be updated immediately. Java versions will updated when a new LTS is available.
+
+## Contributing
+Visit the [contributing guide](/CONTRIBUTING.md) to learn more.

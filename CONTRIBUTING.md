@@ -15,3 +15,6 @@ Merideum uses ANTLR4 to generate lexer and parser code in the implementation lan
 Or `./scripts/generate-antlr.sh`
 
 > Make sure you have already set up the alias in your shell: `alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-YOUR_ANTLR_VERSION-complete.jar:$CLASSPATH" org.antlr.v4.Tool'`
+
+# Versioning
+This repository follows [semantic versioning](https://semver.org/).
