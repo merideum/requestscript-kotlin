@@ -1,3 +1,3 @@
 package org.merideum.core.interpreter.error
 
-class ResourceResolutionException(resourceName: String): RuntimeException("Could not resolve resource: $resourceName")
+class ResourceResolutionException(resourceName: String): ScriptRuntimeException("Could not resolve resource: $resourceName", RuntimeErrorType.RESOURCE)

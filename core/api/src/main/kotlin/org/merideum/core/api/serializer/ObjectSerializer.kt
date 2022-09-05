@@ -1,4 +1,4 @@
-package org.merideum.core.api.executor.serializer
+package org.merideum.core.api.serializer
 
 import org.merideum.core.interpreter.type.MerideumObject
 

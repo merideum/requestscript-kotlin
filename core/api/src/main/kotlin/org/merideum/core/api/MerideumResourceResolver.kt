@@ -1,4 +1,4 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ResourceResolver

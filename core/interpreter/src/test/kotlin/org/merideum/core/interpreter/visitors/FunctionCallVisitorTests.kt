@@ -25,7 +25,6 @@ class FunctionCallVisitorTests: DescribeSpec({
       val variableScope = VariableScope(null, mutableMapOf())
 
       val actualOutput = executeCode(code, variableScope)
-        .output
         .shouldNotBeNull()
 
       actualOutput["minimum"] shouldBe 300

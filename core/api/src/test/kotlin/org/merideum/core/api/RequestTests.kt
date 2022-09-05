@@ -1,9 +1,9 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import org.merideum.core.interpreter.ScriptContext
-import org.merideum.core.api.executor.error.RequestFailException
+import org.merideum.core.api.error.RequestFailException
 
 class RequestTests: DescribeSpec({
   val variable = Request(mapOf())

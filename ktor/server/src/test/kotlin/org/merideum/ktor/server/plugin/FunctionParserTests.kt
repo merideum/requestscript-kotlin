@@ -2,7 +2,7 @@ package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.type.MerideumObject
 import org.merideum.core.interpreter.type.Type
 import kotlin.reflect.KParameter

@@ -1,4 +1,4 @@
-package org.merideum.core.interpreter.execution
+package org.merideum.core.api.execution
 
 import org.merideum.core.interpreter.ScriptContext
 

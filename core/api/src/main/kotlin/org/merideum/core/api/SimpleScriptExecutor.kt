@@ -1,16 +1,18 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTree
 import org.merideum.antlr.MerideumLexer
 import org.merideum.antlr.MerideumParser
+import org.merideum.core.api.error.ErrorsContainer
+import org.merideum.core.api.execution.ScriptExecutionResult
+import org.merideum.core.api.execution.ScriptExecutor
 import org.merideum.core.interpreter.ResourceResolver
 import org.merideum.core.interpreter.ReturnTermination
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.VariableScope
-import org.merideum.core.interpreter.execution.ScriptExecutionResult
-import org.merideum.core.interpreter.execution.ScriptExecutor
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.visitors.ScriptVisitor
 
 class SimpleScriptExecutor(val resourceResolver: ResourceResolver): ScriptExecutor {
@@ -34,15 +36,14 @@ class SimpleScriptExecutor(val resourceResolver: ResourceResolver): ScriptExecut
 
     val visitor = ScriptVisitor(mainScope, resourceResolver, context)
 
-    val returnValue: Map<String, Any?>? = try {
+    return try {
       visitor.visit(parseTree)
 
-      null
+      ScriptExecutionResult(null)
     } catch(rt: ReturnTermination) {
-      rt.value
+      ScriptExecutionResult(rt.value)
+    } catch(e: ScriptRuntimeException) {
+      ScriptExecutionResult(null, ErrorsContainer(e))
     }
-
-
-    return ScriptExecutionResult(returnValue)
   }
 }

@@ -1,4 +1,4 @@
-package org.merideum.core.api.executor.testutils
+package org.merideum.core.api.testutils
 
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.Resource

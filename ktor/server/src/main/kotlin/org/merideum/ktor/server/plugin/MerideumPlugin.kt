@@ -11,15 +11,16 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import org.merideum.ktor.server.OutputSerializer
-import org.merideum.ktor.server.SerializableResponseBody
-import org.merideum.ktor.server.executor.InternalResource
-import org.merideum.core.api.executor.MerideumResourceResolver
-import org.merideum.core.api.executor.SimpleScriptExecutor
-import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.api.MerideumResourceResolver
+import org.merideum.core.api.SimpleScriptExecutor
+import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.ResourceResolutionException
+import org.merideum.ktor.server.ResponseBodySerializer
+import org.merideum.ktor.server.SerializableResponseBodyWithErrors
+import org.merideum.ktor.server.SerializableResponseBodyWithOutput
+import org.merideum.ktor.server.resource.InternalResource
 
 val Merideum = createApplicationPlugin(
   name = "Merideum",
@@ -31,7 +32,7 @@ val Merideum = createApplicationPlugin(
   application.install(StatusPages) {
     exception<Throwable> { call, cause ->
       if(cause is ResourceResolutionException) {
-        call.respondText(text = "${cause.message}" , status = HttpStatusCode.BadRequest)
+        call.respondText(text = cause.message, status = HttpStatusCode.BadRequest)
       }
     }
   }
@@ -42,11 +43,16 @@ val Merideum = createApplicationPlugin(
        * Routing for a standalone request.
        */
       post {
+        val responseSerializer = ResponseBodySerializer()
         val requestRaw = this.call.receiveText()
 
         val executionResult = executor.execute(requestRaw, ScriptContext())
 
-        val responseBody = SerializableResponseBody(OutputSerializer().deserialize(executionResult.output))
+        val responseBody = if (executionResult.errors != null) {
+          SerializableResponseBodyWithErrors(responseSerializer.deserialize(executionResult.errors!!.toMap())!!)
+        } else {
+          SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
+        }
 
         call.respond(responseBody)
       }

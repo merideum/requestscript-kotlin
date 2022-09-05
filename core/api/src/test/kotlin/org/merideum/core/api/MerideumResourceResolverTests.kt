@@ -1,9 +1,9 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
-import org.merideum.core.api.executor.testutils.TestResource
+import org.merideum.core.api.testutils.TestResource
 import org.merideum.core.interpreter.ResourceResolver
 
 class MerideumResourceResolverTests: DescribeSpec({

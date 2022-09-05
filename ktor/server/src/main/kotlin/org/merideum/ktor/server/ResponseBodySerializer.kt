@@ -10,17 +10,19 @@ import kotlinx.serialization.json.JsonPrimitive
  * Kotlin Serialization does not support serialization of Any.
  * If the user chooses Kotlin Serialization (which we recommend) we have to manually build the JSON object from the output.
  */
-class OutputSerializer {
+class ResponseBodySerializer {
 
   /**
    * Transforms a Kotlin [Map] into a [JsonObject].
    */
-  fun deserialize(output: Map<String, Any?>?): JsonElement = jsonElement(output)
+  fun deserialize(body: Map<String, Any?>?) = if (body == null) null else jsonElement(body)
 
   /**
    * Recursively transforms a Kotlin type to a [JsonElement]
    */
   private fun jsonElement(value: Any?): JsonElement {
+    if (value == null) return JsonNull
+
     return when (value) {
       is List<*> -> mapJsonArray(value)
 
