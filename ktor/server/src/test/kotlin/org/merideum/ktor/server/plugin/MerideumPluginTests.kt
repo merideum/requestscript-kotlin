@@ -20,8 +20,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientCon
 
 @kotlinx.serialization.Serializable
 class ResponseBody(
-  val output: JsonObject?,
-  val errors: JsonObject?
+  val output: JsonObject? = null,
+  val errors: JsonObject? = null
 )
 
 class MerideumPluginTests: DescribeSpec({

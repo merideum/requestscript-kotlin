@@ -3,13 +3,13 @@ package org.merideum.ktor.server.resource
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import org.merideum.core.api.serializer.ObjectSerializer
-import org.merideum.ktor.server.plugin.FunctionParser
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.MerideumObject
 import org.merideum.core.interpreter.type.ObjectValue
 import org.merideum.core.interpreter.type.StringValue
 import org.merideum.core.interpreter.type.buildObject
+import org.merideum.ktor.server.plugin.FunctionParser
 
 class InternalResourceTests: DescribeSpec({
   val instance = HelloWorldService()
@@ -18,7 +18,7 @@ class InternalResourceTests: DescribeSpec({
     "test",
     "org.merideum",
     instance,
-    FunctionParser(mapOf("org.merideum.ktor.server.executor.Person" to PersonSerializer(), "org.merideum.ktor.server.executor.Greeting" to GreetingSerializer())).functionsForInstance(instance)
+    FunctionParser(mapOf("org.merideum.ktor.server.resource.Person" to PersonSerializer(), "org.merideum.ktor.server.resource.Greeting" to GreetingSerializer())).functionsForInstance(instance)
   )
 
   val context = ScriptContext()

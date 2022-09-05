@@ -1,7 +1,7 @@
 package org.merideum.ktor.server.plugin
 
-import org.merideum.core.interpreter.type.Type
 import org.merideum.core.api.serializer.ObjectSerializer
+import org.merideum.core.interpreter.type.Type
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility
@@ -42,6 +42,7 @@ class FunctionParser(val serializers: Map<String, ObjectSerializer<*>>) {
     }
   }
 
+  // TODO add error checking to make sure a serializer exists for the object.
   private fun getType(type: String): FunctionType {
     return if (type == kotlinString) {
       FunctionType(Type.STRING, "String", null)

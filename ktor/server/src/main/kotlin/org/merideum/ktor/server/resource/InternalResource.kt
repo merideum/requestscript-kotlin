@@ -1,12 +1,12 @@
 package org.merideum.ktor.server.resource
 
-import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
+import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.type.ObjectValue
 import org.merideum.core.interpreter.type.Type
 import org.merideum.core.interpreter.type.TypedValue
 import org.merideum.core.interpreter.type.list.ObjectListValue
-import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.ResourceFunction
 
 @Suppress("UNCHECKED_CAST")
@@ -42,21 +42,25 @@ class InternalResource<T>(
 
             val parameterValue = parameter.get()
 
-            if (parameter.type == Type.OBJECT) {
+            when (parameter.type) {
+                Type.OBJECT -> {
 
-              functionParameter.type!!.serializer!!.deserialize(parameterValue as Map<String, TypedValue<*>>)
-            } else if (parameter.type == Type.LIST_OBJECT) {
-              val parameterSerializer = functionParameter.type!!.serializer!!
+                  // TODO add error checking to make sure the serializer exists
+                  functionParameter.type!!.serializer!!.deserialize(parameterValue as Map<String, TypedValue<*>>)
+                }
+                Type.LIST_OBJECT -> {
+                  val parameterSerializer = functionParameter.type!!.serializer!!
 
-              val mappedValue = parameter.value as List<ObjectValue>
+                  val mappedValue = parameter.value as List<ObjectValue>
 
-              mappedValue.map {
-                // TODO support nullable value
-                parameterSerializer.deserialize(it.get()!!.toMap())
-              }
-            }
-            else {
-              parameterValue
+                  mappedValue.map {
+                        // TODO support nullable value
+                        parameterSerializer.deserialize(it.get()!!.toMap())
+                  }
+                }
+                else -> {
+                  parameterValue
+                }
             }
           } else {
             parameter
@@ -69,6 +73,7 @@ class InternalResource<T>(
       val result = foundFunction.function.callBy(functionParameterValues)
 
       return if (foundFunction.returnType.type == Type.OBJECT) {
+        // TODO add error checking to make sure the serializer exists
         val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
 
         returnSerializer.serialize(result).getObjectValue()
