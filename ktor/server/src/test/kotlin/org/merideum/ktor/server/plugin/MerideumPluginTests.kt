@@ -15,6 +15,8 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 
@@ -96,8 +98,15 @@ class MerideumPluginTests: DescribeSpec({
         response.errors
           .shouldNotBeNull()["runtime"]
           .shouldNotBeNull()
-          .jsonPrimitive.content shouldBe "Could not resolve resource: ThrowsError"
+          .jsonObject.also {
+            it["type"]
+              .shouldNotBeNull()
+              .jsonPrimitive.contentOrNull shouldBe "RESOURCE"
 
+            it["message"]
+              .shouldNotBeNull()
+              .jsonPrimitive.content shouldBe "Could not resolve resource: ThrowsError"
+          }
       }
     }
   }

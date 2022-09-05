@@ -43,7 +43,7 @@ class SimpleScriptExecutor(val resourceResolver: ResourceResolver): ScriptExecut
     } catch(rt: ReturnTermination) {
       ScriptExecutionResult(rt.value)
     } catch(e: ScriptRuntimeException) {
-      ScriptExecutionResult(null, ErrorsContainer(e.message))
+      ScriptExecutionResult(null, ErrorsContainer(e))
     }
   }
 }

@@ -411,7 +411,7 @@ class BuiltinTypeTests: DescribeSpec({
           executeCode(code, variableScope)
         }
 
-        exception.type shouldBe Type.STRING
+        exception.firstType shouldBe Type.STRING
         exception.otherType shouldBe Type.INT
 
         exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
@@ -917,7 +917,7 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
+          exception.firstType shouldBe Type.STRING
           exception.otherType shouldBe Type.INT
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
@@ -937,7 +937,7 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
+          exception.firstType shouldBe Type.STRING
           exception.otherType shouldBe Type.INT
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
@@ -960,7 +960,7 @@ class BuiltinTypeTests: DescribeSpec({
             executeCode(code, variableScope)
           }
 
-          exception.type shouldBe Type.STRING
+          exception.firstType shouldBe Type.STRING
           exception.otherType shouldBe Type.INT
 
           exception.message shouldBe "Cannot perform operation between types 'string' and 'int'"
