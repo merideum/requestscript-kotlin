@@ -8,12 +8,12 @@ import kotlinx.serialization.json.JsonElement
  */
 @Serializable
 open class SerializableResponseBodyWithOutput(
-  val output: JsonElement?
-): SerializableResponseBody
+    val output: JsonElement?
+) : SerializableResponseBody
 
 @Serializable
 class SerializableResponseBodyWithErrors(
-  val errors: JsonElement
-): SerializableResponseBody
+    val errors: JsonElement
+) : SerializableResponseBody
 
 interface SerializableResponseBody

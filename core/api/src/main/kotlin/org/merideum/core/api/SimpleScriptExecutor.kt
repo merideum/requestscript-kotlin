@@ -15,35 +15,34 @@ import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.visitors.ScriptVisitor
 
-class SimpleScriptExecutor(val resourceResolver: ResourceResolver): ScriptExecutor {
+class SimpleScriptExecutor(val resourceResolver: ResourceResolver) : ScriptExecutor {
 
-  private fun lexer(code: String) = MerideumLexer(CharStreams.fromString(code))
+    private fun lexer(code: String) = MerideumLexer(CharStreams.fromString(code))
 
-  private fun parse(code: String) =
-    MerideumParser(CommonTokenStream(lexer(code))).apply {
-      buildParseTree = true
-    }.parse()
+    private fun parse(code: String) =
+        MerideumParser(CommonTokenStream(lexer(code))).apply {
+            buildParseTree = true
+        }.parse()
 
-  override fun execute(code: String, context: ScriptContext): ScriptExecutionResult {
-    val parseTree: ParseTree = parse(code)
+    override fun execute(code: String, context: ScriptContext): ScriptExecutionResult {
+        val parseTree: ParseTree = parse(code)
 
-    val mainScope = VariableScope
-      .main()
-      .apply {
-        addRequest(Request(mapOf()))
-      }
+        val mainScope = VariableScope
+            .main()
+            .apply {
+                addRequest(Request(mapOf()))
+            }
 
+        val visitor = ScriptVisitor(mainScope, resourceResolver, context)
 
-    val visitor = ScriptVisitor(mainScope, resourceResolver, context)
+        return try {
+            visitor.visit(parseTree)
 
-    return try {
-      visitor.visit(parseTree)
-
-      ScriptExecutionResult(null)
-    } catch(rt: ReturnTermination) {
-      ScriptExecutionResult(rt.value)
-    } catch(e: ScriptRuntimeException) {
-      ScriptExecutionResult(null, ErrorsContainer(e))
+            ScriptExecutionResult(null)
+        } catch (rt: ReturnTermination) {
+            ScriptExecutionResult(rt.value)
+        } catch (e: ScriptRuntimeException) {
+            ScriptExecutionResult(null, ErrorsContainer(e))
+        }
     }
-  }
 }

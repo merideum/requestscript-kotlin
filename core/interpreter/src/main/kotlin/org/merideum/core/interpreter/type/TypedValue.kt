@@ -7,20 +7,20 @@ import org.merideum.core.interpreter.ScriptContext
  *
  * TValue = the Kotlin value.
  */
-interface TypedValue <TValue> {
+interface TypedValue<TValue> {
 
-  val value: TValue?
+    val value: TValue?
 
-  val type: Type
+    val type: Type
 
-  fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any?
+    fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any?
 
-  /**
-   * Gets the Kotlin value stored in the TypedValue
-   */
-  fun get(): Any?
+    /**
+     * Gets the Kotlin value stored in the TypedValue
+     */
+    fun get(): Any?
 
-  fun getValue(): TypedValue<*>
+    fun getValue(): TypedValue<*>
 
-  fun stringify(): String
+    fun stringify(): String
 }

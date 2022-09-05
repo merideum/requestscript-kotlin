@@ -1,3 +1,3 @@
 package org.merideum.core.api.error
 
-class RequestFailException: RuntimeException()
+class RequestFailException : RuntimeException()

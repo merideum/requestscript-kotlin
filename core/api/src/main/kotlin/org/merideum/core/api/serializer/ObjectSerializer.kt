@@ -7,7 +7,7 @@ import org.merideum.core.interpreter.type.MerideumObject
  * Deserializes Map to Kotlin class for use as a parameter in a Kotlin class function.
  */
 interface ObjectSerializer<T> {
-  fun serialize(value: T): MerideumObject
+    fun serialize(value: T): MerideumObject
 
-  fun deserialize(value: Map<String, Any?>): T
+    fun deserialize(value: Map<String, Any?>): T
 }
