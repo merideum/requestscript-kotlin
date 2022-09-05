@@ -5,4 +5,4 @@ import org.merideum.core.interpreter.type.Type
 class TypeMismatchedException(
   val type: Type,
   val otherType: Type
-): RuntimeException("Cannot perform operation between types '${type.typeName()}' and '${otherType.typeName()}'")
+): ScriptRuntimeException("Cannot perform operation between types '${type.typeName()}' and '${otherType.typeName()}'")

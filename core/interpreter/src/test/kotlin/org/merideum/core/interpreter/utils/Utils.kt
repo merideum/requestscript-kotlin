@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.merideum.antlr.MerideumLexer
 import org.merideum.antlr.MerideumParser
-import org.merideum.core.interpreter.execution.ScriptExecutionResult
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ResourceResolver
 import org.merideum.core.interpreter.ReturnTermination
@@ -24,7 +23,7 @@ fun executeCode(
       return null
     }
   }
-): ScriptExecutionResult {
+): Map<String, Any?>? {
   val lexer = MerideumLexer(CharStreams.fromString(code))
   val parser = MerideumParser(CommonTokenStream(lexer))
 
@@ -42,5 +41,5 @@ fun executeCode(
     rt.value
   }
 
-  return ScriptExecutionResult(returnValue)
+  return returnValue
 }

@@ -41,7 +41,6 @@ class ScriptVisitorTests: DescribeSpec({
       """.trimMargin()
 
         executeCode(code)
-          .output
           .shouldBeNull()
       }
     }
@@ -56,7 +55,6 @@ class ScriptVisitorTests: DescribeSpec({
       """.trimMargin()
 
         val output = executeCode(code)
-          .output
           .shouldNotBeNull()
 
         output.apply {
@@ -84,7 +82,6 @@ class ScriptVisitorTests: DescribeSpec({
       it("should have output value set to variable name") {
 
         val output = executeCode(code)
-          .output
           .shouldNotBeNull()
 
         output.apply {
@@ -319,7 +316,6 @@ class ScriptVisitorTests: DescribeSpec({
             variableScope,
             resourceResolver = resourceResolver
           )
-            .output
             .shouldNotBeNull()
 
           output["value"] shouldBe "Hello Merideum!"

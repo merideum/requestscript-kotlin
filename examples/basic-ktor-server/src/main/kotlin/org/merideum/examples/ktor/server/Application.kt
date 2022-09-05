@@ -1,4 +1,4 @@
-package org.merideum.ktor.server
+package org.merideum.examples.ktor.server
 
 import io.ktor.server.cio.EngineMain
 

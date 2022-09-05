@@ -1,4 +1,4 @@
-package org.merideum.ktor.server.executor
+package org.merideum.ktor.server.resource
 
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.Resource
@@ -6,7 +6,7 @@ import org.merideum.core.interpreter.type.ObjectValue
 import org.merideum.core.interpreter.type.Type
 import org.merideum.core.interpreter.type.TypedValue
 import org.merideum.core.interpreter.type.list.ObjectListValue
-import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.ktor.server.plugin.ResourceFunction
 
 @Suppress("UNCHECKED_CAST")

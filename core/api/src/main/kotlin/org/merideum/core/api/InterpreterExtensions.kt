@@ -1,4 +1,4 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import org.merideum.core.interpreter.Modifier
 import org.merideum.core.interpreter.VariableScope

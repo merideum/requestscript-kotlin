@@ -1,7 +1,7 @@
 package org.merideum.ktor.server.plugin
 
 import org.merideum.core.interpreter.type.Type
-import org.merideum.core.api.executor.serializer.ObjectSerializer
+import org.merideum.core.api.serializer.ObjectSerializer
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility

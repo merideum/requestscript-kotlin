@@ -1,10 +1,10 @@
-package org.merideum.core.api.executor
+package org.merideum.core.api
 
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.error.FunctionNotFoundException
 import org.merideum.core.interpreter.type.TypedValue
-import org.merideum.core.api.executor.error.RequestFailException
+import org.merideum.core.api.error.RequestFailException
 
 /**
  * A variable that is injected into a script to represent the http request context.
