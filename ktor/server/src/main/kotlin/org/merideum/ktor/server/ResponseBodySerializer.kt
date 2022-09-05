@@ -15,7 +15,7 @@ class ResponseBodySerializer {
   /**
    * Transforms a Kotlin [Map] into a [JsonObject].
    */
-  fun deserialize(output: Map<String, Any?>?) = if (output == null) null else jsonElement(output)
+  fun deserialize(body: Map<String, Any?>?) = if (body == null) null else jsonElement(body)
 
   /**
    * Recursively transforms a Kotlin type to a [JsonElement]
