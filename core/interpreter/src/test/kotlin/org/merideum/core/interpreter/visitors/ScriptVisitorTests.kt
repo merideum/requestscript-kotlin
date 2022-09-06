@@ -22,56 +22,56 @@ import org.merideum.core.interpreter.type.StringValue
 import org.merideum.core.interpreter.utils.TestResource
 import org.merideum.core.interpreter.utils.executeCode
 
-class ScriptVisitorTests: DescribeSpec({
-  lateinit var resourceResolver: ResourceResolver
+class ScriptVisitorTests : DescribeSpec({
+    lateinit var resourceResolver: ResourceResolver
 
-  beforeEach {
-    resourceResolver = mockk()
-  }
+    beforeEach {
+        resourceResolver = mockk()
+    }
 
-  describe("return value") {
-    lateinit var code: String
+    describe("return value") {
+        lateinit var code: String
 
-    describe("no return statement") {
-      it("should have null output") {
-        code = """
+        describe("no return statement") {
+            it("should have null output") {
+                code = """
         |request myRequest {
         |  "asdf".length()
         |}
       """.trimMargin()
 
-        executeCode(code)
-          .shouldBeNull()
-      }
-    }
+                executeCode(code)
+                    .shouldBeNull()
+            }
+        }
 
-    describe("raw value") {
+        describe("raw value") {
 
-      it("should have value of 123") {
-        code = """
+            it("should have value of 123") {
+                code = """
         |request myRequest {
         |  return 123
         |}
       """.trimMargin()
 
-        val output = executeCode(code)
-          .shouldNotBeNull()
+                val output = executeCode(code)
+                    .shouldNotBeNull()
 
-        output.apply {
-          withClue("should have one key of 'value' with value 123") {
-            size shouldBe 1
+                output.apply {
+                    withClue("should have one key of 'value' with value 123") {
+                        size shouldBe 1
 
-            val actualOutput = get("value")
-              .shouldNotBeNull()
+                        val actualOutput = get("value")
+                            .shouldNotBeNull()
 
-            actualOutput shouldBe 123
-          }
+                        actualOutput shouldBe 123
+                    }
+                }
+            }
         }
-      }
-    }
 
-    describe("return value is a variable") {
-      code = """
+        describe("return value is a variable") {
+            code = """
         |request myRequest {
         |  const test = 123
         |  
@@ -79,26 +79,26 @@ class ScriptVisitorTests: DescribeSpec({
         |}
       """.trimMargin()
 
-      it("should have output value set to variable name") {
+            it("should have output value set to variable name") {
 
-        val output = executeCode(code)
-          .shouldNotBeNull()
+                val output = executeCode(code)
+                    .shouldNotBeNull()
 
-        output.apply {
-          withClue("should have one output set to 'test' with value 123") {
-            size shouldBe 1
+                output.apply {
+                    withClue("should have one output set to 'test' with value 123") {
+                        size shouldBe 1
 
-            val actualOutput = get("test")
-              .shouldNotBeNull()
+                        val actualOutput = get("test")
+                            .shouldNotBeNull()
 
-            actualOutput shouldBe 123
-          }
+                        actualOutput shouldBe 123
+                    }
+                }
+            }
         }
-      }
-    }
 
-    describe("output value is not initialized") {
-      code = """
+        describe("output value is not initialized") {
+            code = """
         |request myRequest {
         |  var test: string
         |  
@@ -106,180 +106,206 @@ class ScriptVisitorTests: DescribeSpec({
         |}
       """.trimMargin()
 
-      it("should reject returning value") {
-        shouldThrow<RuntimeException> {
-          executeCode(code)
+            it("should reject returning value") {
+                shouldThrow<RuntimeException> {
+                    executeCode(code)
+                }
+            }
         }
-      }
-    }
-  }
-
-  describe("resource") {
-    var code: String
-    val resourceName = "TestResource"
-    val resourcePath = "org.merideum"
-    lateinit var variableScope: VariableScope
-
-    beforeEach {
-      variableScope = VariableScope(null, mutableMapOf())
     }
 
-    describe("import resource") {
-      code = """
+    describe("resource") {
+        var code: String
+        val resourceName = "TestResource"
+        val resourcePath = "org.merideum"
+        lateinit var variableScope: VariableScope
+
+        beforeEach {
+            variableScope = VariableScope(null, mutableMapOf())
+        }
+
+        describe("import resource") {
+            code = """
         |request myRequest {
         |  import testResource: $resourceName
         |}
       """.trimMargin()
 
-      describe("when the resource is resolvable") {
+            describe("when the resource is resolvable") {
 
-        it("should resolve the resource and not throw an error") {
-          every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "", "123")
+                it("should resolve the resource and not throw an error") {
+                    every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, "", "123")
 
-          shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope, resourceResolver = resourceResolver) }
+                    shouldNotThrow<ResourceResolutionException> {
+                        executeCode(
+                            code,
+                            variableScope,
+                            resourceResolver = resourceResolver
+                        )
+                    }
 
-          withClue("should add resource as a variable to the root scope") {
-            variableScope.variables.run {
-              shouldHaveSize(1)
+                    withClue("should add resource as a variable to the root scope") {
+                        variableScope.variables.run {
+                            shouldHaveSize(1)
 
-              get("testResource")
-                .shouldNotBeNull()
-                .modifier shouldBe Modifier.CONST
+                            get("testResource")
+                                .shouldNotBeNull()
+                                .modifier shouldBe Modifier.CONST
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
 
-      describe("when the resource is unresolvable") {
+            describe("when the resource is unresolvable") {
 
-        it("should resolve the resource and not throw an error") {
-          every { resourceResolver.resolve(resourceName) } returns null
+                it("should resolve the resource and not throw an error") {
+                    every { resourceResolver.resolve(resourceName) } returns null
 
-          val actualException = shouldThrow<ResourceResolutionException> { executeCode(code, variableScope, resourceResolver = resourceResolver) }
+                    val actualException = shouldThrow<ResourceResolutionException> {
+                        executeCode(
+                            code,
+                            variableScope,
+                            resourceResolver = resourceResolver
+                        )
+                    }
 
-          actualException.message shouldBe "Could not resolve resource: TestResource"
+                    actualException.message shouldBe "Could not resolve resource: TestResource"
 
-          withClue("should not add resource as a variable") {
-            variableScope.variables.shouldBeEmpty()
-          }
-        }
-      }
+                    withClue("should not add resource as a variable") {
+                        variableScope.variables.shouldBeEmpty()
+                    }
+                }
+            }
 
-      describe("when a path is included in the resource name") {
-        code = """
+            describe("when a path is included in the resource name") {
+                code = """
           |request myRequest {
           |  import test: $resourcePath.$resourceName
           |}
         """.trimMargin()
 
-        it("should resolve the resource and not throw an error") {
-          every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(resourceName, resourcePath, "123")
+                it("should resolve the resource and not throw an error") {
+                    every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(
+                        resourceName,
+                        resourcePath,
+                        "123"
+                    )
 
-          shouldNotThrow<ResourceResolutionException> { executeCode(code, variableScope, resourceResolver = resourceResolver) }
+                    shouldNotThrow<ResourceResolutionException> {
+                        executeCode(
+                            code,
+                            variableScope,
+                            resourceResolver = resourceResolver
+                        )
+                    }
 
-          withClue("should add resource as a variable to the root scope") {
-            variableScope.variables.run {
-              shouldHaveSize(1)
+                    withClue("should add resource as a variable to the root scope") {
+                        variableScope.variables.run {
+                            shouldHaveSize(1)
 
-              get("test")
-                .shouldNotBeNull()
-                .modifier shouldBe Modifier.CONST
+                            get("test")
+                                .shouldNotBeNull()
+                                .modifier shouldBe Modifier.CONST
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
 
-      describe("when a variable is declared with the same name as an imported resource") {
-        code = """
+            describe("when a variable is declared with the same name as an imported resource") {
+                code = """
           |request myRequest {
           |  import test: $resourceName
           |  const test = 123
           |}
         """.trimMargin()
 
-        it("should throw an exception") {
-          every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
+                it("should throw an exception") {
+                    every { resourceResolver.resolve(resourceName) } returns TestResource(
+                        resourceName,
+                        resourcePath,
+                        "123"
+                    )
 
-          val actualException = shouldThrow<IdentifierAlreadyDeclaredException> {
-            executeCode(code, variableScope, resourceResolver = resourceResolver)
-          }
+                    val actualException = shouldThrow<IdentifierAlreadyDeclaredException> {
+                        executeCode(code, variableScope, resourceResolver = resourceResolver)
+                    }
 
-          actualException.message shouldBe "The identifier 'test' has already been declared."
+                    actualException.message shouldBe "The identifier 'test' has already been declared."
+                }
+            }
         }
-      }
-    }
 
-    describe("function call") {
+        describe("function call") {
 
-      beforeEach {
-        every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
-      }
+            beforeEach {
+                every { resourceResolver.resolve(resourceName) } returns TestResource(resourceName, resourcePath, "123")
+            }
 
-      it("should call function of variable") {
-        code = """
+            it("should call function of variable") {
+                code = """
           |request myRequest {
           |  import test: $resourceName
           |  const greeting = test.sayHello()
           |}
         """.trimMargin()
 
-        executeCode(code, variableScope, resourceResolver = resourceResolver)
+                executeCode(code, variableScope, resourceResolver = resourceResolver)
 
-        variableScope.variables.shouldHaveSize(2)
+                variableScope.variables.shouldHaveSize(2)
 
-        val actualVariable = variableScope
-          .resolveVariable("greeting")
-          .shouldNotBeNull()
-          .value
-          .shouldBeTypeOf<StringValue>()
+                val actualVariable = variableScope
+                    .resolveVariable("greeting")
+                    .shouldNotBeNull()
+                    .value
+                    .shouldBeTypeOf<StringValue>()
 
-        actualVariable.get() shouldBe "Hello!"
-      }
+                actualVariable.get() shouldBe "Hello!"
+            }
 
-      it("should call function of TypedValue") {
-        code = """
+            it("should call function of TypedValue") {
+                code = """
           |request myRequest {
           |  const testLength = "test".length()
           |}
         """.trimMargin()
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.shouldHaveSize(1)
+                variableScope.variables.shouldHaveSize(1)
 
-        val actualVariable = variableScope
-          .resolveVariable("testLength")
-          .shouldNotBeNull()
-          .value
-          .shouldBeTypeOf<IntValue>()
+                val actualVariable = variableScope
+                    .resolveVariable("testLength")
+                    .shouldNotBeNull()
+                    .value
+                    .shouldBeTypeOf<IntValue>()
 
-        actualVariable.get() shouldBe 4
-      }
+                actualVariable.get() shouldBe 4
+            }
 
-      describe("with parameters") {
-        it("should call function with 'string' parameter value") {
-          code = """
+            describe("with parameters") {
+                it("should call function with 'string' parameter value") {
+                    code = """
             |request myRequest {
             |  import test: $resourceName
             |  const greeting = test.sayHello("Merideum")
             |}
           """.trimMargin()
 
-          executeCode(code, variableScope, resourceResolver = resourceResolver)
+                    executeCode(code, variableScope, resourceResolver = resourceResolver)
 
-          variableScope.variables.shouldHaveSize(2)
+                    variableScope.variables.shouldHaveSize(2)
 
-          val actualVariable = variableScope
-            .resolveVariable("greeting")
-            .shouldNotBeNull()
-            .value
-            .shouldBeTypeOf<StringValue>()
+                    val actualVariable = variableScope
+                        .resolveVariable("greeting")
+                        .shouldNotBeNull()
+                        .value
+                        .shouldBeTypeOf<StringValue>()
 
-          actualVariable.get() shouldBe "Hello Merideum!"
-        }
+                    actualVariable.get() shouldBe "Hello Merideum!"
+                }
 
-        it("should call function with variable parameter value") {
-          code = """
+                it("should call function with variable parameter value") {
+                    code = """
             |request myRequest {
             |  import test: $resourceName
             |  const name = "Merideum"
@@ -287,23 +313,23 @@ class ScriptVisitorTests: DescribeSpec({
             |}
           """.trimMargin()
 
-          executeCode(code, variableScope, resourceResolver = resourceResolver)
+                    executeCode(code, variableScope, resourceResolver = resourceResolver)
 
-          variableScope.variables.shouldHaveSize(3)
+                    variableScope.variables.shouldHaveSize(3)
 
-          val actualVariable = variableScope
-            .resolveVariable("greeting")
-            .shouldNotBeNull()
-            .value
-            .shouldBeTypeOf<StringValue>()
+                    val actualVariable = variableScope
+                        .resolveVariable("greeting")
+                        .shouldNotBeNull()
+                        .value
+                        .shouldBeTypeOf<StringValue>()
 
-          actualVariable.get() shouldBe "Hello Merideum!"
-        }
-      }
+                    actualVariable.get() shouldBe "Hello Merideum!"
+                }
+            }
 
-      describe("return value") {
-        it("should return value to output") {
-          code = """
+            describe("return value") {
+                it("should return value to output") {
+                    code = """
             |request myRequest {
             |  import test: $resourceName
             |  
@@ -311,16 +337,16 @@ class ScriptVisitorTests: DescribeSpec({
             |}
           """.trimMargin()
 
-          val output = executeCode(
-            code,
-            variableScope,
-            resourceResolver = resourceResolver
-          )
-            .shouldNotBeNull()
+                    val output = executeCode(
+                        code,
+                        variableScope,
+                        resourceResolver = resourceResolver
+                    )
+                        .shouldNotBeNull()
 
-          output["value"] shouldBe "Hello Merideum!"
+                    output["value"] shouldBe "Hello Merideum!"
+                }
+            }
         }
-      }
     }
-  }
 })

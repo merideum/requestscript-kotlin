@@ -13,181 +13,181 @@ import org.merideum.core.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.core.interpreter.utils.executeCode
 
 class VariableVisitorTests : DescribeSpec({
-  var code: String
+    var code: String
 
-  describe("variable declaration") {
-    describe("const") {
-      code = """
+    describe("variable declaration") {
+        describe("const") {
+            code = """
         |request myRequest {
         |  const test = 123
         |}
       """.trimMargin()
 
-      it("should parse successfully and run") {
-        val variableScope = VariableScope(null, mutableMapOf())
+            it("should parse successfully and run") {
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value 123") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'test' with value 123") {
+                        size shouldBe 1
 
-            val actualConst = get("test")
-              .shouldNotBeNull()
+                        val actualConst = get("test")
+                            .shouldNotBeNull()
 
-            actualConst.value!!.get() shouldBe 123
-            actualConst.modifier shouldBe Modifier.CONST
-          }
-        }
-      }
+                        actualConst.value!!.get() shouldBe 123
+                        actualConst.modifier shouldBe Modifier.CONST
+                    }
+                }
+            }
 
-      it("should reject re-assignment") {
-        code = """
+            it("should reject re-assignment") {
+                code = """
           |request myRequest {
           |  const test = 123
           |  test = 456
           |}
         """.trimMargin()
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        shouldThrow<IdentifierAlreadyDeclaredException> {
-          executeCode(code, variableScope)
-        }
+                shouldThrow<IdentifierAlreadyDeclaredException> {
+                    executeCode(code, variableScope)
+                }
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value 123") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'test' with value 123") {
+                        size shouldBe 1
 
-            val actualConst = get("test")
-              .shouldNotBeNull()
+                        val actualConst = get("test")
+                            .shouldNotBeNull()
 
-            actualConst.value!!.get() shouldBe 123
-            actualConst.modifier shouldBe Modifier.CONST
-          }
-        }
-      }
+                        actualConst.value!!.get() shouldBe 123
+                        actualConst.modifier shouldBe Modifier.CONST
+                    }
+                }
+            }
 
-      it("should reject declaration without assignment") {
-        code = """
+            it("should reject declaration without assignment") {
+                code = """
           |request myRequest {
           |  const test
           |}
         """.trimMargin()
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should not have any variables") {
-            shouldBeEmpty()
-          }
-        }
-      }
+                variableScope.variables.apply {
+                    withClue("should not have any variables") {
+                        shouldBeEmpty()
+                    }
+                }
+            }
 
-      it("should allow type declaration") {
-        code = """
+            it("should allow type declaration") {
+                code = """
           |request myRequest {
           |  const test: string = "Foo"
           |}
         """.trimMargin()
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have variable 'test' with value 'Foo'") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have variable 'test' with value 'Foo'") {
+                        size shouldBe 1
 
-            val actualConst = get("test")
-              .shouldNotBeNull()
+                        val actualConst = get("test")
+                            .shouldNotBeNull()
 
-            actualConst.value!!.get() shouldBe "Foo"
-            actualConst.modifier shouldBe Modifier.CONST
-          }
+                        actualConst.value!!.get() shouldBe "Foo"
+                        actualConst.modifier shouldBe Modifier.CONST
+                    }
+                }
+            }
         }
-      }
-    }
 
-    describe("var") {
-      code = """
+        describe("var") {
+            code = """
         |request myRequest {
         |  var test = 123
         |}
       """.trimMargin()
 
-      it("should add variable with ${Modifier.VAR} modifier and assigned value") {
-        val variableScope = VariableScope(null, mutableMapOf())
+            it("should add variable with ${Modifier.VAR} modifier and assigned value") {
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value 123") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'test' with value 123") {
+                        size shouldBe 1
 
-            val actualConst = get("test")
-              .shouldNotBeNull()
+                        val actualConst = get("test")
+                            .shouldNotBeNull()
 
-            actualConst.value!!.get() shouldBe 123
-            actualConst.modifier shouldBe Modifier.VAR
-          }
-        }
-      }
+                        actualConst.value!!.get() shouldBe 123
+                        actualConst.modifier shouldBe Modifier.VAR
+                    }
+                }
+            }
 
-      it("can declare without assignment") {
-        code = """
+            it("can declare without assignment") {
+                code = """
           |request myRequest {
           |  var test: int
           |}
         """.trimMargin()
 
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with null value") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'test' with null value") {
+                        size shouldBe 1
 
-            val actualConst = get("test")
-              .shouldNotBeNull()
+                        val actualConst = get("test")
+                            .shouldNotBeNull()
 
-            actualConst.value.shouldBeNull()
-            actualConst.modifier shouldBe Modifier.VAR
-          }
-        }
-      }
+                        actualConst.value.shouldBeNull()
+                        actualConst.modifier shouldBe Modifier.VAR
+                    }
+                }
+            }
 
-      it("can be reassigned") {
-        code = """
+            it("can be reassigned") {
+                code = """
           |request myRequest {
           |  var test = 123
           |  test = 456
           |}
         """.trimMargin()
 
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'test' with value 456") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'test' with value 456") {
+                        size shouldBe 1
 
-            val actualValue = get("test")
-              .shouldNotBeNull()
+                        val actualValue = get("test")
+                            .shouldNotBeNull()
 
-            actualValue.value.shouldNotBeNull().get() shouldBe 456
-            actualValue.modifier shouldBe Modifier.VAR
-          }
+                        actualValue.value.shouldNotBeNull().get() shouldBe 456
+                        actualValue.modifier shouldBe Modifier.VAR
+                    }
+                }
+            }
         }
-      }
     }
-  }
 
-  describe("object field assignment") {
-    describe("field not already set") {
-      it("adds new field") {
-        code = """
+    describe("object field assignment") {
+        describe("field not already set") {
+            it("adds new field") {
+                code = """
           |request myRequest {
           |  const person = {
           |    firstName = "Foo"
@@ -197,29 +197,29 @@ class VariableVisitorTests : DescribeSpec({
           |}
         """.trimMargin()
 
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'person' with expected fields") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'person' with expected fields") {
+                        size shouldBe 1
 
-            val actualValue = get("person")
-              .shouldNotBeNull()
+                        val actualValue = get("person")
+                            .shouldNotBeNull()
 
-            actualValue
-              .value
-              .shouldNotBeNull()
-              .get() shouldBe mapOf("firstName" to "Foo", "lastName" to "Bar")
-          }
+                        actualValue
+                            .value
+                            .shouldNotBeNull()
+                            .get() shouldBe mapOf("firstName" to "Foo", "lastName" to "Bar")
+                    }
+                }
+            }
         }
-      }
-    }
 
-    describe("field already set") {
-      it("can be reassigned") {
-        code = """
+        describe("field already set") {
+            it("can be reassigned") {
+                code = """
           |request myRequest {
           |  const person = {
           |    firstName = "Foo"
@@ -229,24 +229,24 @@ class VariableVisitorTests : DescribeSpec({
           |}
         """.trimMargin()
 
-        val variableScope = VariableScope(null, mutableMapOf())
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        executeCode(code, variableScope)
+                executeCode(code, variableScope)
 
-        variableScope.variables.apply {
-          withClue("should have one variable named 'person' with field 'firstName' value 'Bar'") {
-            size shouldBe 1
+                variableScope.variables.apply {
+                    withClue("should have one variable named 'person' with field 'firstName' value 'Bar'") {
+                        size shouldBe 1
 
-            val actualValue = get("person")
-              .shouldNotBeNull()
+                        val actualValue = get("person")
+                            .shouldNotBeNull()
 
-            actualValue
-              .value
-              .shouldNotBeNull()
-              .get() shouldBe mapOf("firstName" to "Bar")
-          }
+                        actualValue
+                            .value
+                            .shouldNotBeNull()
+                            .get() shouldBe mapOf("firstName" to "Bar")
+                    }
+                }
+            }
         }
-      }
     }
-  }
 })

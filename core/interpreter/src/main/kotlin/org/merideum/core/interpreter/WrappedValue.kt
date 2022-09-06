@@ -5,13 +5,13 @@ package org.merideum.core.interpreter
  * This is also used when a variable with [Modifier] 'VAR' has been declared but not initialized.
  */
 data class WrappedValue<T>(
-  val value: T?
+    val value: T?
 ) {
 
-  companion object {
-    /**
-     * Used to build a [WrappedValue] that has no value.
-     */
-    fun nothing() = WrappedValue(Unit)
-  }
+    companion object {
+        /**
+         * Used to build a [WrappedValue] that has no value.
+         */
+        fun nothing() = WrappedValue(Unit)
+    }
 }

@@ -1,5 +1,5 @@
 [*.{kt,kts}]
 # possible values: number (e.g. 2), "unset" (makes ktlint ignore indentation completely)
-indent_size=2
+indent_size = 4
 # true (recommended) / false
-insert_final_newline=true
+insert_final_newline = true

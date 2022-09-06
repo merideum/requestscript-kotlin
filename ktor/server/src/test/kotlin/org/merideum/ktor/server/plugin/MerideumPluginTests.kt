@@ -22,14 +22,14 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientCon
 
 @kotlinx.serialization.Serializable
 class ResponseBody(
-  val output: JsonObject? = null,
-  val errors: JsonObject? = null
+    val output: JsonObject? = null,
+    val errors: JsonObject? = null
 )
 
-class MerideumPluginTests: DescribeSpec({
-  describe("no configuration") {
-    it("should accept simple Merideum code input") {
-      val code = """
+class MerideumPluginTests : DescribeSpec({
+    describe("no configuration") {
+        it("should accept simple Merideum code input") {
+            val code = """
         |request myRequest {
         |  const test = 123
         |
@@ -37,39 +37,39 @@ class MerideumPluginTests: DescribeSpec({
         |}
       """.trimMargin()
 
-      testApplication {
-        application {
-          module()
+            testApplication {
+                application {
+                    module()
+                }
+
+                val client = createClient {
+                    this.install(ClientContentNegotiation) {
+                        json()
+                    }
+                }
+
+                val response = client.post("/merideum") {
+                    setBody(code)
+                }.body<ResponseBody>()
+
+                response.output
+                    .shouldNotBeNull()
+                    .also {
+                        it.shouldNotBeEmpty()
+
+                        it["test"].shouldNotBeNull()
+                            .toString()
+                            .toInt() shouldBe 123
+                    }
+
+                response.errors.shouldBeNull()
+            }
         }
-
-        val client = createClient {
-          this.install(ClientContentNegotiation) {
-            json()
-          }
-        }
-
-        val response = client.post("/merideum") {
-          setBody(code)
-        }.body<ResponseBody>()
-
-        response.output
-          .shouldNotBeNull()
-          .also {
-            it.shouldNotBeEmpty()
-
-            it["test"].shouldNotBeNull()
-              .toString()
-              .toInt() shouldBe 123
-          }
-
-        response.errors.shouldBeNull()
-      }
     }
-  }
 
-  describe("errors") {
-    it("should include runtime error") {
-      val code = """
+    describe("errors") {
+        it("should include runtime error") {
+            val code = """
         |request myRequest {
         |  import asdf: ThrowsError
         |  
@@ -79,47 +79,47 @@ class MerideumPluginTests: DescribeSpec({
         |}
       """.trimMargin()
 
-      testApplication {
-        application {
-          module()
+            testApplication {
+                application {
+                    module()
+                }
+
+                val client = createClient {
+                    this.install(ClientContentNegotiation) {
+                        json()
+                    }
+                }
+
+                val response = client.post("/merideum") {
+                    setBody(code)
+                }.body<ResponseBody>()
+
+                response.output.shouldBeNull()
+                response.errors
+                    .shouldNotBeNull()["runtime"]
+                    .shouldNotBeNull()
+                    .jsonObject.also {
+                        it["type"]
+                            .shouldNotBeNull()
+                            .jsonPrimitive.contentOrNull shouldBe "RESOURCE"
+
+                        it["message"]
+                            .shouldNotBeNull()
+                            .jsonPrimitive.content shouldBe "Could not resolve resource: ThrowsError"
+                    }
+            }
         }
-
-        val client = createClient {
-          this.install(ClientContentNegotiation) {
-            json()
-          }
-        }
-
-        val response = client.post("/merideum") {
-          setBody(code)
-        }.body<ResponseBody>()
-
-        response.output.shouldBeNull()
-        response.errors
-          .shouldNotBeNull()["runtime"]
-          .shouldNotBeNull()
-          .jsonObject.also {
-            it["type"]
-              .shouldNotBeNull()
-              .jsonPrimitive.contentOrNull shouldBe "RESOURCE"
-
-            it["message"]
-              .shouldNotBeNull()
-              .jsonPrimitive.content shouldBe "Could not resolve resource: ThrowsError"
-          }
-      }
     }
-  }
 })
 
 fun Application.module() {
-  install(ContentNegotiation) {
-    json(
-      Json {
-        prettyPrint = true
-      }
-    )
-  }
+    install(ContentNegotiation) {
+        json(
+            Json {
+                prettyPrint = true
+            }
+        )
+    }
 
-  install(Merideum)
+    install(Merideum)
 }

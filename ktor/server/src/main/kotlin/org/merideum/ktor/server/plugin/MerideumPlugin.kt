@@ -23,96 +23,98 @@ import org.merideum.ktor.server.SerializableResponseBodyWithOutput
 import org.merideum.ktor.server.resource.InternalResource
 
 val Merideum = createApplicationPlugin(
-  name = "Merideum",
-  createConfiguration = ::MerideumPluginConfiguration
+    name = "Merideum",
+    createConfiguration = ::MerideumPluginConfiguration
 ) {
-  val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
-  val executor = SimpleScriptExecutor(resourceResolver)
+    val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
+    val executor = SimpleScriptExecutor(resourceResolver)
 
-  application.install(StatusPages) {
-    exception<Throwable> { call, cause ->
-      if(cause is ResourceResolutionException) {
-        call.respondText(text = cause.message, status = HttpStatusCode.BadRequest)
-      }
-    }
-  }
-  application.routing {
-    route("/merideum") {
-
-      /**
-       * Routing for a standalone request.
-       */
-      post {
-        val responseSerializer = ResponseBodySerializer()
-        val requestRaw = this.call.receiveText()
-
-        val executionResult = executor.execute(requestRaw, ScriptContext())
-
-        val responseBody = if (executionResult.errors != null) {
-          SerializableResponseBodyWithErrors(responseSerializer.deserialize(executionResult.errors!!.toMap())!!)
-        } else {
-          SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
+    application.install(StatusPages) {
+        exception<Throwable> { call, cause ->
+            if (cause is ResourceResolutionException) {
+                call.respondText(text = cause.message, status = HttpStatusCode.BadRequest)
+            }
         }
-
-        call.respond(responseBody)
-      }
     }
-  }
+    application.routing {
+        route("/merideum") {
+
+            /**
+             * Routing for a standalone request.
+             */
+            post {
+                val responseSerializer = ResponseBodySerializer()
+                val requestRaw = this.call.receiveText()
+
+                val executionResult = executor.execute(requestRaw, ScriptContext())
+
+                val responseBody = if (executionResult.errors != null) {
+                    SerializableResponseBodyWithErrors(
+                        responseSerializer.deserialize(executionResult.errors!!.toMap())!!
+                    )
+                } else {
+                    SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
+                }
+
+                call.respond(responseBody)
+            }
+        }
+    }
 }
 
 class MerideumPluginConfiguration {
-  val resources: MutableList<Resource<*>> = mutableListOf()
-  var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
+    val resources: MutableList<Resource<*>> = mutableListOf()
+    var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
 
-  fun resources(configuration: ResourcesConfiguration.() -> Unit) {
-    val config = ResourcesConfiguration(FunctionParser(serializers)).apply(configuration)
+    fun resources(configuration: ResourcesConfiguration.() -> Unit) {
+        val config = ResourcesConfiguration(FunctionParser(serializers)).apply(configuration)
 
-    resources.addAll(config.resources)
-  }
+        resources.addAll(config.resources)
+    }
 
-  /**
-   * Object Serializers make Kotlin classes compatible with Merideum objects and vice-versa.
-   */
-  fun objectSerializers(configuration: ObjectSerializersConfiguration.() -> Unit) {
-    val config = ObjectSerializersConfiguration().apply(configuration)
+    /**
+     * Object Serializers make Kotlin classes compatible with Merideum objects and vice-versa.
+     */
+    fun objectSerializers(configuration: ObjectSerializersConfiguration.() -> Unit) {
+        val config = ObjectSerializersConfiguration().apply(configuration)
 
-    serializers.putAll(config.serializers)
-  }
+        serializers.putAll(config.serializers)
+    }
 }
 
 class ResourcesConfiguration(
-  private val functionParser: FunctionParser = FunctionParser(emptyMap())
+    private val functionParser: FunctionParser = FunctionParser(emptyMap())
 ) {
-  val resources = mutableListOf<Resource<*>>()
+    val resources = mutableListOf<Resource<*>>()
 
-  /**
-   * An internal resource is a resource that has an instance in memory.
-   *
-   * An external resource is a resource that requires a web client.
-   */
-  fun add(instance: Any, configuration: InternalResourceConfiguration.() -> Unit) {
-    val config = InternalResourceConfiguration().apply(configuration)
+    /**
+     * An internal resource is a resource that has an instance in memory.
+     *
+     * An external resource is a resource that requires a web client.
+     */
+    fun add(instance: Any, configuration: InternalResourceConfiguration.() -> Unit) {
+        val config = InternalResourceConfiguration().apply(configuration)
 
-    val functions = functionParser.functionsForInstance(instance)
+        val functions = functionParser.functionsForInstance(instance)
 
-    resources.add(InternalResource(config.name, config.path, instance, functions))
-  }
+        resources.add(InternalResource(config.name, config.path, instance, functions))
+    }
 }
 
 class ObjectSerializersConfiguration {
-  val serializers = mutableMapOf<String, ObjectSerializer<*>>()
+    val serializers = mutableMapOf<String, ObjectSerializer<*>>()
 
-  /**
-   * An internal resource is a resource that has an instance in memory.
-   *
-   * An external resource is a resource that requires a web client.
-   */
-  inline fun <reified T> add(serializer: ObjectSerializer<T>) {
-    serializers[T::class.qualifiedName!!] = serializer
-  }
+    /**
+     * An internal resource is a resource that has an instance in memory.
+     *
+     * An external resource is a resource that requires a web client.
+     */
+    inline fun <reified T> add(serializer: ObjectSerializer<T>) {
+        serializers[T::class.qualifiedName!!] = serializer
+    }
 }
 
 class InternalResourceConfiguration {
-  var name: String = ""
-  var path: String = ""
+    var name: String = ""
+    var path: String = ""
 }

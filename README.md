@@ -1,9 +1,11 @@
 # merideum-kotlin
+
 Reference implementation of Merideum in Kotlin.
 
 Read the [project introduction](/docs/project-introduction.md) to learn more.
 
 ## Dependencies
+
 JDK: Amazon Corretto 17 (see the [.jabbarc](/.jabbarc))
 Kotlin: `1.7.10`
 ANTLR4: `4.10.1`

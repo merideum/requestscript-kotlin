@@ -5,31 +5,31 @@ import org.merideum.core.interpreter.error.FunctionNotFoundException
 
 data class StringValue(override val value: String?) : TypedValue<String> {
 
-  override val type = Type.STRING
+    override val type = Type.STRING
 
-  override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any {
-    if (value == null) throw FunctionNotFoundException(functionName)
+    override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any {
+        if (value == null) throw FunctionNotFoundException(functionName)
 
-    if (functionName == "length" && parameters.isEmpty()) {
+        if (functionName == "length" && parameters.isEmpty()) {
 
-      /**
-       * We need to rewrap the value as an [IntValue].
-       */
-      return IntValue(value.length)
+            /**
+             * We need to rewrap the value as an [IntValue].
+             */
+            return IntValue(value.length)
+        }
+
+        throw FunctionNotFoundException(functionName)
     }
 
-    throw FunctionNotFoundException(functionName)
-  }
+    override fun get(): String? {
+        return value
+    }
 
-  override fun get(): String? {
-    return value
-  }
+    override fun getValue(): TypedValue<*> {
+        return this
+    }
 
-  override fun getValue(): TypedValue<*> {
-    return this
-  }
-
-  override fun stringify(): String {
-    return value.toString()
-  }
+    override fun stringify(): String {
+        return value.toString()
+    }
 }

@@ -7,9 +7,9 @@ import io.kotest.matchers.shouldBe
 import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.utils.executeCode
 
-class FunctionCallVisitorTests: DescribeSpec({
-  describe("function call") {
-    var code = """
+class FunctionCallVisitorTests : DescribeSpec({
+    describe("function call") {
+        var code = """
       |request myRequest {
       |  const largest = 555
       |  const middle = 444
@@ -21,17 +21,17 @@ class FunctionCallVisitorTests: DescribeSpec({
       |}
     """.trimMargin()
 
-    it("should call function") {
-      val variableScope = VariableScope(null, mutableMapOf())
+        it("should call function") {
+            val variableScope = VariableScope(null, mutableMapOf())
 
-      val actualOutput = executeCode(code, variableScope)
-        .shouldNotBeNull()
+            val actualOutput = executeCode(code, variableScope)
+                .shouldNotBeNull()
 
-      actualOutput["minimum"] shouldBe 300
-    }
+            actualOutput["minimum"] shouldBe 300
+        }
 
-    describe("function not in expression") {
-      code = """
+        describe("function not in expression") {
+            code = """
         |request myRequest {
         |  const stepCounter = 1
         |
@@ -39,13 +39,13 @@ class FunctionCallVisitorTests: DescribeSpec({
         |}
       """.trimMargin()
 
-      it("should call function") {
-        val variableScope = VariableScope(null, mutableMapOf())
+            it("should call function") {
+                val variableScope = VariableScope(null, mutableMapOf())
 
-        shouldNotThrowAny {
-          executeCode(code, variableScope)
+                shouldNotThrowAny {
+                    executeCode(code, variableScope)
+                }
+            }
         }
-      }
     }
-  }
 })
