@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions", "TooGenericExceptionThrown")
+
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
@@ -55,7 +57,9 @@ class ExpressionVisitor(
         return WrappedValue(parent.visit(ctx.expression()).value)
     }
 
-    override fun visitSimpleIdentifierExpression(ctx: MerideumParser.SimpleIdentifierExpressionContext): WrappedValue<Variable<*>> {
+    override fun visitSimpleIdentifierExpression(
+        ctx: MerideumParser.SimpleIdentifierExpressionContext
+    ): WrappedValue<Variable<*>> {
         val expectedIdentifier = ctx.simpleIdentifier().text
 
         val found = parent.scope.resolveVariable(expectedIdentifier)
@@ -86,13 +90,17 @@ class ExpressionVisitor(
         return WrappedValue(listType.newValue(elements))
     }
 
-    override fun visitListElementAssignments(ctx: MerideumParser.ListElementAssignmentsContext): WrappedValue<List<TypedValue<*>>> {
+    override fun visitListElementAssignments(
+        ctx: MerideumParser.ListElementAssignmentsContext
+    ): WrappedValue<List<TypedValue<*>>> {
         val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
 
         return WrappedValue(elements)
     }
 
-    override fun visitListElementAssignment(ctx: MerideumParser.ListElementAssignmentContext): WrappedValue<TypedValue<*>> {
+    override fun visitListElementAssignment(
+        ctx: MerideumParser.ListElementAssignmentContext
+    ): WrappedValue<TypedValue<*>> {
         val expression = parent.visit(ctx.expression()).value!!
 
         val value = if (expression is Variable<*>) {
@@ -149,7 +157,9 @@ class ExpressionVisitor(
         return WrappedValue(ObjectField(name, assignmentValue as TypedValue<*>))
     }
 
-    override fun visitObjectFieldReferenceExpression(ctx: MerideumParser.ObjectFieldReferenceExpressionContext): WrappedValue<TypedValue<*>> {
+    override fun visitObjectFieldReferenceExpression(
+        ctx: MerideumParser.ObjectFieldReferenceExpressionContext
+    ): WrappedValue<TypedValue<*>> {
         val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
             is Variable<*> -> callerExpression.value
             is ObjectValue -> callerExpression

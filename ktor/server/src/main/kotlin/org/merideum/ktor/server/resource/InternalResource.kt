@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.ktor.server.resource
 
 import org.merideum.core.api.serializer.ObjectSerializer
@@ -51,7 +53,10 @@ class InternalResource<T>(
                             Type.OBJECT -> {
 
                                 // TODO add error checking to make sure the serializer exists
-                                functionParameter.type!!.serializer!!.deserialize(parameterValue as Map<String, TypedValue<*>>)
+                                functionParameter
+                                    .type!!
+                                    .serializer!!
+                                    .deserialize(parameterValue as Map<String, TypedValue<*>>)
                             }
 
                             Type.LIST_OBJECT -> {
@@ -92,11 +97,13 @@ class InternalResource<T>(
 
                     ObjectListValue(listResult.map { returnSerializer.serialize(it).getObjectValue() })
                 } else {
-                    foundFunction.returnType.type.newValue(listResult.map {
-                        foundFunction.returnType.innerType.newValue(
-                            it
-                        )
-                    })
+                    foundFunction.returnType.type.newValue(
+                        listResult.map {
+                            foundFunction.returnType.innerType.newValue(
+                                it
+                            )
+                        }
+                    )
                 }
             } else {
                 foundFunction.returnType.type.newValue(result)
@@ -118,12 +125,5 @@ class InternalResource<T>(
 
             append(parametersKey)
         }
-    }
-
-    private fun typeFromList(listType: String): String {
-        val start = listType.indexOf("<")
-        val end = listType.lastIndexOf(">")
-
-        return listType.substring(start..end)
     }
 }

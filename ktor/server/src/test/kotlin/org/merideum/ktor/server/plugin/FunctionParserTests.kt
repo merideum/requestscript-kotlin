@@ -1,3 +1,5 @@
+@file:Suppress("UnusedPrivateMember")
+
 package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
@@ -22,13 +24,16 @@ class FunctionParserTests : DescribeSpec({
                     listOf(
                         FunctionParameter(
                             null,
-                            doThingFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }),
+                            doThingFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }
+                        ),
                         FunctionParameter(
                             FunctionType(Type.STRING, "String"),
-                            doThingFunction.parameters.single { it.name == "name" }),
+                            doThingFunction.parameters.single { it.name == "name" }
+                        ),
                         FunctionParameter(
                             FunctionType(Type.INT, "Int"),
-                            doThingFunction.parameters.single { it.name == "thing" })
+                            doThingFunction.parameters.single { it.name == "thing" }
+                        )
                     ),
                     FunctionType(Type.OBJECT, "org.merideum.ktor.server.plugin.Bar"),
                     doThingFunction
@@ -52,20 +57,25 @@ class FunctionParserTests : DescribeSpec({
                     listOf(
                         FunctionParameter(
                             null,
-                            checkListsFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }),
+                            checkListsFunction.parameters.single { it.kind == KParameter.Kind.INSTANCE }
+                        ),
                         FunctionParameter(
                             FunctionType(Type.LIST_INT, "List<Int>", Type.INT),
-                            checkListsFunction.parameters.single { it.name == "intList" }),
+                            checkListsFunction.parameters.single { it.name == "intList" }
+                        ),
                         FunctionParameter(
                             FunctionType(Type.LIST_STRING, "List<String>", Type.STRING),
-                            checkListsFunction.parameters.single { it.name == "stringList" }),
+                            checkListsFunction.parameters.single { it.name == "stringList" }
+                        ),
                         FunctionParameter(
                             FunctionType(
                                 Type.LIST_OBJECT,
                                 "List<org.merideum.ktor.server.plugin.Foo>",
                                 Type.OBJECT,
                                 fooSerializer
-                            ), checkListsFunction.parameters.single { it.name == "objectList" })
+                            ),
+                            checkListsFunction.parameters.single { it.name == "objectList" }
+                        )
                     ),
                     FunctionType(Type.LIST_STRING, "List<String>", Type.STRING),
                     checkListsFunction

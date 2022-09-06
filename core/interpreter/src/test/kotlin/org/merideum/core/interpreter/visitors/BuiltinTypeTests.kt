@@ -1,3 +1,5 @@
+@file:Suppress("LargeClass")
+
 package org.merideum.core.interpreter.visitors
 
 import io.kotest.assertions.throwables.shouldThrow
@@ -36,10 +38,10 @@ class BuiltinTypeTests : DescribeSpec({
         describe("int") {
             it("can declare 'var' variable with type") {
                 code = """
-          |request myRequest {
-          |  var test: int
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: int
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -58,11 +60,11 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("can declare and assign value") {
                 code = """
-          |request myRequest {
-          |  var test: int
-          |  test = 4839218
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: int
+                    |  test = 4839218
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -84,11 +86,11 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("can declare and assign negative value") {
                 code = """
-          |request myRequest {
-          |  var test: int
-          |  test = -4839218
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: int
+                    |  test = -4839218
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -112,10 +114,10 @@ class BuiltinTypeTests : DescribeSpec({
         describe("string") {
             it("can declare variable with type") {
                 code = """
-          |request myRequest {
-          |  var test: string
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: string
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -134,11 +136,11 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("can declare variable and assign value") {
                 code = """
-          |request myRequest {
-          |  var test: string
-          |  test = "dksAKdj3029d@klnv*#*&#"
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: string
+                    |  test = "dksAKdj3029d@klnv*#*&#"
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -160,11 +162,11 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("value can be empty") {
                 code = """
-          |request myRequest {
-          |  var test: string
-          |  test = ""
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: string
+                    |  test = ""
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -187,11 +189,11 @@ class BuiltinTypeTests : DescribeSpec({
             describe("interpolation") {
                 it("can interpolate variable") {
                     code = """
-            |request myRequest {
-            |  const name = "Merideum"
-            |  const greeting = "Hello ${'$'}{name}!"
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const name = "Merideum"
+                        |  const greeting = "Hello ${'$'}{name}!"
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -213,11 +215,11 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can interpolate function call") {
                     code = """
-            |request myRequest {
-            |  const name = "Merideum"
-            |  const length = "The length of ${'$'}{name} is ${'$'}{name.length()}."
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const name = "Merideum"
+                        |  const length = "The length of ${'$'}{name} is ${'$'}{name.length()}."
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -239,10 +241,10 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can interpolate integer") {
                     code = """
-            |request myRequest {
-            |  const age = "The age of this string is ${'$'}{1733}."
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const age = "The age of this string is ${'$'}{1733}."
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -264,10 +266,10 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can interpolate string") {
                     code = """
-            |request myRequest {
-            |  const message = "Hello ${'$'}{"World"}!"
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const message = "Hello ${'$'}{"World"}!"
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -289,10 +291,10 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can interpolate nested string interpolation") {
                     code = """
-            |request myRequest {
-            |  const message = "Hello ${'$'}{"Wo${'$'}{"rld"}"}!"
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const message = "Hello ${'$'}{"Wo${'$'}{"rld"}"}!"
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -317,10 +319,10 @@ class BuiltinTypeTests : DescribeSpec({
         describe("object") {
             it("can declare 'var' variable with type") {
                 code = """
-          |request myRequest {
-          |  var test: object
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: object
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -339,13 +341,13 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("can declare and assign value") {
                 code = """
-          |request myRequest {
-          |  var test: object
-          |  test = {
-          |    foo = "bar"
-          |  }
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: object
+                    |  test = {
+                    |    foo = "bar"
+                    |  }
+                    |}
+                """.trimMargin()
 
                 val expectedMap = mutableMapOf("foo" to "bar")
 
@@ -367,17 +369,17 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("can declare and assign multiple fields") {
                 code = """
-          |request myRequest {
-          |  var test: object
-          |  test = {
-          |    foo: string = "bar",
-          |    fooInt = 1234,
-          |    fooObject = {
-          |      nestedFoo = "Nested!"
-          |    }
-          |  }
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test: object
+                    |  test = {
+                    |    foo: string = "bar",
+                    |    fooInt = 1234,
+                    |    fooObject = {
+                    |      nestedFoo = "Nested!"
+                    |    }
+                    |  }
+                    |}
+                """.trimMargin()
 
                 val expectedMap =
                     mutableMapOf(
@@ -404,12 +406,12 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("cannot declare field with different type than value") {
                 code = """
-          |request myRequest {
-          |  const test = {
-          |    foo: string = 1234,
-          |  }
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const test = {
+                    |    foo: string = 1234,
+                    |  }
+                    |}
+                """.trimMargin()
 
                 val exception = shouldThrow<TypeMismatchedException> {
                     executeCode(code, variableScope)
@@ -423,14 +425,14 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("should return value of referenced field") {
                 code = """
-          |request myRequest {
-          |  const person = {
-          |    name = "Merideum"
-          |  }
-          |  
-          |  const name = person.name
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const person = {
+                    |    name = "Merideum"
+                    |  }
+                    |  
+                    |  const name = person.name
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -450,14 +452,14 @@ class BuiltinTypeTests : DescribeSpec({
 
             it("should return value of field referenced by indexing") {
                 code = """
-          |request myRequest {
-          |  const person = {
-          |    name = "Merideum"
-          |  }
-          |  
-          |  const name = person["name"]
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const person = {
+                    |    name = "Merideum"
+                    |  }
+                    |  
+                    |  const name = person["name"]
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -481,10 +483,10 @@ class BuiltinTypeTests : DescribeSpec({
             describe("[int]") {
                 it("can declare 'var' variable with type") {
                     code = """
-          |request myRequest {
-          |  var test: [int]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [int]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -503,11 +505,11 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can declare and assign value") {
                     code = """
-          |request myRequest {
-          |  var test: [int]
-          |  test = [123]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [int]
+                        |  test = [123]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -529,15 +531,15 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("stores many values") {
                     code = """
-            |request myRequest {
-            |  var test: [int]
-            |  test = [
-            |    123,
-            |    456,
-            |    789
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [int]
+                        |  test = [
+                        |    123,
+                        |    456,
+                        |    789
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -559,18 +561,18 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should allow expression as value") {
                     code = """
-            |request myRequest {
-            |  var test: [int]
-            |  
-            |  const second = 456
-            |  
-            |  test = [
-            |    123,
-            |    second,
-            |    789
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [int]
+                        |  
+                        |  const second = 456
+                        |  
+                        |  test = [
+                        |    123,
+                        |    second,
+                        |    789
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -592,12 +594,12 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should get element at index") {
                     code = """
-            |request myRequest {
-            |  const test = [123, 456]
-            |  
-            |  const first = test[0]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const test = [123, 456]
+                        |  
+                        |  const first = test[0]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -621,10 +623,10 @@ class BuiltinTypeTests : DescribeSpec({
             describe("[string]") {
                 it("can declare 'var' variable with type") {
                     code = """
-          |request myRequest {
-          |  var test: [string]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [string]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -643,11 +645,11 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can declare and assign value") {
                     code = """
-          |request myRequest {
-          |  var test: [string]
-          |  test = ["foo"]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [string]
+                        |  test = ["foo"]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -669,15 +671,15 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("stores many values") {
                     code = """
-            |request myRequest {
-            |  var test: [string]
-            |  test = [
-            |    "foo",
-            |    "bar",
-            |    "asdf"
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [string]
+                        |  test = [
+                        |    "foo",
+                        |    "bar",
+                        |    "asdf"
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -699,18 +701,18 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should allow expression as value") {
                     code = """
-            |request myRequest {
-            |  var test: [string]
-            |  
-            |  const second = "bar"
-            |  
-            |  test = [
-            |    "foo",
-            |    second,
-            |    "asdf"
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [string]
+                        |  
+                        |  const second = "bar"
+                        |  
+                        |  test = [
+                        |    "foo",
+                        |    second,
+                        |    "asdf"
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -732,12 +734,12 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should get element at index") {
                     code = """
-            |request myRequest {
-            |  const test = ["foo", "bar"]
-            |  
-            |  const first = test[0]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const test = ["foo", "bar"]
+                        |  
+                        |  const first = test[0]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -761,10 +763,10 @@ class BuiltinTypeTests : DescribeSpec({
             describe("[object]") {
                 it("can declare 'var' variable with type") {
                     code = """
-          |request myRequest {
-          |  var test: [object]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [object]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -783,16 +785,16 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("can declare and assign value") {
                     code = """
-          |request myRequest {
-          |  var test: [object]
-          |  test = [
-          |      {
-          |         foo = "bar",
-          |         test = 123
-          |      }
-          |  ]
-          |}
-        """.trimMargin()
+                        |request myRequest {
+                        |  var test: [object]
+                        |  test = [
+                        |      {
+                        |         foo = "bar",
+                        |         test = 123
+                        |      }
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -814,19 +816,19 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("stores many values") {
                     code = """
-            |request myRequest {
-            |  var test: [object]
-            |  test = [
-            |      {
-            |         foo = "bar",
-            |         test = 123
-            |      },
-            |      {
-            |         another = "asdf"
-            |      }
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [object]
+                        |  test = [
+                        |      {
+                        |         foo = "bar",
+                        |         test = 123
+                        |      },
+                        |      {
+                        |         another = "asdf"
+                        |      }
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -848,18 +850,18 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should allow expression as value") {
                     code = """
-            |request myRequest {
-            |  var test: [string]
-            |  
-            |  const second = "bar"
-            |  
-            |  test = [
-            |    "foo",
-            |    second,
-            |    "asdf"
-            |  ]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: [string]
+                        |  
+                        |  const second = "bar"
+                        |  
+                        |  test = [
+                        |    "foo",
+                        |    second,
+                        |    "asdf"
+                        |  ]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -881,12 +883,12 @@ class BuiltinTypeTests : DescribeSpec({
 
                 it("should get element at index") {
                     code = """
-            |request myRequest {
-            |  const test = ["foo", "bar"]
-            |  
-            |  const first = test[0]
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const test = ["foo", "bar"]
+                        |  
+                        |  const first = test[0]
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope)
 
@@ -912,10 +914,10 @@ class BuiltinTypeTests : DescribeSpec({
             describe("declaring a variable with a value with a different type declaration") {
                 it("should throw exception") {
                     code = """
-            |request myRequest {
-            |  const test: string = 123
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  const test: string = 123
+                        |}
+                    """.trimMargin()
 
                     val exception = shouldThrow<TypeMismatchedException> {
                         executeCode(code, variableScope)
@@ -931,11 +933,11 @@ class BuiltinTypeTests : DescribeSpec({
             describe("assigning a variable to a value of different type") {
                 it("should throw exception") {
                     code = """
-            |request myRequest {
-            |  var test: string
-            |  test = 123
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: string
+                        |  test = 123
+                        |}
+                    """.trimMargin()
 
                     val exception = shouldThrow<TypeMismatchedException> {
                         executeCode(code, variableScope)
@@ -951,14 +953,14 @@ class BuiltinTypeTests : DescribeSpec({
             describe("assigning a variable the result of a function") {
                 it("should throw exception") {
                     code = """
-            |request myRequest {
-            |  var test: string
-            |  test = 123
-            |
-            |  var length: string
-            |  length = test.length()
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  var test: string
+                        |  test = 123
+                        |
+                        |  var length: string
+                        |  length = test.length()
+                        |}
+                    """.trimMargin()
 
                     val exception = shouldThrow<TypeMismatchedException> {
                         executeCode(code, variableScope)

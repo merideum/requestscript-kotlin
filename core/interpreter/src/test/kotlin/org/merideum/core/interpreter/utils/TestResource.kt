@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.core.interpreter.utils
 
 import org.merideum.core.interpreter.Resource
@@ -19,7 +21,7 @@ class TestResource<T>(override val name: String, override val path: String, over
             }
         }
 
-        return null
+        throw TestResourceException()
     }
 
     override fun get(): T? {
@@ -31,3 +33,5 @@ class TestResource<T>(override val name: String, override val path: String, over
         throw RuntimeException("Cannot get value of Resource")
     }
 }
+
+class TestResourceException(override val message: String? = null) : RuntimeException()

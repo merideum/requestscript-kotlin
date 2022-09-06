@@ -15,8 +15,6 @@ data class VariableScope(
 
     /**
      * See if the variable exists in the current scope by its name.
-     *
-     * TODO: search the parent too.
      */
     fun resolveVariable(name: String) = variables[name]
 

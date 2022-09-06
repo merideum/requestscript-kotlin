@@ -8,7 +8,8 @@ import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Kotlin Serialization does not support serialization of Any.
- * If the user chooses Kotlin Serialization (which we recommend) we have to manually build the JSON object from the output.
+ * If the user chooses Kotlin Serialization (which we recommend),
+ * we have to manually build the JSON object from the output.
  */
 class ResponseBodySerializer {
 

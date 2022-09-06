@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.core.interpreter.type
 
 import org.merideum.core.interpreter.VariableScope

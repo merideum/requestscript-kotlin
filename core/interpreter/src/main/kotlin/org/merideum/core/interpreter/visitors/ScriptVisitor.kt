@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions", "TooGenericExceptionThrown")
+
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
@@ -32,7 +34,7 @@ class ScriptVisitor(
 
     /**
      * Entrypoint for a script.
-     * For a contract call, parameters are already injected into the [VariableScope] when the [ScriptVisitor] is instantiated.
+     * Parameters are already injected into the [VariableScope] when the [ScriptVisitor] is instantiated.
      * Parameters are not allowed on a Request [ScriptType].
      */
     override fun visitScriptDefinition(ctx: MerideumParser.ScriptDefinitionContext): WrappedValue<Unit> {
@@ -99,7 +101,9 @@ class ScriptVisitor(
     /**
      * Return the variable for the identifier.
      */
-    override fun visitSimpleIdentifierExpression(ctx: MerideumParser.SimpleIdentifierExpressionContext): WrappedValue<Variable<*>> {
+    override fun visitSimpleIdentifierExpression(
+        ctx: MerideumParser.SimpleIdentifierExpressionContext
+    ): WrappedValue<Variable<*>> {
         return expressionVisitor.visitSimpleIdentifierExpression(ctx)
     }
 
@@ -107,7 +111,9 @@ class ScriptVisitor(
         return functionVisitor.visitFunctionCallExpression(ctx)
     }
 
-    override fun visitObjectFieldReferenceExpression(ctx: MerideumParser.ObjectFieldReferenceExpressionContext): WrappedValue<*> {
+    override fun visitObjectFieldReferenceExpression(
+        ctx: MerideumParser.ObjectFieldReferenceExpressionContext
+    ): WrappedValue<*> {
         return expressionVisitor.visitObjectFieldReferenceExpression(ctx)
     }
 
@@ -123,7 +129,9 @@ class ScriptVisitor(
         return WrappedValue.nothing()
     }
 
-    override fun visitVariableDeclarationAssignment(ctx: MerideumParser.VariableDeclarationAssignmentContext): WrappedValue<*> {
+    override fun visitVariableDeclarationAssignment(
+        ctx: MerideumParser.VariableDeclarationAssignmentContext
+    ): WrappedValue<*> {
         variableVisitor.visitVariableDeclarationAssignment(ctx)
 
         return WrappedValue.nothing()

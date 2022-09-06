@@ -31,4 +31,4 @@ class TestResource<T>(override val name: String, override val path: String, over
     }
 }
 
-class TestResourceException(override val message: String?): RuntimeException()
+class TestResourceException(override val message: String?) : RuntimeException()

@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.ktor.server.resource
 
 import io.kotest.core.spec.style.DescribeSpec
@@ -96,7 +98,9 @@ class GreetingSerializer : ObjectSerializer<Greeting> {
 }
 
 class HelloWorldService {
-    fun sayHello() = "Hello World!"
+    private val helloWorld = "Hello World!"
+
+    fun sayHello() = helloWorld
     fun sayHello(name: String) = "Hello $name!"
 
     fun sayHello(person: Person) = "Hello ${person.name}"

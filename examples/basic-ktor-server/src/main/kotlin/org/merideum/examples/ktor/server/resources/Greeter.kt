@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package org.merideum.examples.ktor.server.resources
 
 class Greeter {

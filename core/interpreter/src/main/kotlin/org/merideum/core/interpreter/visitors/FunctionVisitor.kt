@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
@@ -32,7 +34,9 @@ class FunctionVisitor(
         }
     }
 
-    override fun visitFunctionCall(ctx: MerideumParser.FunctionCallContext): WrappedValue<org.merideum.core.interpreter.FunctionCallAttributes> {
+    override fun visitFunctionCall(
+        ctx: MerideumParser.FunctionCallContext
+    ): WrappedValue<org.merideum.core.interpreter.FunctionCallAttributes> {
         val name = ctx.simpleIdentifier().text
         val parameters = if (ctx.functionParameters() == null) {
             emptyList()
@@ -48,7 +52,9 @@ class FunctionVisitor(
         )
     }
 
-    override fun visitFunctionParameters(ctx: MerideumParser.FunctionParametersContext): WrappedValue<List<WrappedValue<*>>> {
+    override fun visitFunctionParameters(
+        ctx: MerideumParser.FunctionParametersContext
+    ): WrappedValue<List<WrappedValue<*>>> {
         val parameters = ctx.expression().map { parent.visit(it) }
 
         return WrappedValue(parameters)

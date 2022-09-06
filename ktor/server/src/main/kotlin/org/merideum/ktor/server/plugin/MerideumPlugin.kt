@@ -49,7 +49,9 @@ val Merideum = createApplicationPlugin(
                 val executionResult = executor.execute(requestRaw, ScriptContext())
 
                 val responseBody = if (executionResult.errors != null) {
-                    SerializableResponseBodyWithErrors(responseSerializer.deserialize(executionResult.errors!!.toMap())!!)
+                    SerializableResponseBodyWithErrors(
+                        responseSerializer.deserialize(executionResult.errors!!.toMap())!!
+                    )
                 } else {
                     SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
                 }

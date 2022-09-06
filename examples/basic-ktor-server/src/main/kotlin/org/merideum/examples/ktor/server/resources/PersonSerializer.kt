@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionThrown")
+
 package org.merideum.examples.ktor.server.resources
 
 import org.merideum.core.api.serializer.ObjectSerializer
