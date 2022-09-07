@@ -1,11 +1,13 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
 import org.merideum.antlr.MerideumParserBaseVisitor
+import org.merideum.core.interpreter.FunctionCallAttributes
 import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.WrappedValue
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.type.TypedValue
 
 class FunctionVisitor(
@@ -18,7 +20,7 @@ class FunctionVisitor(
         // Cannot call functions of null values.
         if (caller != null) {
             val functionAttributes =
-                this.visitFunctionCall(ctx.functionCall()).value as org.merideum.core.interpreter.FunctionCallAttributes
+                this.visitFunctionCall(ctx.functionCall()).value as FunctionCallAttributes
             val parameterValues = mapFunctionParameterValues(functionAttributes.parameters)
 
             return WrappedValue(
@@ -30,13 +32,13 @@ class FunctionVisitor(
             )
         } else {
             // TODO Replace with better Exception class.
-            throw RuntimeException("Cannot call function of null value.")
+            throw ScriptSyntaxException("Cannot call function of null value.", ScriptErrorType.FUNCTION_CALL)
         }
     }
 
     override fun visitFunctionCall(
         ctx: MerideumParser.FunctionCallContext
-    ): WrappedValue<org.merideum.core.interpreter.FunctionCallAttributes> {
+    ): WrappedValue<FunctionCallAttributes> {
         val name = ctx.simpleIdentifier().text
         val parameters = if (ctx.functionParameters() == null) {
             emptyList()
@@ -45,7 +47,7 @@ class FunctionVisitor(
         }
 
         return WrappedValue(
-            org.merideum.core.interpreter.FunctionCallAttributes(
+            FunctionCallAttributes(
                 name,
                 parameters
             )
@@ -85,7 +87,10 @@ class FunctionVisitor(
                     parameterValue
                 }
 
-                else -> throw RuntimeException("Could not map function parameter value")
+                else -> throw ScriptRuntimeException(
+                    "Could not get value from parameter",
+                    ScriptErrorType.FUNCTION_PARAMETER
+                )
             } as TypedValue<*>
         }
     }

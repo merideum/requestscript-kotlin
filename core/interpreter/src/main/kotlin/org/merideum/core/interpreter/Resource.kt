@@ -1,7 +1,7 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter
 
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.type.Type
 import org.merideum.core.interpreter.type.TypedValue
 
@@ -20,7 +20,6 @@ interface Resource<T> : TypedValue<T> {
         get() = Type.RESOURCE
 
     override fun stringify(): String {
-        // TODO throw better exception.
-        throw RuntimeException("Cannot use Resource as 'string'.")
+        throw ScriptSyntaxException("Cannot use Resource as 'string'", ScriptErrorType.STRING)
     }
 }

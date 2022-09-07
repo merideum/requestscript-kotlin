@@ -1,8 +1,9 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter.type
 
 import org.merideum.core.interpreter.VariableScope
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.type.list.IntListValue
 import org.merideum.core.interpreter.type.list.ObjectListValue
 import org.merideum.core.interpreter.type.list.StringListValue
@@ -56,13 +57,16 @@ enum class Type(val declarationKey: String) {
         }
 
         override fun newValue(value: Any?): TypedValue<*> {
-            return if (value is MutableMap<*, *>) {
-                ObjectValue(value as MutableMap<String, TypedValue<*>>?)
-            } else if (value is ObjectValue) {
-                value
-            } else {
-                // TODO throw better exception
-                throw RuntimeException("Could not create new object from value")
+            return when (value) {
+                is MutableMap<*, *> -> {
+                    ObjectValue(value as MutableMap<String, TypedValue<*>>?)
+                }
+
+                is ObjectValue -> {
+                    value
+                }
+
+                else -> throw ScriptRuntimeException("Could not create new object from value", ScriptErrorType.VALUE)
             }
         }
 
@@ -129,11 +133,17 @@ enum class Type(val declarationKey: String) {
     // Resources are declared without a type declaration.
     RESOURCE("") {
         override fun declareVariable(scope: VariableScope, name: String) {
-            throw RuntimeException("Cannot declare a resource without assigning a value.")
+            throw ScriptSyntaxException(
+                "Cannot declare a resource outside of an import statement",
+                ScriptErrorType.RESOURCE
+            )
         }
 
         override fun newValue(value: Any?): TypedValue<*> {
-            throw RuntimeException("Cannot declare a resource without assigning a value.")
+            throw ScriptSyntaxException(
+                "Cannot declare a resource outside of an import statement",
+                ScriptErrorType.RESOURCE
+            )
         }
 
         override fun listType(): Type? {

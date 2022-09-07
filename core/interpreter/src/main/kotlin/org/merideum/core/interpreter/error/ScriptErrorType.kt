@@ -1,0 +1,20 @@
+package org.merideum.core.interpreter.error
+
+enum class ScriptErrorType {
+    FUNCTION,
+    TYPE_MISMATCH,
+    VARIABLE,
+    RESOURCE,
+    SCRIPT_DEFINITION,
+    RETURN,
+    STRING,
+    LIST_DECLARATION,
+    OBJECT_DECLARATION,
+    FIELD_REFERENCE,
+    INDEXED_REFERENCE,
+    FUNCTION_CALL,
+    FUNCTION_PARAMETER,
+    OBJECT_FIELD_ASSIGNMENT,
+    SCRIPT_CONTEXT,
+    VALUE
+}

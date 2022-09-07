@@ -1,10 +1,10 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
 import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.WrappedValue
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.toModifier
 import org.merideum.core.interpreter.type.ObjectValue
@@ -69,9 +69,11 @@ class VariableVisitor(
 
         if (value is TypedValue<*>) {
             // TODO make sure the new value and old value are the same type
-            // TODO throw better exception
             val variable = parent.scope.resolveVariable(objectName)
-                ?: throw RuntimeException("Could not find object for assignment")
+                ?: throw ScriptSyntaxException(
+                    "Could not find object for assignment",
+                    ScriptErrorType.OBJECT_FIELD_ASSIGNMENT
+                )
 
             val variableValue = variable.value
 
