@@ -4,6 +4,8 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
+import org.antlr.v4.runtime.RuleContext
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.ScriptContext
 
 class StringValueTests : DescribeSpec({
@@ -13,7 +15,14 @@ class StringValueTests : DescribeSpec({
             it("should get length of string") {
                 stringValue = StringValue("Merideum")
 
-                val functionResult = stringValue.callFunction(ScriptContext(), "length", emptyList())
+                val functionResult = stringValue.callFunction(
+                    FunctionCallContext(
+                        "length",
+                        emptyList(),
+                        ScriptContext(),
+                        RuleContext.EMPTY
+                    )
+                )
 
                 functionResult
                     .shouldNotBeNull()

@@ -4,12 +4,13 @@ package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
 import org.merideum.antlr.MerideumParserBaseVisitor
+import org.merideum.core.interpreter.StringifyException
 import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ScriptErrorType
-import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.error.UnknownVariableIdentifierException
+import org.merideum.core.interpreter.error.syntaxError
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.ObjectValue
 import org.merideum.core.interpreter.type.StringValue
@@ -27,21 +28,25 @@ class ExpressionVisitor(
 
     override fun visitStringExpression(ctx: MerideumParser.StringExpressionContext): WrappedValue<StringValue> {
         val content = ctx.stringContent().joinToString("") {
-            when (val stringPart = parent.visit(it).value) {
-                is Variable<*> -> {
-                    stringPart.value?.stringify()
-                        ?: throw ScriptSyntaxException("Could not stringify null value", ScriptErrorType.STRING)
-                }
+            try {
+                when (val stringPart = parent.visit(it).value) {
+                    is Variable<*> -> {
+                        stringPart.value?.stringify()
+                            ?: throw syntaxError("Could not stringify null value", ScriptErrorType.STRING, ctx)
+                    }
 
-                is TypedValue<*> -> {
-                    stringPart.stringify()
-                }
+                    is TypedValue<*> -> {
+                        stringPart.stringify()
+                    }
 
-                is String -> {
-                    stringPart
-                }
+                    is String -> {
+                        stringPart
+                    }
 
-                else -> throw ScriptSyntaxException("Could not stringify content", ScriptErrorType.STRING)
+                    else -> throw syntaxError("Could not stringify content", ScriptErrorType.STRING, ctx)
+                }
+            } catch (@Suppress("SwallowedException") e: StringifyException) {
+                throw syntaxError("Could not stringify content", ScriptErrorType.STRING, ctx)
             }
         }
 
@@ -65,7 +70,7 @@ class ExpressionVisitor(
         val expectedIdentifier = ctx.simpleIdentifier().text
 
         val found = parent.scope.resolveVariable(expectedIdentifier)
-            ?: throw UnknownVariableIdentifierException(expectedIdentifier)
+            ?: throw UnknownVariableIdentifierException(expectedIdentifier, ctx)
 
         return WrappedValue(found)
     }
@@ -81,13 +86,14 @@ class ExpressionVisitor(
 
         val innerType = if (elementsAreSame) {
             elements.first().type
-        } else throw ScriptSyntaxException("Lists must be singleton", ScriptErrorType.LIST_DECLARATION)
+        } else throw syntaxError("Lists must be singleton", ScriptErrorType.LIST_DECLARATION, ctx)
 
         val listType =
             innerType.listType()
-                ?: throw ScriptSyntaxException(
+                ?: throw syntaxError(
                     "Could not create list from inner type $innerType",
-                    ScriptErrorType.LIST_DECLARATION
+                    ScriptErrorType.LIST_DECLARATION,
+                    ctx
                 )
 
         // TODO make sure this cast succeeds
@@ -115,7 +121,7 @@ class ExpressionVisitor(
                 expression
             }
 
-            else -> throw ScriptSyntaxException("Could not get value from expression", ScriptErrorType.LIST_DECLARATION)
+            else -> throw syntaxError("Could not get value from expression", ScriptErrorType.LIST_DECLARATION, ctx)
         }
         return WrappedValue(value)
     }
@@ -152,15 +158,16 @@ class ExpressionVisitor(
             // TODO throw exception if TypedValue is null because the variable value has not yet been set.
             is Variable<*> -> assignment.value
 
-            else -> throw ScriptSyntaxException(
+            else -> throw syntaxError(
                 "Could not get value from assignment",
-                ScriptErrorType.OBJECT_DECLARATION
+                ScriptErrorType.OBJECT_DECLARATION,
+                ctx
             )
         }
 
         // TODO make sure type declaration, if included, matches the expression value
         if (type != null && type != assignmentValue!!.type)
-            throw TypeMismatchedException(type, assignmentValue.type)
+            throw TypeMismatchedException(type, assignmentValue.type, ctx)
 
         return WrappedValue(ObjectField(name, assignmentValue as TypedValue<*>))
     }
@@ -171,14 +178,11 @@ class ExpressionVisitor(
         val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
             is Variable<*> -> callerExpression.value
             is ObjectValue -> callerExpression
-            else -> throw ScriptSyntaxException("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE)
-        }
-            // TODO should a null object field reference return null and not throw exception?
-            ?: throw ScriptSyntaxException("Could not get field of null value", ScriptErrorType.FIELD_REFERENCE)
+            else -> throw syntaxError("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE, ctx)
+        } ?: throw syntaxError("Could not get field of null value", ScriptErrorType.FIELD_REFERENCE, ctx)
 
-        // TODO throw better exception
         if (caller !is ObjectValue)
-            throw ScriptSyntaxException("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE)
+            throw syntaxError("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE, ctx)
 
         val fieldName = ctx.simpleIdentifier().text
 
@@ -218,26 +222,31 @@ class ExpressionVisitor(
                 elementIndex.value
             }
 
-            else -> throw ScriptSyntaxException("Cannot use value as index", ScriptErrorType.INDEXED_REFERENCE)
+            else -> throw syntaxError("Cannot use value as index", ScriptErrorType.INDEXED_REFERENCE, ctx)
         }
 
         val elementValue = if (value is ListValue<*, *>) {
             if (indexValue!!.type == Type.INT) {
                 value.getValue(indexValue.get() as Int)
             } else {
-                throw ScriptSyntaxException("Only type 'int' allowed for list index", ScriptErrorType.INDEXED_REFERENCE)
+                throw syntaxError(
+                    "Only type 'int' allowed for list index",
+                    ScriptErrorType.INDEXED_REFERENCE,
+                    ctx
+                )
             }
         } else if (value is ObjectValue) {
             if (indexValue!!.type == Type.STRING) {
                 value.getField(indexValue.get() as String)
             } else {
-                throw ScriptSyntaxException(
+                throw syntaxError(
                     "Only type 'string' allowed for object index",
-                    ScriptErrorType.INDEXED_REFERENCE
+                    ScriptErrorType.INDEXED_REFERENCE,
+                    ctx
                 )
             }
         } else {
-            throw ScriptSyntaxException("Could not index expression", ScriptErrorType.INDEXED_REFERENCE)
+            throw syntaxError("Could not index expression", ScriptErrorType.INDEXED_REFERENCE, ctx)
         }
 
         return WrappedValue(elementValue)

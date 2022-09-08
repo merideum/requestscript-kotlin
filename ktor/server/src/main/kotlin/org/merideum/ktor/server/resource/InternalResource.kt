@@ -1,8 +1,8 @@
 package org.merideum.ktor.server.resource
 
 import org.merideum.core.api.serializer.ObjectSerializer
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.Resource
-import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.ScriptErrorType
 import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.type.ObjectValue
@@ -27,90 +27,96 @@ class InternalResource<T>(
         throw IllegalCallerException("Cannot get value of internal resource")
     }
 
+    // TODO simplify this function.
+    @Suppress("NestedBlockDepth")
     override fun callFunction(
-        context: ScriptContext,
-        functionName: String,
-        parameters: List<TypedValue<*>>
+        context: FunctionCallContext
     ): TypedValue<*> {
+        with(context) {
+            val mapKey = buildMapKey(functionName, parameters)
 
-        val mapKey = buildMapKey(functionName, parameters)
+            val foundFunction = functions[mapKey]
 
-        val foundFunction = functions[mapKey]
+            if (foundFunction != null) {
+                val functionParameters = foundFunction.parameters
 
-        if (foundFunction != null) {
-            val functionParameters = foundFunction.parameters
+                /**
+                 * Associate the parameters passed by the caller with the parameters of the function.
+                 */
+                val functionParameterValues =
+                    functionParameters.zip(listOf(value) + parameters) { functionParameter, parameter ->
+                        val parameterValue = if (parameter is TypedValue<*>) {
 
-            /**
-             * Associate the parameters passed by the caller with the parameters of the function.
-             */
-            val functionParameterValues =
-                functionParameters.zip(listOf(value) + parameters) { functionParameter, parameter ->
-                    val parameterValue = if (parameter is TypedValue<*>) {
+                            val parameterValue = parameter.get()
 
-                        val parameterValue = parameter.get()
+                            when (parameter.type) {
+                                Type.OBJECT -> {
 
-                        when (parameter.type) {
-                            Type.OBJECT -> {
+                                    // TODO add error checking to make sure the serializer exists
+                                    functionParameter
+                                        .type!!
+                                        .serializer!!
+                                        .deserialize(parameterValue as Map<String, TypedValue<*>>)
+                                }
 
-                                // TODO add error checking to make sure the serializer exists
-                                functionParameter
-                                    .type!!
-                                    .serializer!!
-                                    .deserialize(parameterValue as Map<String, TypedValue<*>>)
-                            }
+                                Type.LIST_OBJECT -> {
+                                    val parameterSerializer = functionParameter.type!!.serializer!!
 
-                            Type.LIST_OBJECT -> {
-                                val parameterSerializer = functionParameter.type!!.serializer!!
+                                    val mappedValue = parameter.value as List<ObjectValue>
 
-                                val mappedValue = parameter.value as List<ObjectValue>
+                                    mappedValue.map {
+                                        // TODO support nullable value
+                                        parameterSerializer.deserialize(it.get()!!.toMap())
+                                    }
+                                }
 
-                                mappedValue.map {
-                                    // TODO support nullable value
-                                    parameterSerializer.deserialize(it.get()!!.toMap())
+                                else -> {
+                                    parameterValue
                                 }
                             }
-
-                            else -> {
-                                parameterValue
-                            }
+                        } else {
+                            parameter
                         }
-                    } else {
-                        parameter
+
+                        functionParameter.kParameter to parameterValue
                     }
+                        .toMap()
 
-                    functionParameter.kParameter to parameterValue
-                }
-                    .toMap()
+                val result = foundFunction.function.callBy(functionParameterValues)
 
-            val result = foundFunction.function.callBy(functionParameterValues)
-
-            return if (foundFunction.returnType.type == Type.OBJECT) {
-                // TODO add error checking to make sure the serializer exists
-                val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
-
-                returnSerializer.serialize(result).getObjectValue()
-            } else if (foundFunction.returnType.innerType != null) {
-                val listResult = result as List<*>
-
-                if (foundFunction.returnType.innerType == Type.OBJECT) {
+                return if (foundFunction.returnType.type == Type.OBJECT) {
+                    // TODO add error checking to make sure the serializer exists
                     val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
 
-                    ObjectListValue(listResult.map { returnSerializer.serialize(it).getObjectValue() })
-                } else {
-                    foundFunction.returnType.type.newValue(
-                        listResult.map {
-                            foundFunction.returnType.innerType.newValue(
-                                it
-                            )
-                        }
-                    )
-                }
-            } else {
-                foundFunction.returnType.type.newValue(result)
-            }
-        }
+                    returnSerializer.serialize(result).getObjectValue()
+                } else if (foundFunction.returnType.innerType != null) {
+                    val listResult = result as List<*>
 
-        throw ScriptRuntimeException("Could not find function '$functionName'", ScriptErrorType.FUNCTION_CALL)
+                    if (foundFunction.returnType.innerType == Type.OBJECT) {
+                        val returnSerializer = foundFunction.returnType.serializer as ObjectSerializer<Any?>
+
+                        ObjectListValue(listResult.map { returnSerializer.serialize(it).getObjectValue() })
+                    } else {
+                        foundFunction.returnType.type.newValue(
+                            listResult.map {
+                                foundFunction.returnType.innerType.newValue(
+                                    it
+                                )
+                            }
+                        )
+                    }
+                } else {
+                    foundFunction.returnType.type.newValue(result)
+                }
+            }
+
+            throw ScriptRuntimeException(
+                "Could not find function '$functionName'",
+                ScriptErrorType.FUNCTION_CALL,
+                lineNumber,
+                linePosition
+            )
+        }
     }
 
     private fun buildMapKey(functionName: String, parameters: List<TypedValue<*>>): String {

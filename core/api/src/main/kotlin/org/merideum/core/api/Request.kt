@@ -1,8 +1,8 @@
 package org.merideum.core.api
 
 import org.merideum.core.api.error.RequestFailException
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.Resource
-import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.FunctionNotFoundException
 import org.merideum.core.interpreter.type.TypedValue
 
@@ -18,12 +18,18 @@ data class Request(
     override val value: Request
         get() = TODO("Not yet implemented")
 
-    override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any? {
-        if (functionName == "fail") {
+    override fun callFunction(
+        context: FunctionCallContext
+    ): Any? {
+        if (context.functionName == "fail") {
             throw RequestFailException()
         }
 
-        throw FunctionNotFoundException(functionName)
+        throw FunctionNotFoundException(
+            context.functionName,
+            context.lineNumber,
+            context.linePosition
+        )
     }
 
     override fun get(): Any? {

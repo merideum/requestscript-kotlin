@@ -3,11 +3,13 @@ package org.merideum.core.interpreter.visitors
 import org.merideum.antlr.MerideumParser
 import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.FunctionCallAttributes
+import org.merideum.core.interpreter.FunctionCallContext
+import org.merideum.core.interpreter.FunctionParameter
 import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ScriptErrorType
 import org.merideum.core.interpreter.error.ScriptRuntimeException
-import org.merideum.core.interpreter.error.ScriptSyntaxException
+import org.merideum.core.interpreter.error.syntaxError
 import org.merideum.core.interpreter.type.TypedValue
 
 class FunctionVisitor(
@@ -25,14 +27,16 @@ class FunctionVisitor(
 
             return WrappedValue(
                 caller.callFunction(
-                    parent.context,
-                    functionAttributes.name,
-                    parameterValues
+                    FunctionCallContext(
+                        functionAttributes.name,
+                        parameterValues,
+                        parent.context,
+                        ctx
+                    )
                 )
             )
         } else {
-            // TODO Replace with better Exception class.
-            throw ScriptSyntaxException("Cannot call function of null value.", ScriptErrorType.FUNCTION_CALL)
+            throw syntaxError("Cannot call function of null value.", ScriptErrorType.FUNCTION_CALL, ctx)
         }
     }
 
@@ -56,8 +60,14 @@ class FunctionVisitor(
 
     override fun visitFunctionParameters(
         ctx: MerideumParser.FunctionParametersContext
-    ): WrappedValue<List<WrappedValue<*>>> {
-        val parameters = ctx.expression().map { parent.visit(it) }
+    ): WrappedValue<List<FunctionParameter>> {
+        val parameters = ctx.expression().map {
+            FunctionParameter(
+                parent.visit(it),
+                ctx.start.line,
+                ctx.start.charPositionInLine
+            )
+        }
 
         return WrappedValue(parameters)
     }
@@ -76,9 +86,9 @@ class FunctionVisitor(
         }
     }
 
-    private fun mapFunctionParameterValues(parameters: List<WrappedValue<*>>): List<TypedValue<*>> {
+    private fun mapFunctionParameterValues(parameters: List<FunctionParameter>): List<TypedValue<*>> {
         return parameters.map {
-            when (val parameterValue = it.value) {
+            when (val parameterValue = it.value.value) {
                 is Variable<*> -> {
                     parameterValue.value
                 }
@@ -89,7 +99,9 @@ class FunctionVisitor(
 
                 else -> throw ScriptRuntimeException(
                     "Could not get value from parameter",
-                    ScriptErrorType.FUNCTION_PARAMETER
+                    ScriptErrorType.FUNCTION_PARAMETER,
+                    it.lineNumber,
+                    it.linePosition
                 )
             } as TypedValue<*>
         }

@@ -12,6 +12,8 @@ data class ErrorsContainer(
             this["runtime"] = buildMap<String, Any> {
                 this["type"] = runtime.type.name
                 this["message"] = runtime.message
+                this["lineNumber"] = runtime.lineNumber!!
+                this["linePosition"] = runtime.linePosition!!
             }
         }
 
@@ -19,6 +21,8 @@ data class ErrorsContainer(
             this["syntax"] = buildMap<String, Any> {
                 this["type"] = syntax.type.name
                 this["message"] = syntax.message
+                this["lineNumber"] = syntax.lineNumber
+                this["linePosition"] = syntax.linePosition
             }
         }
     }

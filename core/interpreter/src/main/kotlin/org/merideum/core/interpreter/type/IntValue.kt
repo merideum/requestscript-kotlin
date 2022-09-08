@@ -1,6 +1,6 @@
 package org.merideum.core.interpreter.type
 
-import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.error.FunctionNotFoundException
 
 data class IntValue(override val value: Int?) : TypedValue<Int> {
@@ -8,22 +8,23 @@ data class IntValue(override val value: Int?) : TypedValue<Int> {
     override val type = Type.INT
 
     override fun callFunction(
-        context: ScriptContext,
-        functionName: String,
-        parameters: List<TypedValue<*>>
+        context: FunctionCallContext
     ): TypedValue<*> {
-        if (value == null) throw FunctionNotFoundException(functionName)
+        with(context) {
+            if (value == null) throw FunctionNotFoundException(functionName, lineNumber, linePosition)
 
-        if (functionName == "min" && parameters.size == 1) {
-            val other = (parameters.first().get() as? Int) ?: throw FunctionNotFoundException(functionName)
+            if (functionName == "min" && parameters.size == 1) {
+                val other = (parameters.first().get() as? Int)
+                    ?: throw FunctionNotFoundException(functionName, lineNumber, linePosition)
 
-            /**
-             * We need to rewrap the value as an [IntValue].
-             */
-            return IntValue(minOf(value, other))
+                /**
+                 * We need to rewrap the value as an [IntValue].
+                 */
+                return IntValue(minOf(value, other))
+            }
+
+            throw FunctionNotFoundException(functionName, lineNumber, linePosition)
         }
-
-        throw FunctionNotFoundException(functionName)
     }
 
     override fun get(): Int? {

@@ -1,19 +1,19 @@
 package org.merideum.core.interpreter.type.list
 
-import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.error.FunctionNotFoundException
 import org.merideum.core.interpreter.type.TypedValue
 
 interface ListValue<T : TypedValue<R>, R> : TypedValue<List<T>> {
 
     override fun callFunction(
-        context: ScriptContext,
-        functionName: String,
-        parameters: List<TypedValue<*>>
+        context: FunctionCallContext
     ): TypedValue<*> {
-        if (value == null) throw FunctionNotFoundException(functionName)
+        with(context) {
+            if (value == null) throw FunctionNotFoundException(functionName, lineNumber, linePosition)
 
-        throw FunctionNotFoundException(functionName)
+            throw FunctionNotFoundException(functionName, lineNumber, linePosition)
+        }
     }
 
     override fun get(): List<Any?>? {
