@@ -7,5 +7,5 @@ class TypeMismatchedException(
     val otherType: Type
 ) : ScriptRuntimeException(
     "Cannot perform operation between types '${firstType.typeName()}' and '${otherType.typeName()}'",
-    RuntimeErrorType.TYPE_MISMATCH
+    ScriptErrorType.TYPE_MISMATCH
 )

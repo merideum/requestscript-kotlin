@@ -1,6 +1,7 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter
+
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 
 data class ScriptContext(
     val context: Map<String, Any?> = emptyMap()
@@ -11,6 +12,9 @@ data class ScriptContext(
         // TODO throw better exception
         return if (attribute != null && attribute is T) {
             attribute
-        } else throw RuntimeException("Could not get attribute '$key'")
+        } else throw ScriptRuntimeException(
+            "Could not get attribute '$key' from script context",
+            ScriptErrorType.SCRIPT_CONTEXT
+        )
     }
 }

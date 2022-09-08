@@ -1,4 +1,4 @@
 package org.merideum.core.interpreter.error
 
 class FunctionNotFoundException(functionName: String) :
-    ScriptRuntimeException("Could not call function with name $functionName", RuntimeErrorType.FUNCTION)
+    ScriptRuntimeException("Could not call function with name $functionName", ScriptErrorType.FUNCTION)

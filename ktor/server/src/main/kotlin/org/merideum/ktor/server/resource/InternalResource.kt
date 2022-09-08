@@ -1,10 +1,10 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.ktor.server.resource
 
 import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.type.ObjectValue
 import org.merideum.core.interpreter.type.Type
 import org.merideum.core.interpreter.type.TypedValue
@@ -20,11 +20,11 @@ class InternalResource<T>(
 ) : Resource<T> {
 
     override fun get(): T? {
-        throw Exception("Cannot get a Resource.")
+        throw IllegalCallerException("Cannot 'get' a Resource.")
     }
 
     override fun getValue(): TypedValue<*> {
-        throw RuntimeException("Cannot get value of internal resource")
+        throw IllegalCallerException("Cannot get value of internal resource")
     }
 
     override fun callFunction(
@@ -110,8 +110,7 @@ class InternalResource<T>(
             }
         }
 
-        // TODO throw better exception
-        throw RuntimeException("Could not find function '$functionName'")
+        throw ScriptRuntimeException("Could not find function '$functionName'", ScriptErrorType.FUNCTION_CALL)
     }
 
     private fun buildMapKey(functionName: String, parameters: List<TypedValue<*>>): String {

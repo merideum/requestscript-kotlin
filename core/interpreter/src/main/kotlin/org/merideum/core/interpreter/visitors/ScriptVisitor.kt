@@ -1,4 +1,4 @@
-@file:Suppress("TooManyFunctions", "TooGenericExceptionThrown")
+@file:Suppress("TooManyFunctions")
 
 package org.merideum.core.interpreter.visitors
 
@@ -12,6 +12,8 @@ import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ResourceResolutionException
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.script.ScriptType
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.ObjectValue
@@ -47,7 +49,12 @@ class ScriptVisitor(
         // TODO validate contract script definition
         if (scriptType == ScriptType.REQUEST) {
             // TODO throw named exception
-            if (scriptParameters != null) throw RuntimeException("Cannot declare parameters with script type 'request'")
+            if (scriptParameters != null) {
+                throw ScriptSyntaxException(
+                    "Cannot declare parameters with script type 'request'",
+                    ScriptErrorType.SCRIPT_DEFINITION
+                )
+            }
         }
 
         // Interpret the script, executing all code within the block.
@@ -156,13 +163,17 @@ class ScriptVisitor(
             when (val returnExpression = this.visit(ctx.expression()).value!!) {
                 is ObjectValue -> {
                     // TODO throw better exception
-                    returnExpression.get()?.toMap() ?: throw RuntimeException("Unexpected value for return")
+                    returnExpression.get()?.toMap()
+                        ?: throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
                 }
 
                 is Variable<*> -> {
-                    // TODO throw if the variable has not been initialized
                     val variableValue = returnExpression.value
-                        ?: throw RuntimeException("Cannot return value of uninitialized variable")
+                        ?: throw ScriptSyntaxException(
+                            "Cannot return value of uninitialized variable",
+                            ScriptErrorType.VARIABLE
+                        )
+
                     // If the value is a variable, key the value to its variable name.
                     mapOf(returnExpression.name to variableValue.get())
                 }
@@ -174,7 +185,7 @@ class ScriptVisitor(
 
                 else -> {
                     // TODO throw better exception
-                    throw RuntimeException("Unexpected value for return")
+                    throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
                 }
             }
 

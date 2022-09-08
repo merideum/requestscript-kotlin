@@ -1,4 +1,4 @@
-@file:Suppress("TooManyFunctions", "TooGenericExceptionThrown")
+@file:Suppress("TooManyFunctions")
 
 package org.merideum.core.interpreter.visitors
 
@@ -6,6 +6,8 @@ import org.merideum.antlr.MerideumParser
 import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.WrappedValue
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.error.UnknownVariableIdentifierException
 import org.merideum.core.interpreter.type.IntValue
@@ -25,10 +27,10 @@ class ExpressionVisitor(
 
     override fun visitStringExpression(ctx: MerideumParser.StringExpressionContext): WrappedValue<StringValue> {
         val content = ctx.stringContent().joinToString("") {
-            // TODO throw better exception
             when (val stringPart = parent.visit(it).value) {
                 is Variable<*> -> {
-                    stringPart.value?.stringify() ?: throw RuntimeException("Could not stringify null value")
+                    stringPart.value?.stringify()
+                        ?: throw ScriptSyntaxException("Could not stringify null value", ScriptErrorType.STRING)
                 }
 
                 is TypedValue<*> -> {
@@ -39,7 +41,7 @@ class ExpressionVisitor(
                     stringPart
                 }
 
-                else -> throw RuntimeException("Could not stringify content")
+                else -> throw ScriptSyntaxException("Could not stringify content", ScriptErrorType.STRING)
             }
         }
 
@@ -77,14 +79,16 @@ class ExpressionVisitor(
         // Check that the list elements are the same type
         val elementsAreSame = elements.groupBy { it.type }.size == 1
 
-        // TODO Throw better exception
         val innerType = if (elementsAreSame) {
             elements.first().type
-        } else throw RuntimeException("Lists must be singleton")
+        } else throw ScriptSyntaxException("Lists must be singleton", ScriptErrorType.LIST_DECLARATION)
 
-        // TODO throw better exception
         val listType =
-            innerType.listType() ?: throw RuntimeException("Could not create list from inner type $innerType")
+            innerType.listType()
+                ?: throw ScriptSyntaxException(
+                    "Could not create list from inner type $innerType",
+                    ScriptErrorType.LIST_DECLARATION
+                )
 
         // TODO make sure this cast succeeds
         return WrappedValue(listType.newValue(elements))
@@ -101,15 +105,17 @@ class ExpressionVisitor(
     override fun visitListElementAssignment(
         ctx: MerideumParser.ListElementAssignmentContext
     ): WrappedValue<TypedValue<*>> {
-        val expression = parent.visit(ctx.expression()).value!!
 
-        val value = if (expression is Variable<*>) {
-            expression.value
-        } else if (expression is TypedValue<*>) {
-            expression
-        } else {
-            // TODO throw better exception
-            throw RuntimeException("Could not get value from expression")
+        val value = when (val expression = parent.visit(ctx.expression()).value!!) {
+            is Variable<*> -> {
+                expression.value
+            }
+
+            is TypedValue<*> -> {
+                expression
+            }
+
+            else -> throw ScriptSyntaxException("Could not get value from expression", ScriptErrorType.LIST_DECLARATION)
         }
         return WrappedValue(value)
     }
@@ -146,8 +152,10 @@ class ExpressionVisitor(
             // TODO throw exception if TypedValue is null because the variable value has not yet been set.
             is Variable<*> -> assignment.value
 
-            // TODO better exception
-            else -> throw RuntimeException("Could not get value of type")
+            else -> throw ScriptSyntaxException(
+                "Could not get value from assignment",
+                ScriptErrorType.OBJECT_DECLARATION
+            )
         }
 
         // TODO make sure type declaration, if included, matches the expression value
@@ -163,14 +171,14 @@ class ExpressionVisitor(
         val caller = when (val callerExpression = parent.visit(ctx.expression()).value) {
             is Variable<*> -> callerExpression.value
             is ObjectValue -> callerExpression
-            //TODO throw better exception
-            else -> throw RuntimeException("Invalid type for field reference.")
+            else -> throw ScriptSyntaxException("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE)
         }
-        // TODO should a null object field reference return null and not throw exception?
-            ?: throw RuntimeException("Could not get field of null value")
+            // TODO should a null object field reference return null and not throw exception?
+            ?: throw ScriptSyntaxException("Could not get field of null value", ScriptErrorType.FIELD_REFERENCE)
 
         // TODO throw better exception
-        if (caller !is ObjectValue) throw RuntimeException("Invalid type for field reference.")
+        if (caller !is ObjectValue)
+            throw ScriptSyntaxException("Invalid type for field reference.", ScriptErrorType.FIELD_REFERENCE)
 
         val fieldName = ctx.simpleIdentifier().text
 
@@ -210,29 +218,26 @@ class ExpressionVisitor(
                 elementIndex.value
             }
 
-            else -> {
-                // TODO throw better error
-                throw RuntimeException("Cannot use value as index")
-            }
+            else -> throw ScriptSyntaxException("Cannot use value as index", ScriptErrorType.INDEXED_REFERENCE)
         }
 
         val elementValue = if (value is ListValue<*, *>) {
             if (indexValue!!.type == Type.INT) {
                 value.getValue(indexValue.get() as Int)
             } else {
-                // TODO throw better error
-                throw RuntimeException("Only type 'int' allowed for list index")
+                throw ScriptSyntaxException("Only type 'int' allowed for list index", ScriptErrorType.INDEXED_REFERENCE)
             }
         } else if (value is ObjectValue) {
             if (indexValue!!.type == Type.STRING) {
                 value.getField(indexValue.get() as String)
             } else {
-                // TODO throw better error
-                throw RuntimeException("Only type 'string' allowed for object index")
+                throw ScriptSyntaxException(
+                    "Only type 'string' allowed for object index",
+                    ScriptErrorType.INDEXED_REFERENCE
+                )
             }
         } else {
-            // TODO throw better error
-            throw RuntimeException("Could not index expression")
+            throw ScriptSyntaxException("Could not index expression", ScriptErrorType.INDEXED_REFERENCE)
         }
 
         return WrappedValue(elementValue)

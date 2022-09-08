@@ -1,5 +1,3 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package org.merideum.core.interpreter.utils
 
 import org.merideum.core.interpreter.Resource
@@ -29,8 +27,7 @@ class TestResource<T>(override val name: String, override val path: String, over
     }
 
     override fun getValue(): TypedValue<*> {
-        // TODO throw better exception
-        throw RuntimeException("Cannot get value of Resource")
+        throw IllegalCallerException("Cannot get value of Resource")
     }
 }
 
