@@ -13,6 +13,7 @@ import org.merideum.core.interpreter.ReturnTermination
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.error.ScriptRuntimeException
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.visitors.ScriptVisitor
 
 class SimpleScriptExecutor(val resourceResolver: ResourceResolver) : ScriptExecutor {
@@ -42,7 +43,9 @@ class SimpleScriptExecutor(val resourceResolver: ResourceResolver) : ScriptExecu
         } catch (rt: ReturnTermination) {
             ScriptExecutionResult(rt.value)
         } catch (e: ScriptRuntimeException) {
-            ScriptExecutionResult(null, ErrorsContainer(e))
+            ScriptExecutionResult(null, ErrorsContainer(e, null))
+        } catch (e: ScriptSyntaxException) {
+            ScriptExecutionResult(null, ErrorsContainer(null, e))
         }
     }
 }
