@@ -9,12 +9,13 @@ data class ScriptContext(
     inline fun <reified T> getOrThrow(key: String): T {
         val attribute = context[key]
 
-        // TODO throw better exception
         return if (attribute != null && attribute is T) {
             attribute
         } else throw ScriptRuntimeException(
             "Could not get attribute '$key' from script context",
-            ScriptErrorType.SCRIPT_CONTEXT
+            ScriptErrorType.SCRIPT_CONTEXT,
+            null,
+            null
         )
     }
 }

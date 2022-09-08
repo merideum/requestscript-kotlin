@@ -4,7 +4,9 @@ package org.merideum.ktor.server.resource
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import org.antlr.v4.runtime.RuleContext
 import org.merideum.core.api.serializer.ObjectSerializer
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.MerideumObject
@@ -31,39 +33,61 @@ class InternalResourceTests : DescribeSpec({
     val context = ScriptContext()
 
     describe("callFunction") {
+        var functionContext = FunctionCallContext("sayHello", emptyList(), context, RuleContext.EMPTY)
 
         it("should resolve and call function") {
-            variable.callFunction(context, "sayHello", emptyList()).get() shouldBe "Hello World!"
+            variable.callFunction(functionContext).get() shouldBe "Hello World!"
         }
 
         describe("callFunction() with a parameter") {
             it("should resolve and use parameter passed in") {
-                variable.callFunction(context, "sayHello", listOf(StringValue("Merideum")))
-                    .get() shouldBe "Hello Merideum!"
+                functionContext = FunctionCallContext(
+                    "sayHello",
+                    listOf(StringValue("Merideum")),
+                    context,
+                    RuleContext.EMPTY
+                )
+
+                variable.callFunction(functionContext).get() shouldBe "Hello Merideum!"
             }
         }
 
         describe("callFunction() with many parameters") {
             it("should resolve and use parameters passed in") {
-                variable.callFunction(context, "guessAge", listOf(StringValue("Merideum"), IntValue(0)))
-                    .get() shouldBe "Hello Merideum! Are you 0 years old?"
+                functionContext = FunctionCallContext(
+                    "guessAge",
+                    listOf(StringValue("Merideum"), IntValue(0)),
+                    context,
+                    RuleContext.EMPTY
+                )
+
+                variable.callFunction(functionContext).get() shouldBe "Hello Merideum! Are you 0 years old?"
             }
         }
 
         describe("parameter is a class with a serializer") {
             it("should resolve and call function with deserialized parameter") {
-                variable.callFunction(
-                    context,
+                functionContext = FunctionCallContext(
                     "sayHello",
-                    listOf(ObjectValue(mutableMapOf("name" to StringValue("Merideum"))))
-                ).get() shouldBe "Hello Merideum"
+                    listOf(ObjectValue(mutableMapOf("name" to StringValue("Merideum")))),
+                    context,
+                    RuleContext.EMPTY
+                )
+
+                variable.callFunction(functionContext).get() shouldBe "Hello Merideum"
             }
         }
 
         describe("return type is a class with a serializer") {
             it("should resolve and call function returning serialized value") {
-                variable.callFunction(context, "greet", listOf(StringValue("Merideum")))
-                    .get() shouldBe mapOf("message" to "Hello Merideum")
+                functionContext = FunctionCallContext(
+                    "greet",
+                    listOf(StringValue("Merideum")),
+                    context,
+                    RuleContext.EMPTY
+                )
+
+                variable.callFunction(functionContext).get() shouldBe mapOf("message" to "Hello Merideum")
             }
         }
     }

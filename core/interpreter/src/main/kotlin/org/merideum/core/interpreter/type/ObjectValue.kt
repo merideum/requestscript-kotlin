@@ -1,19 +1,19 @@
 package org.merideum.core.interpreter.type
 
-import org.merideum.core.interpreter.ScriptContext
+import org.merideum.core.interpreter.FunctionCallContext
 import org.merideum.core.interpreter.error.FunctionNotFoundException
-import org.merideum.core.interpreter.error.ScriptErrorType
-import org.merideum.core.interpreter.error.ScriptRuntimeException
 
 data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
     TypedValue<MutableMap<String, TypedValue<*>>> {
 
     override val type = Type.OBJECT
 
-    override fun callFunction(context: ScriptContext, functionName: String, parameters: List<TypedValue<*>>): Any? {
-        if (value == null) throw FunctionNotFoundException(functionName)
+    override fun callFunction(context: FunctionCallContext): Any? {
+        with(context) {
+            if (value == null) throw FunctionNotFoundException(functionName, lineNumber, linePosition)
 
-        throw FunctionNotFoundException(functionName)
+            throw FunctionNotFoundException(functionName, lineNumber, linePosition)
+        }
     }
 
     override fun get(): MutableMap<String, Any?>? {
@@ -48,26 +48,13 @@ data class ObjectValue(override val value: MutableMap<String, TypedValue<*>>?) :
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun getField(name: String): TypedValue<*> {
-        // TODO throw better exception.
-        if (value == null) throw ScriptRuntimeException(
-            "Cannot retrieve field of 'null' 'object'",
-            ScriptErrorType.FIELD_REFERENCE
-        )
-
         // TODO throw exception if a structure entry is not found for the value entry (there always should be one)
-        return value[name]!!
+        return value!![name]!!
     }
 
     fun setField(key: String, fieldValue: TypedValue<*>) {
-        // TODO throw better exception.
-        if (value == null) throw ScriptRuntimeException(
-            "Cannot set field of 'null' 'object'",
-            ScriptErrorType.OBJECT_FIELD_ASSIGNMENT
-        )
-
-        value[key] = fieldValue
+        value!![key] = fieldValue
     }
 
     override fun toString(): String {

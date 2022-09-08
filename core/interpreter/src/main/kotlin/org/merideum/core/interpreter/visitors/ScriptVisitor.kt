@@ -73,7 +73,7 @@ class ScriptVisitor(
                 resourceResolver.resolve(resourceName)
             } else {
                 resourceResolver.resolve(resourceName, resourcePath)
-            } ?: throw ResourceResolutionException(resourceName)
+            } ?: throw ResourceResolutionException(resourceName, "")
 
             scope.declareAndAssignVariable(resourceIdentifier, resource, Modifier.CONST)
         }

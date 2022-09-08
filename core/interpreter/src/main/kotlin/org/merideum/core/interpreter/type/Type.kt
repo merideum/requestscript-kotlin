@@ -66,7 +66,7 @@ enum class Type(val declarationKey: String) {
                     value
                 }
 
-                else -> throw ScriptRuntimeException("Could not create new object from value", ScriptErrorType.VALUE)
+                else -> throw ScriptRuntimeException("Could not create new object from value", ScriptErrorType.VALUE, null, null)
             }
         }
 
@@ -135,14 +135,18 @@ enum class Type(val declarationKey: String) {
         override fun declareVariable(scope: VariableScope, name: String) {
             throw ScriptSyntaxException(
                 "Cannot declare a resource outside of an import statement",
-                ScriptErrorType.RESOURCE
+                ScriptErrorType.RESOURCE,
+                1,
+                1
             )
         }
 
         override fun newValue(value: Any?): TypedValue<*> {
             throw ScriptSyntaxException(
                 "Cannot declare a resource outside of an import statement",
-                ScriptErrorType.RESOURCE
+                ScriptErrorType.RESOURCE,
+                1,
+                1
             )
         }
 

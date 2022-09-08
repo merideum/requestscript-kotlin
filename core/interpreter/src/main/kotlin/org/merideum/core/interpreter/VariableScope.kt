@@ -30,7 +30,7 @@ data class VariableScope(
     fun declareAndAssignVariable(name: String, value: TypedValue<*>, modifier: Modifier) {
         val resolved = resolveVariable(name)
 
-        if (resolved != null) throw IdentifierAlreadyDeclaredException(name)
+        if (resolved != null) throw IdentifierAlreadyDeclaredException(name, "")
 
         variables[name] = Variable(name, value, modifier, value.type)
     }
@@ -40,9 +40,9 @@ data class VariableScope(
         val resolved = resolveVariable(name) ?: return
 
         // Cannot reassign a constant variable.
-        if (resolved.modifier == Modifier.CONST) throw IdentifierAlreadyDeclaredException(name)
+        if (resolved.modifier == Modifier.CONST) throw IdentifierAlreadyDeclaredException(name, "")
 
-        if (newValue.type != resolved.type) throw TypeMismatchedException(resolved.type, newValue.type)
+        if (newValue.type != resolved.type) throw TypeMismatchedException(resolved.type, newValue.type, "")
 
         variables[name] = Variable(name, newValue, resolved.modifier, resolved.type)
     }
