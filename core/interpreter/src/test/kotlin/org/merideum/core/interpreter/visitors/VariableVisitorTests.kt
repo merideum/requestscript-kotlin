@@ -18,10 +18,10 @@ class VariableVisitorTests : DescribeSpec({
     describe("variable declaration") {
         describe("const") {
             code = """
-        |request myRequest {
-        |  const test = 123
-        |}
-      """.trimMargin()
+                |request myRequest {
+                |  const test = 123
+                |}
+            """.trimMargin()
 
             it("should parse successfully and run") {
                 val variableScope = VariableScope(null, mutableMapOf())
@@ -43,11 +43,11 @@ class VariableVisitorTests : DescribeSpec({
 
             it("should reject re-assignment") {
                 code = """
-          |request myRequest {
-          |  const test = 123
-          |  test = 456
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const test = 123
+                    |  test = 456
+                    |}
+                """.trimMargin()
                 val variableScope = VariableScope(null, mutableMapOf())
 
                 shouldThrow<IdentifierAlreadyDeclaredException> {
@@ -69,10 +69,10 @@ class VariableVisitorTests : DescribeSpec({
 
             it("should reject declaration without assignment") {
                 code = """
-          |request myRequest {
-          |  const test
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const test
+                    |}
+                """.trimMargin()
                 val variableScope = VariableScope(null, mutableMapOf())
 
                 executeCode(code, variableScope)
@@ -86,10 +86,10 @@ class VariableVisitorTests : DescribeSpec({
 
             it("should allow type declaration") {
                 code = """
-          |request myRequest {
-          |  const test: string = "Foo"
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const test: string = "Foo"
+                    |}
+                """.trimMargin()
                 val variableScope = VariableScope(null, mutableMapOf())
 
                 executeCode(code, variableScope)
@@ -110,10 +110,10 @@ class VariableVisitorTests : DescribeSpec({
 
         describe("var") {
             code = """
-        |request myRequest {
-        |  var test = 123
-        |}
-      """.trimMargin()
+                |request myRequest {
+                |  var test = 123
+                |}
+            """.trimMargin()
 
             it("should add variable with ${Modifier.VAR} modifier and assigned value") {
                 val variableScope = VariableScope(null, mutableMapOf())
@@ -135,10 +135,10 @@ class VariableVisitorTests : DescribeSpec({
 
             it("can declare without assignment") {
                 code = """
-          |request myRequest {
-          |  var test: int
-          |}
-        """.trimMargin()
+                |request myRequest {
+                |  var test: int
+                |}
+                """.trimMargin()
 
                 val variableScope = VariableScope(null, mutableMapOf())
 
@@ -159,11 +159,11 @@ class VariableVisitorTests : DescribeSpec({
 
             it("can be reassigned") {
                 code = """
-          |request myRequest {
-          |  var test = 123
-          |  test = 456
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  var test = 123
+                    |  test = 456
+                    |}
+                """.trimMargin()
 
                 val variableScope = VariableScope(null, mutableMapOf())
 
@@ -188,14 +188,14 @@ class VariableVisitorTests : DescribeSpec({
         describe("field not already set") {
             it("adds new field") {
                 code = """
-          |request myRequest {
-          |  const person = {
-          |    firstName = "Foo"
-          |  }
-          |  
-          |  person.lastName = "Bar"
-          |}
-        """.trimMargin()
+                |request myRequest {
+                |  const person = {
+                |    firstName = "Foo"
+                |  }
+                |  
+                |  person.lastName = "Bar"
+                |}
+                """.trimMargin()
 
                 val variableScope = VariableScope(null, mutableMapOf())
 
@@ -220,14 +220,14 @@ class VariableVisitorTests : DescribeSpec({
         describe("field already set") {
             it("can be reassigned") {
                 code = """
-          |request myRequest {
-          |  const person = {
-          |    firstName = "Foo"
-          |  }
-          |  
-          |  person.firstName = "Bar"
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const person = {
+                    |    firstName = "Foo"
+                    |  }
+                    |  
+                    |  person.firstName = "Bar"
+                    |}
+                """.trimMargin()
 
                 val variableScope = VariableScope(null, mutableMapOf())
 

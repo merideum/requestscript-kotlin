@@ -49,7 +49,7 @@ class ExpressionVisitor(
     }
 
     /**
-     * Merideum code that has been embedded into a string.
+     * Code that has been embedded into a string.
      *
      * Example:
      * const name = "World"
@@ -72,19 +72,11 @@ class ExpressionVisitor(
 
     override fun visitListExpression(ctx: MerideumParser.ListExpressionContext): WrappedValue<TypedValue<*>> {
         val elements =
-            visitListElementAssignments(ctx.listElementAssignments()).value ?: return WrappedValue(
-                null
-            )
+            visitListElementAssignments(ctx.listElementAssignments()).value ?: return WrappedValue(null)
 
-        // Check that the list elements are the same type
-        val elementsAreSame = elements.groupBy { it.type }.size == 1
+        val innerType = elements.first().type
 
-        val innerType = if (elementsAreSame) {
-            elements.first().type
-        } else throw ScriptSyntaxException("Lists must be singleton", ScriptErrorType.LIST_DECLARATION)
-
-        val listType =
-            innerType.listType()
+        val listType = innerType.listType()
                 ?: throw ScriptSyntaxException(
                     "Could not create list from inner type $innerType",
                     ScriptErrorType.LIST_DECLARATION
@@ -94,10 +86,27 @@ class ExpressionVisitor(
         return WrappedValue(listType.newValue(elements))
     }
 
+    /**
+     * Process each element assignment in the list assignment.
+     * The first element determines the list type. If subsequent elements do not have the same type, throw an exception.
+     */
     override fun visitListElementAssignments(
         ctx: MerideumParser.ListElementAssignmentsContext
     ): WrappedValue<List<TypedValue<*>>> {
-        val elements = ctx.listElementAssignment().map { visitListElementAssignment(it).value!! }
+        var listType: Type? = null
+        val elements = ctx.listElementAssignment().map {
+            // TODO throw a syntax exception if the assignment is not present.
+            visitListElementAssignment(it).value!!.also { newElement ->
+                // Make sure the new element matches the list type.
+                if (listType != null) {
+                    if (newElement.type != listType) {
+                        throw ScriptSyntaxException("Lists must be singleton", ScriptErrorType.LIST_DECLARATION)
+                    }
+                } else {
+                    listType = newElement.type
+                }
+            }
+        }
 
         return WrappedValue(elements)
     }

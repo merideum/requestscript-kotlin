@@ -16,14 +16,7 @@ import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.visitors.ScriptVisitor
 
-class SimpleScriptExecutor(val resourceResolver: ResourceResolver) : ScriptExecutor {
-
-    private fun lexer(code: String) = MerideumLexer(CharStreams.fromString(code))
-
-    private fun parse(code: String) =
-        MerideumParser(CommonTokenStream(lexer(code))).apply {
-            buildParseTree = true
-        }.parse()
+class SimpleScriptExecutor(private val resourceResolver: ResourceResolver) : ScriptExecutor {
 
     override fun execute(code: String, context: ScriptContext): ScriptExecutionResult {
         val parseTree: ParseTree = parse(code)
@@ -48,4 +41,11 @@ class SimpleScriptExecutor(val resourceResolver: ResourceResolver) : ScriptExecu
             ScriptExecutionResult(null, ErrorsContainer(null, e))
         }
     }
+
+    private fun lexer(code: String) = MerideumLexer(CharStreams.fromString(code))
+
+    private fun parse(code: String) =
+        MerideumParser(CommonTokenStream(lexer(code))).apply {
+            buildParseTree = true
+        }.parse()
 }

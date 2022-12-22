@@ -42,6 +42,10 @@ class ScriptVisitor(
     override fun visitScriptDefinition(ctx: MerideumParser.ScriptDefinitionContext): WrappedValue<Unit> {
         val scriptType = ScriptType.fromString(ctx.scriptType().text)
 
+        if (ctx.simpleIdentifier() == null) {
+            throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
+        }
+
         val scriptParameters = if (ctx.scriptParameterBlock() != null) {
             this.visitScriptParameterBlock(ctx.scriptParameterBlock())
         } else null
@@ -157,13 +161,55 @@ class ScriptVisitor(
     /**
      * Returning a value from the script throws [ReturnTermination] with the value.
      * The implementation of [ScriptExecutor] should catch it and return the value.
+     *
+     * The value is always a JSON object (for consistency) with the following rules:
+     *      * If the return value is an object, then we return the object itself, as a shorthand.
+     *        Ex:
+     *          const myVar = {
+     *              "foo" = "asdf"
+     *          }
+     *          return myVar
+     *
+     *        Becomes:
+     *          {
+     *             "output": {
+     *                "foo": "asdf"
+     *             }
+     *          }
+     *      * If the return value is a variable,
+     *        then we return the value of the variable under the key with its variable name.
+     *
+     *        Ex:
+     *        const myVar = 1234
+     *        return myVar
+     *
+     *        Becomes:
+     *        {
+     *          "output": {
+     *            "myVar": 1234
+     *          }
+     *        }
+     *
+     *      * If the return value is a "raw" value, and not an object, return the value with the key "value".
+     *        Ex:
+     *        return "asdf"
+     *
+     *        Becomes:
+     *        {
+     *            "output": {
+     *                "value": "asdf"
+     *            }
+     *        }
      */
     override fun visitReturnStatement(ctx: MerideumParser.ReturnStatementContext): WrappedValue<Unit> {
         val returnValue: Map<String, Any?> =
             when (val returnExpression = this.visit(ctx.expression()).value!!) {
+                /**
+                 * If the return is an object,
+                 * then we return the object at the root level instead of nested in a property.
+                  */
                 is ObjectValue -> {
-                    // TODO throw better exception
-                    returnExpression.get()?.toMap()
+                    returnExpression.get()
                         ?: throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
                 }
 
@@ -184,7 +230,6 @@ class ScriptVisitor(
                 }
 
                 else -> {
-                    // TODO throw better exception
                     throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
                 }
             }

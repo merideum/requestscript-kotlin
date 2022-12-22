@@ -7,7 +7,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberFunctions
 
-class FunctionParser(val serializers: Map<String, ObjectSerializer<*>>) {
+class FunctionParser(private val serializers: Map<String, ObjectSerializer<*>>) {
     private val kotlinList = "kotlin.collections.List"
     private val kotlinInt = "kotlin.Int"
     private val kotlinString = "kotlin.String"
@@ -18,18 +18,16 @@ class FunctionParser(val serializers: Map<String, ObjectSerializer<*>>) {
     fun functionsForInstance(instance: Any): Map<String, ResourceFunction> {
         // By default, assume all public functions are usable.
         val functions = instance::class.declaredMemberFunctions.filter { it.visibility == KVisibility.PUBLIC }
-        val functionMap = mutableMapOf<String, ResourceFunction>()
 
-        functions.forEach {
-            val parameters = functionParameters(it.parameters)
-            val returnType = getType(it.returnType.toString())
+        return functions.associate(::buildResourceFunction)
+    }
 
-            val mapKey = buildMapKey(it.name, parameters)
+    private fun buildResourceFunction(kFunction: KFunction<*>): Pair<String, ResourceFunction> {
+        val name = kFunction.name
+        val parameters = functionParameters(kFunction.parameters)
+        val returnType = getType(kFunction.returnType.toString())
 
-            functionMap[mapKey] = ResourceFunction(it.name, parameters, returnType, it)
-        }
-
-        return functionMap.toMap()
+        return Pair(buildMapKey(name, parameters), ResourceFunction(name, parameters, returnType, kFunction))
     }
 
     private fun functionParameters(parameters: List<KParameter>): List<FunctionParameter> {
@@ -44,21 +42,20 @@ class FunctionParser(val serializers: Map<String, ObjectSerializer<*>>) {
 
     // TODO add error checking to make sure a serializer exists for the object.
     private fun getType(type: String): FunctionType {
-        return if (type == kotlinString) {
-            FunctionType(Type.STRING, "String", null)
-        } else if (type == kotlinInt) {
-            FunctionType(Type.INT, "Int", null)
-        } else if (type.startsWith(kotlinList)) {
-            when (type) {
-                kotlinListInt -> FunctionType(Type.LIST_INT, "List<Int>", Type.INT)
-                kotlinListString -> FunctionType(Type.LIST_STRING, "List<String>", Type.STRING)
-                else -> {
-                    val typeName = parseForListType(type)
-                    FunctionType(Type.LIST_OBJECT, typeName, Type.OBJECT, serializers[parseInnerType(typeName)])
-                }
-            }
-        } else {
-            FunctionType(Type.OBJECT, type, null, serializers[type])
+        return when {
+            type == kotlinString -> FunctionType(Type.STRING, "String", null)
+            type == kotlinInt -> FunctionType(Type.INT, "Int", null)
+            type.startsWith(kotlinList) -> getListType(type)
+            else -> FunctionType(Type.OBJECT, type, null, serializers[type])
+        }
+    }
+
+    private fun getListType(type: String) = when (type) {
+        kotlinListInt -> FunctionType(Type.LIST_INT, "List<Int>", Type.INT)
+        kotlinListString -> FunctionType(Type.LIST_STRING, "List<String>", Type.STRING)
+        else -> {
+            val typeName = parseForListType(type)
+            FunctionType(Type.LIST_OBJECT, typeName, Type.OBJECT, serializers[parseInnerType(typeName)])
         }
     }
 
