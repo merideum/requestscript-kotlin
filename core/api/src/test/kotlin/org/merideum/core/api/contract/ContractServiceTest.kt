@@ -29,9 +29,7 @@ class ContractServiceTest: DescribeSpec({
     describe("save") {
         it("should create contract file") {
             service.prepare()
-
-
-
+            
             val id = service.save(script)
 
             val savedFile = File("./contracts/$id")
