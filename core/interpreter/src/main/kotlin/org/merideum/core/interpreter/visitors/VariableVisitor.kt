@@ -59,7 +59,10 @@ class VariableVisitor(
         return WrappedValue.nothing()
     }
 
-    private fun checkThatDeclaredTypeMatchesAssignedValueType(ctx: MerideumParser.TypeDeclarationContext, assignedValueType: Type) {
+    private fun checkThatDeclaredTypeMatchesAssignedValueType(
+        ctx: MerideumParser.TypeDeclarationContext,
+        assignedValueType: Type
+    ) {
         parent.visitTypeDeclaration(ctx).also {
             val declaredType = it.value!!
 

@@ -176,7 +176,9 @@ class ScriptVisitor(
      *                "foo": "asdf"
      *             }
      *          }
-     *      * If the return value is a variable, then we return the value of the variable under the key with its variable name.
+     *      * If the return value is a variable,
+     *        then we return the value of the variable under the key with its variable name.
+     *
      *        Ex:
      *        const myVar = 1234
      *        return myVar
@@ -202,7 +204,10 @@ class ScriptVisitor(
     override fun visitReturnStatement(ctx: MerideumParser.ReturnStatementContext): WrappedValue<Unit> {
         val returnValue: Map<String, Any?> =
             when (val returnExpression = this.visit(ctx.expression()).value!!) {
-                // If the return is an object, then we return the object at the root level instead of nested in a property.
+                /**
+                 * If the return is an object,
+                 * then we return the object at the root level instead of nested in a property.
+                  */
                 is ObjectValue -> {
                     returnExpression.get()
                         ?: throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
