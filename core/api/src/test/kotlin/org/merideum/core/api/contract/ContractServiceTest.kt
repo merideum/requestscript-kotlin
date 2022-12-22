@@ -8,6 +8,12 @@ import java.io.File
 class ContractServiceTest: DescribeSpec({
     val service = ContractService()
 
+    val script = """
+        request myRequest {
+            return "Hello World!"
+        }
+    """.trimIndent()
+
     describe("prepare") {
         it("should create 'contract' directory if it does not exist") {
             service.prepare()
@@ -24,11 +30,7 @@ class ContractServiceTest: DescribeSpec({
         it("should create contract file") {
             service.prepare()
 
-            val script = """
-                request myRequest {
-                    return "Hello World!"
-                }
-            """.trimIndent()
+
 
             val id = service.save(script)
 
@@ -39,6 +41,21 @@ class ContractServiceTest: DescribeSpec({
 
             savedFile.delete()
             File("./contracts").delete()
+        }
+    }
+
+    describe("get") {
+        it("should get existing contract") {
+            service.prepare()
+
+            val createdContract = File("./contracts/asdf1234").also {
+                it.createNewFile()
+                it.writeText(script)
+            }
+
+            service.get("asdf1234") shouldBe script
+
+            createdContract.delete()
         }
     }
 })
