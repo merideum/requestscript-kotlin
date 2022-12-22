@@ -36,6 +36,7 @@ val Merideum = createApplicationPlugin(
             }
         }
     }
+
     application.routing {
         route("/merideum") {
 
@@ -64,7 +65,7 @@ val Merideum = createApplicationPlugin(
 
 class MerideumPluginConfiguration {
     val resources: MutableList<Resource<*>> = mutableListOf()
-    var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
+    private var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
 
     fun resources(configuration: ResourcesConfiguration.() -> Unit) {
         val config = ResourcesConfiguration(FunctionParser(serializers)).apply(configuration)

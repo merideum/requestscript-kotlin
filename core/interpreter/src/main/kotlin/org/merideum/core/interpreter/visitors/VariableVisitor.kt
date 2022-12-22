@@ -8,6 +8,7 @@ import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.toModifier
 import org.merideum.core.interpreter.type.ObjectValue
+import org.merideum.core.interpreter.type.Type
 import org.merideum.core.interpreter.type.TypedValue
 
 class VariableVisitor(
@@ -23,6 +24,18 @@ class VariableVisitor(
         return WrappedValue.nothing()
     }
 
+    /**
+     * Declare a variable and assign a value.
+     *
+     * Ex:
+     * const myVariable: int = 1234
+     *
+     * The type declaration is optional, but must match the value type if included.
+     * A [TypeMismatchedException] is thrown if they do not match.
+     *
+     * Ex:
+     * const myVariable = 1234
+     */
     override fun visitVariableDeclarationAssignment(
         ctx: MerideumParser.VariableDeclarationAssignmentContext
     ): WrappedValue<*> {
@@ -32,22 +45,28 @@ class VariableVisitor(
         // ANTLR4 may still report back a null assignment if the syntax is broken.
         if (ctx.assignment() == null) return WrappedValue.nothing()
 
-        val value = parent.visitAssignment(ctx.assignment()).value
+        val assignedValue = parent.visitAssignment(ctx.assignment()).value
 
-        if (value is TypedValue<*>) {
-            val declaredType = if (ctx.typeDeclaration() != null) {
-                parent.visitTypeDeclaration(ctx.typeDeclaration())
-            } else null
+        if (assignedValue is TypedValue<*>) {
+            val typeDeclarationContext = ctx.typeDeclaration()
+            if (typeDeclarationContext != null) {
+                checkThatDeclaredTypeMatchesAssignedValueType(typeDeclarationContext, assignedValue.type)
+            }
 
-            if (declaredType != null && value.type != declaredType.value) throw TypeMismatchedException(
-                declaredType.value!!,
-                value.type
-            )
-
-            parent.scope.declareAndAssignVariable(name, value, modifier)
+            parent.scope.declareAndAssignVariable(name, assignedValue, modifier)
         }
 
         return WrappedValue.nothing()
+    }
+
+    private fun checkThatDeclaredTypeMatchesAssignedValueType(ctx: MerideumParser.TypeDeclarationContext, assignedValueType: Type) {
+        parent.visitTypeDeclaration(ctx).also {
+            val declaredType = it.value!!
+
+            if (assignedValueType != declaredType) {
+                throw TypeMismatchedException(declaredType, assignedValueType)
+            }
+        }
     }
 
     override fun visitVariableReassignment(ctx: MerideumParser.VariableReassignmentContext): WrappedValue<*> {

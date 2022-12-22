@@ -14,24 +14,24 @@ class FunctionVisitor(
     private val parent: ScriptVisitor
 ) : MerideumParserBaseVisitor<WrappedValue<*>>() {
 
+    /**
+     * Calling a function of a value. Functions of null values cannot be called.
+     *
+     * Ex:
+     * const sentenceLength = "Hello World".length()
+     *
+     * Functions are implemented by the TypedValue.
+     */
     override fun visitFunctionCallExpression(ctx: MerideumParser.FunctionCallExpressionContext): WrappedValue<*> {
         val caller = getFunctionCaller(parent.visit(ctx.expression()).value)
 
         // Cannot call functions of null values.
         if (caller != null) {
-            val functionAttributes =
-                this.visitFunctionCall(ctx.functionCall()).value as FunctionCallAttributes
+            val functionAttributes = this.visitFunctionCall(ctx.functionCall()).value as FunctionCallAttributes
             val parameterValues = mapFunctionParameterValues(functionAttributes.parameters)
 
-            return WrappedValue(
-                caller.callFunction(
-                    parent.context,
-                    functionAttributes.name,
-                    parameterValues
-                )
-            )
+            return WrappedValue(caller.callFunction(parent.context, functionAttributes.name, parameterValues))
         } else {
-            // TODO Replace with better Exception class.
             throw ScriptSyntaxException("Cannot call function of null value.", ScriptErrorType.FUNCTION_CALL)
         }
     }

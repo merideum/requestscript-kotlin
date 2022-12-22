@@ -6,7 +6,7 @@ import org.merideum.core.interpreter.type.list.ObjectListValue
 import org.merideum.core.interpreter.type.list.StringListValue
 
 /**
- * Classes in this file are used to build Merideum represented values from Kotlin
+ * A DSL for building a MerideumObject just like a map.
  */
 class MerideumObject {
     private val values: MutableMap<String, TypedValue<*>> = mutableMapOf()
