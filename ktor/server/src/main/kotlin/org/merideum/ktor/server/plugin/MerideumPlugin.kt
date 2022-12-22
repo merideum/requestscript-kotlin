@@ -8,16 +8,19 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.merideum.core.api.MerideumResourceResolver
 import org.merideum.core.api.SimpleScriptExecutor
+import org.merideum.core.api.contract.ContractService
 import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.ktor.server.ResponseBodySerializer
+import org.merideum.ktor.server.SerializableContractResponse
 import org.merideum.ktor.server.SerializableResponseBodyWithErrors
 import org.merideum.ktor.server.SerializableResponseBodyWithOutput
 import org.merideum.ktor.server.resource.InternalResource
@@ -28,6 +31,8 @@ val Merideum = createApplicationPlugin(
 ) {
     val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
     val executor = SimpleScriptExecutor(resourceResolver)
+    val contractService = ContractService()
+    contractService.prepare()
 
     application.install(StatusPages) {
         exception<Throwable> { call, cause ->
@@ -58,6 +63,25 @@ val Merideum = createApplicationPlugin(
                 }
 
                 call.respond(responseBody)
+            }
+
+            route("/contract") {
+                post {
+
+                    val requestRaw = this.call.receiveText()
+
+                    val id = contractService.save(requestRaw)
+
+                    call.respond(SerializableContractResponse(id))
+                }
+
+                get("/{id}") {
+                    val id = call.parameters["id"] ?: ""
+
+                    val contract = contractService.get(id)
+
+                    call.respondText(contract)
+                }
             }
         }
     }

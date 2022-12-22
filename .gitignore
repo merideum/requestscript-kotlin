@@ -40,3 +40,6 @@ out/
 *.g4
 gen/
 *.tokens
+
+### Merideum ###
+contracts/
