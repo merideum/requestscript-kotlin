@@ -70,6 +70,27 @@ class ScriptVisitorTests : DescribeSpec({
 
                     result["foo"] shouldBe "Hello World!"
                 }
+
+                it("handles more than one parameter") {
+                    val code = """
+                        |contract myContract(foo: string, count: int) {
+                        |    return {
+                        |        foo = foo,
+                        |        count = count
+                        |    }
+                        |}
+                    """.trimMargin()
+
+                    val context = ScriptContext(parameters = mapOf("foo" to "Hello World!", "count" to 400))
+
+                    val result = executeCode(code = code, context = context)
+                        .shouldNotBeNull()
+
+                    result shouldHaveSize 2
+
+                    result["foo"] shouldBe "Hello World!"
+                    result["count"] shouldBe 400
+                }
             }
 
             describe("parameter values not found") {
@@ -104,7 +125,8 @@ class ScriptVisitorTests : DescribeSpec({
                     }
 
                     exception.type shouldBe ScriptErrorType.SCRIPT_DEFINITION
-                    exception.message shouldBe "The type of the value does not match the type declaration for parameter: foo"
+                    exception.message shouldBe "The type of the value does not " +
+                        "match the type declaration for parameter: foo"
                 }
             }
         }

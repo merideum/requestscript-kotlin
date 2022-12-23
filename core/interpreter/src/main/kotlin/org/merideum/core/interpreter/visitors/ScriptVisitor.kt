@@ -3,6 +3,7 @@
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
+import org.merideum.antlr.MerideumParser.ScriptDefinitionContext
 import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.Modifier
 import org.merideum.core.interpreter.ResourceResolver
@@ -15,7 +16,6 @@ import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.core.interpreter.error.ScriptErrorType
 import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
-import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.script.ScriptType
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.ObjectValue
@@ -41,28 +41,9 @@ class ScriptVisitor(
      * Parameters are already injected into the [VariableScope] when the [ScriptVisitor] is instantiated.
      * Parameters are not allowed on a Request [ScriptType].
      */
-    override fun visitScriptDefinition(ctx: MerideumParser.ScriptDefinitionContext): WrappedValue<Unit> {
-        val scriptType = ScriptType.fromString(ctx.scriptType().text)
-
-        if (ctx.simpleIdentifier() == null) {
-            throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
-        }
-
-        val scriptParametersBlock = ctx.scriptParameterBlock()
-
-        // TODO validate contract script definition
-        if (scriptType == ScriptType.REQUEST) {
-            // TODO throw named exception
-            if (scriptParametersBlock != null) {
-                throw ScriptSyntaxException(
-                    "Cannot declare parameters with script type 'request'",
-                    ScriptErrorType.SCRIPT_DEFINITION
-                )
-            }
-        } else if (scriptType == ScriptType.CONTRACT) {
-            // Get every script parameter and add each as a CONST variable.
-            visitScriptParameterBlock(scriptParametersBlock)
-        }
+    override fun visitScriptDefinition(ctx: ScriptDefinitionContext): WrappedValue<Unit> {
+        // Validate the script definition and if necessary, add parameters to the VariableScope
+        validateAndVisitScriptDefinition(ctx)
 
         // Interpret the script, executing all code within the block.
         this.visit(ctx.block())
@@ -70,10 +51,28 @@ class ScriptVisitor(
         return WrappedValue.nothing()
     }
 
-    override fun visitScriptParameterBlock(ctx: MerideumParser.ScriptParameterBlockContext): WrappedValue<Unit> {
-        visitScriptParameters(ctx.scriptParameters())
+    private fun validateAndVisitScriptDefinition(scriptDefinitionContext: ScriptDefinitionContext) {
+        val scriptType = ScriptType.fromString(scriptDefinitionContext.scriptType().text)
 
-        return WrappedValue.nothing()
+        if (scriptDefinitionContext.simpleIdentifier() == null) {
+            throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
+        }
+
+        val scriptParametersContext = scriptDefinitionContext.scriptParameters()
+
+        // TODO validate contract script definition
+        if (scriptType == ScriptType.REQUEST) {
+            // TODO throw named exception
+            if (scriptParametersContext != null) {
+                throw ScriptSyntaxException(
+                    "Cannot declare parameters with script type 'request'",
+                    ScriptErrorType.SCRIPT_DEFINITION
+                )
+            }
+        } else if (scriptType == ScriptType.CONTRACT) {
+            // Get every script parameter and add each as a CONST variable.
+            visitScriptParameters(scriptParametersContext)
+        }
     }
 
     override fun visitScriptParameters(ctx: MerideumParser.ScriptParametersContext?): WrappedValue<Unit> {
@@ -91,6 +90,7 @@ class ScriptVisitor(
             throw ScriptRuntimeException("Value not present for parameter: $name", ScriptErrorType.SCRIPT_DEFINITION)
         }
 
+        @Suppress("SwallowedException")
         val typedValue = try {
             type.newValue(parameterValue)
         } catch (e: ClassCastException) {

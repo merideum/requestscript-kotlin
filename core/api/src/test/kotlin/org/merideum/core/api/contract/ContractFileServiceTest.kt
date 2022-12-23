@@ -5,7 +5,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import java.io.File
 
-class ContractServiceTest: DescribeSpec({
+class ContractFileServiceTest: DescribeSpec({
     val service = ContractFileHandler()
 
     val script = """
@@ -19,8 +19,6 @@ class ContractServiceTest: DescribeSpec({
             val contractDirectory = File("./contracts")
 
             contractDirectory.isDirectory.shouldBeTrue()
-
-            contractDirectory.delete()
         }
     }
 
@@ -34,7 +32,6 @@ class ContractServiceTest: DescribeSpec({
             savedFile.readText() shouldBe script
 
             savedFile.delete()
-            File("./contracts").delete()
         }
     }
 

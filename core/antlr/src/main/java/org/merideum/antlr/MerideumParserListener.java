@@ -38,16 +38,6 @@ public interface MerideumParserListener extends ParseTreeListener {
 	 */
 	void exitScriptType(MerideumParser.ScriptTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MerideumParser#scriptParameterBlock}.
-	 * @param ctx the parse tree
-	 */
-	void enterScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MerideumParser#scriptParameterBlock}.
-	 * @param ctx the parse tree
-	 */
-	void exitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MerideumParser#scriptParameters}.
 	 * @param ctx the parse tree
 	 */

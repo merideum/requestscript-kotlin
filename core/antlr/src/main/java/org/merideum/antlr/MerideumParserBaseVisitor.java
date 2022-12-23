@@ -39,13 +39,6 @@ public class MerideumParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitScriptParameters(MerideumParser.ScriptParametersContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

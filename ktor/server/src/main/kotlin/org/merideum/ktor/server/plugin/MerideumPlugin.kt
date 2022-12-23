@@ -100,7 +100,10 @@ val Merideum = createApplicationPlugin(
 
                         val requestBody = call.receive<SerializableContractRequestBody>()
 
-                        val executionResult = executor.execute(contract, ScriptContext(parameters = jsonObjectToMap(requestBody.parameters)))
+                        val executionResult = executor.execute(
+                            contract,
+                            ScriptContext(parameters = jsonObjectToMap(requestBody.parameters))
+                        )
 
                         val responseSerializer = ResponseBodySerializer()
                         val responseBody = if (executionResult.errors != null) {
