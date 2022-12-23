@@ -1,4 +1,4 @@
-// Generated from MerideumParser.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package org.merideum.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class MerideumParserBaseListener implements MerideumParserListener {
 	/**
 	 * {@inheritDoc}
@@ -71,6 +72,18 @@ public class MerideumParserBaseListener implements MerideumParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitScriptParameters(MerideumParser.ScriptParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterScriptParameter(MerideumParser.ScriptParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitScriptParameter(MerideumParser.ScriptParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

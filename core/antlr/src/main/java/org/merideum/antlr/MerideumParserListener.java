@@ -1,4 +1,4 @@
-// Generated from MerideumParser.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package org.merideum.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -57,6 +57,16 @@ public interface MerideumParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitScriptParameters(MerideumParser.ScriptParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MerideumParser#scriptParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptParameter(MerideumParser.ScriptParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MerideumParser#scriptParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptParameter(MerideumParser.ScriptParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MerideumParser#block}.
 	 * @param ctx the parse tree

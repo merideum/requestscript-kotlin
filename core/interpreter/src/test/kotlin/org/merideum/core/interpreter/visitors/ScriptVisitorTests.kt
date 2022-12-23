@@ -9,14 +9,18 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.every
 import io.mockk.mockk
 import org.merideum.core.interpreter.Modifier
 import org.merideum.core.interpreter.ResourceResolver
+import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.core.interpreter.error.ResourceResolutionException
+import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.StringValue
 import org.merideum.core.interpreter.utils.TestResource
@@ -27,6 +31,46 @@ class ScriptVisitorTests : DescribeSpec({
 
     beforeEach {
         resourceResolver = mockk()
+    }
+
+    describe("script parameters") {
+        describe("request") {
+            it("throws exception") {
+                val code = """
+                    |request myRequest(foo: String) {
+                    |
+                    |}
+                """.trimMargin()
+
+                val exception = shouldThrow<ScriptSyntaxException> {
+                    executeCode(code)
+                }
+
+                exception.type shouldBe ScriptErrorType.SCRIPT_DEFINITION
+                exception.message shouldBe "Cannot declare parameters with script type 'request'"
+            }
+        }
+
+        describe("contract") {
+            describe("populated parameters") {
+                it("should add parameters as variables to the main scope") {
+                    val code = """
+                        |contract myContract(foo: string) {
+                        |    return foo
+                        |}
+                    """.trimMargin()
+
+                    val context = ScriptContext(parameters = mapOf("foo" to "Hello World!"))
+
+                    val result = executeCode(code = code, context = context)
+                        .shouldNotBeNull()
+
+                    result.shouldHaveSize(1)
+
+                    result["foo"] shouldBe "Hello World!"
+                }
+            }
+        }
     }
 
     describe("return value") {

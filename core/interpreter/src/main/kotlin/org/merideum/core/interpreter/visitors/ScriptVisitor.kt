@@ -46,23 +46,48 @@ class ScriptVisitor(
             throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
         }
 
-        val scriptParameters = if (ctx.scriptParameterBlock() != null) {
-            this.visitScriptParameterBlock(ctx.scriptParameterBlock())
-        } else null
+        val scriptParametersBlock = ctx.scriptParameterBlock()
 
         // TODO validate contract script definition
         if (scriptType == ScriptType.REQUEST) {
             // TODO throw named exception
-            if (scriptParameters != null) {
+            if (scriptParametersBlock != null) {
                 throw ScriptSyntaxException(
                     "Cannot declare parameters with script type 'request'",
                     ScriptErrorType.SCRIPT_DEFINITION
                 )
             }
+        } else if (scriptType == ScriptType.CONTRACT) {
+            // Get every script parameter and add each as a CONST variable.
+            visitScriptParameterBlock(scriptParametersBlock)
         }
 
         // Interpret the script, executing all code within the block.
         this.visit(ctx.block())
+
+        return WrappedValue.nothing()
+    }
+
+    override fun visitScriptParameterBlock(ctx: MerideumParser.ScriptParameterBlockContext): WrappedValue<Unit> {
+        visitScriptParameters(ctx.scriptParameters())
+
+        return WrappedValue.nothing()
+    }
+
+    override fun visitScriptParameters(ctx: MerideumParser.ScriptParametersContext?): WrappedValue<Unit> {
+        ctx!!.scriptParameter().forEach(::visitScriptParameter)
+
+        return WrappedValue.nothing()
+    }
+
+    override fun visitScriptParameter(ctx: MerideumParser.ScriptParameterContext): WrappedValue<Unit> {
+        val name = ctx.simpleIdentifier().text
+
+        // TODO check that the types match.
+        val type = this.visitTypeDeclaration(ctx.typeDeclaration()).value!!
+        val parameterValue = context.parameters[name]
+
+        scope.declareAndAssignVariable(name, type.newValue(parameterValue), Modifier.CONST)
 
         return WrappedValue.nothing()
     }
