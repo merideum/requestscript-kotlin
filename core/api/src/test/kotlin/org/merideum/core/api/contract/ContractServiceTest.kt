@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import java.io.File
 
 class ContractServiceTest: DescribeSpec({
-    val service = ContractService()
+    val service = ContractFileHandler()
 
     val script = """
         request myRequest {
@@ -16,8 +16,6 @@ class ContractServiceTest: DescribeSpec({
 
     describe("prepare") {
         it("should create 'contract' directory if it does not exist") {
-            service.prepare()
-
             val contractDirectory = File("./contracts")
 
             contractDirectory.isDirectory.shouldBeTrue()
@@ -28,8 +26,6 @@ class ContractServiceTest: DescribeSpec({
 
     describe("save") {
         it("should create contract file") {
-            service.prepare()
-            
             val id = service.save(script)
 
             val savedFile = File("./contracts/$id")
@@ -44,8 +40,6 @@ class ContractServiceTest: DescribeSpec({
 
     describe("get") {
         it("should get existing contract") {
-            service.prepare()
-
             val createdContract = File("./contracts/asdf1234").also {
                 it.createNewFile()
                 it.writeText(script)

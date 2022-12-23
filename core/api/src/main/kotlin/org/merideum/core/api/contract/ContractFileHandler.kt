@@ -3,18 +3,22 @@ package org.merideum.core.api.contract
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
 
 /**
- * A Service to save, retrieve, and call contracts.
+ * A default implementation of the [ContractHandler] that saves contracts to the file system.
+ * This implementation should be replaced with a customized solution when long-term persistence is needed.
  */
-class ContractService {
+class ContractFileHandler: ContractHandler() {
     private val contractsFolder = "./contracts"
+
+    init {
+        prepare()
+    }
 
     /**
      * Creates the contract directory if it does not exist.
      */
-    fun prepare() {
+    private fun prepare() {
         if (!File(contractsFolder).isDirectory) {
             Files.createDirectory(Paths.get(contractsFolder))
         }
@@ -26,7 +30,7 @@ class ContractService {
      *
      * @return The id of the contract (its file name) so it can be retrieved later.
      */
-    fun save(script: String): String {
+    override fun save(script: String): String {
         val id = generateId()
 
         File("$contractsFolder/$id").also {
@@ -34,19 +38,10 @@ class ContractService {
             it.writeText(script)
         }
 
-
         return id
     }
 
-    fun get(id: String): String {
+    override fun get(id: String): String {
         return File("$contractsFolder/$id").readText()
-    }
-
-    /**
-     * Generates a unique id for a contract to save.
-     * For now, the id is a random UUID with dashes removed.
-     */
-    private fun generateId(): String {
-        return UUID.randomUUID().toString().replace("-", "")
     }
 }

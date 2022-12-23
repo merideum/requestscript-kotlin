@@ -15,7 +15,9 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.merideum.core.api.MerideumResourceResolver
 import org.merideum.core.api.SimpleScriptExecutor
-import org.merideum.core.api.contract.ContractService
+import org.merideum.core.api.contract.ContractFileHandler
+import org.merideum.core.api.contract.ContractInMemoryHandler
+import org.merideum.core.api.contract.ContractHandler
 import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
@@ -34,8 +36,7 @@ val Merideum = createApplicationPlugin(
 ) {
     val resourceResolver = MerideumResourceResolver(pluginConfig.resources)
     val executor = SimpleScriptExecutor(resourceResolver)
-    val contractService = ContractService()
-    contractService.prepare()
+    val contractHandler = pluginConfig.contractHandler
 
     application.install(StatusPages) {
         exception<Throwable> { call, cause ->
@@ -68,12 +69,15 @@ val Merideum = createApplicationPlugin(
                 call.respond(responseBody)
             }
 
+            /**
+             * Routing for calling a request that has been saved to the server.
+             */
             route("/contract") {
                 post {
 
                     val requestRaw = this.call.receiveText()
 
-                    val id = contractService.save(requestRaw)
+                    val id = contractHandler.save(requestRaw)
 
                     call.respond(SerializableContractResponse(id))
                 }
@@ -83,7 +87,7 @@ val Merideum = createApplicationPlugin(
                     get {
                         val id = call.parameters["id"] ?: ""
 
-                        val contract = contractService.get(id)
+                        val contract = contractHandler.get(id)
 
                         call.respondText(contract)
                     }
@@ -92,7 +96,7 @@ val Merideum = createApplicationPlugin(
                     post {
                         val id = call.parameters["id"] ?: ""
 
-                        val contract = contractService.get(id)
+                        val contract = contractHandler.get(id)
 
                         val requestBody = call.receive<SerializableContractRequestBody>()
 
@@ -117,6 +121,7 @@ val Merideum = createApplicationPlugin(
 
 class MerideumPluginConfiguration {
     val resources: MutableList<Resource<*>> = mutableListOf()
+    var contractHandler: ContractHandler = ContractInMemoryHandler()
     private var serializers: MutableMap<String, ObjectSerializer<*>> = mutableMapOf()
 
     fun resources(configuration: ResourcesConfiguration.() -> Unit) {
@@ -158,9 +163,7 @@ class ObjectSerializersConfiguration {
     val serializers = mutableMapOf<String, ObjectSerializer<*>>()
 
     /**
-     * An internal resource is a resource that has an instance in memory.
-     *
-     * An external resource is a resource that requires a web client.
+     * A serializer for converting a Kotlin Map to a Merideum Object, and vice versa.
      */
     inline fun <reified T> add(serializer: ObjectSerializer<T>) {
         serializers[T::class.qualifiedName!!] = serializer
