@@ -13,7 +13,9 @@ import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
+import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.script.ScriptType
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.ObjectValue
@@ -85,9 +87,20 @@ class ScriptVisitor(
 
         // TODO check that the types match.
         val type = this.visitTypeDeclaration(ctx.typeDeclaration()).value!!
-        val parameterValue = context.parameters[name]
+        val parameterValue = context.parameters.getOrElse(name) {
+            throw ScriptRuntimeException("Value not present for parameter: $name", ScriptErrorType.SCRIPT_DEFINITION)
+        }
 
-        scope.declareAndAssignVariable(name, type.newValue(parameterValue), Modifier.CONST)
+        val typedValue = try {
+            type.newValue(parameterValue)
+        } catch (e: ClassCastException) {
+            throw ScriptRuntimeException(
+                "The type of the value does not match the type declaration for parameter: $name",
+                ScriptErrorType.SCRIPT_DEFINITION
+            )
+        }
+
+        scope.declareAndAssignVariable(name, typedValue, Modifier.CONST)
 
         return WrappedValue.nothing()
     }

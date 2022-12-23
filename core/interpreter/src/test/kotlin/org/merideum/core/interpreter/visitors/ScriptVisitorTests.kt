@@ -20,6 +20,7 @@ import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.error.IdentifierAlreadyDeclaredException
 import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.type.IntValue
 import org.merideum.core.interpreter.type.StringValue
@@ -65,9 +66,45 @@ class ScriptVisitorTests : DescribeSpec({
                     val result = executeCode(code = code, context = context)
                         .shouldNotBeNull()
 
-                    result.shouldHaveSize(1)
+                    result shouldHaveSize 1
 
                     result["foo"] shouldBe "Hello World!"
+                }
+            }
+
+            describe("parameter values not found") {
+                it("should throw runtime exception") {
+                    val code = """
+                        |contract myContract(foo: string) {
+                        |    return foo
+                        |}
+                    """.trimMargin()
+
+                    val exception = shouldThrow<ScriptRuntimeException> {
+                        executeCode(code)
+                    }
+
+                    exception.type shouldBe ScriptErrorType.SCRIPT_DEFINITION
+                    exception.message shouldBe "Value not present for parameter: foo"
+                }
+            }
+
+            describe("parameter value type does not match") {
+                it("should throw runtime exception") {
+                    val code = """
+                        |contract myContract(foo: string) {
+                        |    return foo
+                        |}
+                    """.trimMargin()
+
+                    val context = ScriptContext(parameters = mapOf("foo" to 1234))
+
+                    val exception = shouldThrow<ScriptRuntimeException> {
+                        executeCode(code = code, context = context)
+                    }
+
+                    exception.type shouldBe ScriptErrorType.SCRIPT_DEFINITION
+                    exception.message shouldBe "The type of the value does not match the type declaration for parameter: foo"
                 }
             }
         }
