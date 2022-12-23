@@ -5,6 +5,7 @@ import io.ktor.server.application.call
 import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.application.install
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.receive
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -20,9 +21,11 @@ import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.ktor.server.ResponseBodySerializer
+import org.merideum.ktor.server.SerializableContractRequestBody
 import org.merideum.ktor.server.SerializableContractResponse
 import org.merideum.ktor.server.SerializableResponseBodyWithErrors
 import org.merideum.ktor.server.SerializableResponseBodyWithOutput
+import org.merideum.ktor.server.jsonObjectToMap
 import org.merideum.ktor.server.resource.InternalResource
 
 val Merideum = createApplicationPlugin(
@@ -75,12 +78,37 @@ val Merideum = createApplicationPlugin(
                     call.respond(SerializableContractResponse(id))
                 }
 
-                get("/{id}") {
-                    val id = call.parameters["id"] ?: ""
+                route("/{id}") {
 
-                    val contract = contractService.get(id)
+                    get {
+                        val id = call.parameters["id"] ?: ""
 
-                    call.respondText(contract)
+                        val contract = contractService.get(id)
+
+                        call.respondText(contract)
+                    }
+
+                    // Call the contract
+                    post {
+                        val id = call.parameters["id"] ?: ""
+
+                        val contract = contractService.get(id)
+
+                        val requestBody = call.receive<SerializableContractRequestBody>()
+
+                        val executionResult = executor.execute(contract, ScriptContext(parameters = jsonObjectToMap(requestBody.parameters)))
+
+                        val responseSerializer = ResponseBodySerializer()
+                        val responseBody = if (executionResult.errors != null) {
+                            SerializableResponseBodyWithErrors(
+                                responseSerializer.deserialize(executionResult.errors!!.toMap())!!
+                            )
+                        } else {
+                            SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
+                        }
+
+                        call.respond(responseBody)
+                    }
                 }
             }
         }
