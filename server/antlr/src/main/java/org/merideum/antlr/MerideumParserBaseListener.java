@@ -53,6 +53,18 @@ public class MerideumParserBaseListener implements MerideumParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterScriptParameters(MerideumParser.ScriptParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}

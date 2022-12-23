@@ -21,7 +21,7 @@ data class VariableScope(
     fun <T : TypedValue<*>> declareVariable(name: String, type: Type) {
         val resolved = resolveVariable(name)
 
-        // TODO throw exception because a variable should not be redeclared
+        // TODO throw exception because a variable should not be re-declared
         if (resolved != null) return
 
         variables[name] = Variable<T>(name, null, Modifier.VAR, type)

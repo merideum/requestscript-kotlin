@@ -3,6 +3,7 @@
 package org.merideum.core.interpreter.visitors
 
 import org.merideum.antlr.MerideumParser
+import org.merideum.antlr.MerideumParser.ScriptDefinitionContext
 import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.Modifier
 import org.merideum.core.interpreter.ResourceResolver
@@ -13,6 +14,7 @@ import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ResourceResolutionException
 import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.script.ScriptType
 import org.merideum.core.interpreter.type.IntValue
@@ -39,30 +41,66 @@ class ScriptVisitor(
      * Parameters are already injected into the [VariableScope] when the [ScriptVisitor] is instantiated.
      * Parameters are not allowed on a Request [ScriptType].
      */
-    override fun visitScriptDefinition(ctx: MerideumParser.ScriptDefinitionContext): WrappedValue<Unit> {
-        val scriptType = ScriptType.fromString(ctx.scriptType().text)
+    override fun visitScriptDefinition(ctx: ScriptDefinitionContext): WrappedValue<Unit> {
+        // Validate the script definition and if necessary, add parameters to the VariableScope
+        validateAndVisitScriptDefinition(ctx)
 
-        if (ctx.simpleIdentifier() == null) {
+        // Interpret the script, executing all code within the block.
+        this.visit(ctx.block())
+
+        return WrappedValue.nothing()
+    }
+
+    private fun validateAndVisitScriptDefinition(scriptDefinitionContext: ScriptDefinitionContext) {
+        val scriptType = ScriptType.fromString(scriptDefinitionContext.scriptType().text)
+
+        if (scriptDefinitionContext.simpleIdentifier() == null) {
             throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
         }
 
-        val scriptParameters = if (ctx.scriptParameterBlock() != null) {
-            this.visitScriptParameterBlock(ctx.scriptParameterBlock())
-        } else null
+        val scriptParametersContext = scriptDefinitionContext.scriptParameters()
 
         // TODO validate contract script definition
         if (scriptType == ScriptType.REQUEST) {
             // TODO throw named exception
-            if (scriptParameters != null) {
+            if (scriptParametersContext != null) {
                 throw ScriptSyntaxException(
                     "Cannot declare parameters with script type 'request'",
                     ScriptErrorType.SCRIPT_DEFINITION
                 )
             }
+        } else if (scriptType == ScriptType.CONTRACT) {
+            // Get every script parameter and add each as a CONST variable.
+            visitScriptParameters(scriptParametersContext)
+        }
+    }
+
+    override fun visitScriptParameters(ctx: MerideumParser.ScriptParametersContext?): WrappedValue<Unit> {
+        ctx!!.scriptParameter().forEach(::visitScriptParameter)
+
+        return WrappedValue.nothing()
+    }
+
+    override fun visitScriptParameter(ctx: MerideumParser.ScriptParameterContext): WrappedValue<Unit> {
+        val name = ctx.simpleIdentifier().text
+
+        // TODO check that the types match.
+        val type = this.visitTypeDeclaration(ctx.typeDeclaration()).value!!
+        val parameterValue = context.parameters.getOrElse(name) {
+            throw ScriptRuntimeException("Value not present for parameter: $name", ScriptErrorType.SCRIPT_DEFINITION)
         }
 
-        // Interpret the script, executing all code within the block.
-        this.visit(ctx.block())
+        @Suppress("SwallowedException")
+        val typedValue = try {
+            type.newValue(parameterValue)
+        } catch (e: ClassCastException) {
+            throw ScriptRuntimeException(
+                "The type of the value does not match the type declaration for parameter: $name",
+                ScriptErrorType.SCRIPT_DEFINITION
+            )
+        }
+
+        scope.declareAndAssignVariable(name, typedValue, Modifier.CONST)
 
         return WrappedValue.nothing()
     }

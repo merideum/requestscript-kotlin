@@ -29,6 +29,12 @@ public interface MerideumParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitScriptType(MerideumParser.ScriptTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MerideumParser#scriptParameterBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptParameterBlock(MerideumParser.ScriptParameterBlockContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MerideumParser#scriptParameters}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
