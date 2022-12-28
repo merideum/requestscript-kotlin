@@ -14,7 +14,7 @@ data class ScriptContext(
         set(value) {
             if (field == null) {
                 field = value
-            } else throw RuntimeException("Could not set scriptName that is already set.")
+            } else throw ScriptRuntimeException("Could not set scriptName that is already set.", ScriptErrorType.SCRIPT_CONTEXT)
         }
 
     inline fun <reified T> getOrThrow(key: String): T {
