@@ -15,7 +15,6 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.merideum.core.api.MerideumResourceResolver
 import org.merideum.core.api.SimpleScriptExecutor
-import org.merideum.core.api.contract.ContractFileHandler
 import org.merideum.core.api.contract.ContractInMemoryHandler
 import org.merideum.core.api.contract.ContractHandler
 import org.merideum.core.api.serializer.ObjectSerializer
@@ -58,13 +57,7 @@ val Merideum = createApplicationPlugin(
 
                 val executionResult = executor.execute(requestRaw, ScriptContext())
 
-                val responseBody = if (executionResult.errors != null) {
-                    SerializableResponseBodyWithErrors(
-                        responseSerializer.deserialize(executionResult.errors!!.toMap())!!
-                    )
-                } else {
-                    SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
-                }
+                val responseBody = mapOf(executionResult.scriptName to responseSerializer.deserialize(executionResult.toResponse()))
 
                 call.respond(responseBody)
             }
@@ -111,7 +104,7 @@ val Merideum = createApplicationPlugin(
                                 responseSerializer.deserialize(executionResult.errors!!.toMap())!!
                             )
                         } else {
-                            SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
+                            SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.returnValue))
                         }
 
                         call.respond(responseBody)

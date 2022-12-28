@@ -2,11 +2,21 @@ package org.merideum.core.interpreter
 
 import org.merideum.core.interpreter.error.ScriptErrorType
 import org.merideum.core.interpreter.error.ScriptRuntimeException
+import java.lang.RuntimeException
 
 data class ScriptContext(
     val context: Map<String, Any?> = emptyMap(),
     val parameters: Map<String, Any?> = emptyMap()
 ) {
+    // The name of the script as set in the script definition.
+    // This is a var here, because we do not have the name until interpretation starts.
+    var scriptName: String? = null
+        set(value) {
+            if (field == null) {
+                field = value
+            } else throw RuntimeException("Could not set scriptName that is already set.")
+        }
+
     inline fun <reified T> getOrThrow(key: String): T {
         val attribute = context[key]
 
