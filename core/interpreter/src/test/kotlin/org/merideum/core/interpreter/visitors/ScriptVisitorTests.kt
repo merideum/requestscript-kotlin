@@ -66,9 +66,7 @@ class ScriptVisitorTests : DescribeSpec({
                     val result = executeCode(code = code, context = context)
                         .shouldNotBeNull()
 
-                    result shouldHaveSize 1
-
-                    result["foo"] shouldBe "Hello World!"
+                    result.returnValue shouldBe "Hello World!"
                 }
 
                 it("handles more than one parameter") {
@@ -86,10 +84,13 @@ class ScriptVisitorTests : DescribeSpec({
                     val result = executeCode(code = code, context = context)
                         .shouldNotBeNull()
 
-                    result shouldHaveSize 2
-
-                    result["foo"] shouldBe "Hello World!"
-                    result["count"] shouldBe 400
+                    result
+                        .returnValue
+                        .shouldBeTypeOf<LinkedHashMap<String, Any?>>()
+                        .also {
+                            it["foo"] shouldBe "Hello World!"
+                            it["count"] shouldBe 400
+                        }
                 }
             }
 
@@ -143,7 +144,7 @@ class ScriptVisitorTests : DescribeSpec({
                     |}
                 """.trimMargin()
 
-                executeCode(code).shouldBeNull()
+                executeCode(code).returnValue.shouldBeNull()
             }
         }
 
@@ -159,17 +160,7 @@ class ScriptVisitorTests : DescribeSpec({
                 val myRequest = executeCode(code)
                     .shouldNotBeNull()
 
-                myRequest.apply {
-                    withClue("should have one key of 'value' with value 123") {
-                        size shouldBe 1
-
-                        val returnValue = getOrElse("return") {
-                            fail("the return value was null")
-                        }
-
-                        returnValue shouldBe 123
-                    }
-                }
+                myRequest.returnValue shouldBe 123
             }
         }
 
@@ -187,16 +178,7 @@ class ScriptVisitorTests : DescribeSpec({
                 val myRequest = executeCode(code)
                     .shouldNotBeNull()
 
-                myRequest.apply {
-                    withClue("should have one output set to 'test' with value 123") {
-                        size shouldBe 1
-
-                        val returnValue = get("return")
-                            .shouldNotBeNull()
-
-                        returnValue shouldBe 123
-                    }
-                }
+                myRequest.returnValue shouldBe 123
             }
         }
 
@@ -447,7 +429,7 @@ class ScriptVisitorTests : DescribeSpec({
                     )
                         .shouldNotBeNull()
 
-                    myRequest["return"] shouldBe "Hello Merideum!"
+                    myRequest.returnValue shouldBe "Hello Merideum!"
                 }
             }
         }

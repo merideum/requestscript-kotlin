@@ -24,7 +24,7 @@ fun executeCode(
         }
     },
     context: ScriptContext = ScriptContext()
-): Map<String, Any?>? {
+): ScriptExecutionResult {
     val lexer = MerideumLexer(CharStreams.fromString(code))
     val parser = MerideumParser(CommonTokenStream(lexer))
 
@@ -34,7 +34,7 @@ fun executeCode(
 
     val visitor = ScriptVisitor(variableScope, resourceResolver, context)
 
-    val returnValue: Map<String, Any?>? = try {
+    val returnValue: Any? = try {
         visitor.visit(parseTree)
 
         null
@@ -42,5 +42,9 @@ fun executeCode(
         rt.value
     }
 
-    return returnValue
+    return ScriptExecutionResult(returnValue)
 }
+
+data class ScriptExecutionResult(
+    val returnValue: Any?
+)

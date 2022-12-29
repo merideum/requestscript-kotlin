@@ -266,7 +266,7 @@ class ScriptVisitor(
         }
 
         // End the execution
-        throw ReturnTermination(mapOf("return" to returnValue))
+        throw ReturnTermination(returnValue)
     }
 
     override fun visitAssignment(ctx: MerideumParser.AssignmentContext): WrappedValue<*> {

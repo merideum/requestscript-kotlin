@@ -7,7 +7,7 @@ import org.merideum.core.api.error.ErrorsContainer
  */
 data class ScriptExecutionResult(
     val scriptName: String,
-    val returnValue: Map<String, Any?>?,
+    val returnValue: Any?,
     val errors: ErrorsContainer? = null
 ) {
     fun toResponse() = buildMap {
