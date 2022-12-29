@@ -1,5 +1,6 @@
 package org.merideum.core.interpreter.visitors
 
+import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
@@ -9,7 +10,6 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldHave
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.every
 import io.mockk.mockk
@@ -66,9 +66,7 @@ class ScriptVisitorTests : DescribeSpec({
                     val result = executeCode(code = code, context = context)
                         .shouldNotBeNull()
 
-                    result shouldHaveSize 1
-
-                    result["foo"] shouldBe "Hello World!"
+                    result.returnValue shouldBe "Hello World!"
                 }
 
                 it("handles more than one parameter") {
@@ -86,10 +84,13 @@ class ScriptVisitorTests : DescribeSpec({
                     val result = executeCode(code = code, context = context)
                         .shouldNotBeNull()
 
-                    result shouldHaveSize 2
-
-                    result["foo"] shouldBe "Hello World!"
-                    result["count"] shouldBe 400
+                    result
+                        .returnValue
+                        .shouldBeTypeOf<LinkedHashMap<String, Any?>>()
+                        .also {
+                            it["foo"] shouldBe "Hello World!"
+                            it["count"] shouldBe 400
+                        }
                 }
             }
 
@@ -136,15 +137,14 @@ class ScriptVisitorTests : DescribeSpec({
         lateinit var code: String
 
         describe("no return statement") {
-            it("should have null output") {
+            it("should have null return value") {
                 code = """
-        |request myRequest {
-        |  "asdf".length()
-        |}
-      """.trimMargin()
+                    |request myRequest {
+                    |  "asdf".length()
+                    |}
+                """.trimMargin()
 
-                executeCode(code)
-                    .shouldBeNull()
+                executeCode(code).returnValue.shouldBeNull()
             }
         }
 
@@ -152,62 +152,44 @@ class ScriptVisitorTests : DescribeSpec({
 
             it("should have value of 123") {
                 code = """
-        |request myRequest {
-        |  return 123
-        |}
-      """.trimMargin()
+                    |request myRequest {
+                    |  return 123
+                    |}
+                """.trimMargin()
 
-                val output = executeCode(code)
+                val myRequest = executeCode(code)
                     .shouldNotBeNull()
 
-                output.apply {
-                    withClue("should have one key of 'value' with value 123") {
-                        size shouldBe 1
-
-                        val actualOutput = get("value")
-                            .shouldNotBeNull()
-
-                        actualOutput shouldBe 123
-                    }
-                }
+                myRequest.returnValue shouldBe 123
             }
         }
 
         describe("return value is a variable") {
             code = """
-        |request myRequest {
-        |  const test = 123
-        |  
-        |  return test
-        |}
-      """.trimMargin()
+                |request myRequest {
+                |  const test = 123
+                |  
+                |  return test
+                |}
+            """.trimMargin()
 
-            it("should have output value set to variable name") {
+            it("should nest the return value") {
 
-                val output = executeCode(code)
+                val myRequest = executeCode(code)
                     .shouldNotBeNull()
 
-                output.apply {
-                    withClue("should have one output set to 'test' with value 123") {
-                        size shouldBe 1
-
-                        val actualOutput = get("test")
-                            .shouldNotBeNull()
-
-                        actualOutput shouldBe 123
-                    }
-                }
+                myRequest.returnValue shouldBe 123
             }
         }
 
-        describe("output value is not initialized") {
+        describe("return value is not initialized") {
             code = """
-        |request myRequest {
-        |  var test: string
-        |  
-        |  return test
-        |}
-      """.trimMargin()
+                |request myRequest {
+                |  var test: string
+                |  
+                |  return test
+                |}
+              """.trimMargin()
 
             it("should reject returning value") {
                 shouldThrow<RuntimeException> {
@@ -229,10 +211,10 @@ class ScriptVisitorTests : DescribeSpec({
 
         describe("import resource") {
             code = """
-        |request myRequest {
-        |  import testResource: $resourceName
-        |}
-      """.trimMargin()
+                |request myRequest {
+                |  import testResource: $resourceName
+                |}
+            """.trimMargin()
 
             describe("when the resource is resolvable") {
 
@@ -282,10 +264,10 @@ class ScriptVisitorTests : DescribeSpec({
 
             describe("when a path is included in the resource name") {
                 code = """
-          |request myRequest {
-          |  import test: $resourcePath.$resourceName
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  import test: $resourcePath.$resourceName
+                    |}
+                """.trimMargin()
 
                 it("should resolve the resource and not throw an error") {
                     every { resourceResolver.resolve(resourceName, resourcePath) } returns TestResource(
@@ -346,11 +328,11 @@ class ScriptVisitorTests : DescribeSpec({
 
             it("should call function of variable") {
                 code = """
-          |request myRequest {
-          |  import test: $resourceName
-          |  const greeting = test.sayHello()
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  import test: $resourceName
+                    |  const greeting = test.sayHello()
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope, resourceResolver = resourceResolver)
 
@@ -367,10 +349,10 @@ class ScriptVisitorTests : DescribeSpec({
 
             it("should call function of TypedValue") {
                 code = """
-          |request myRequest {
-          |  const testLength = "test".length()
-          |}
-        """.trimMargin()
+                    |request myRequest {
+                    |  const testLength = "test".length()
+                    |}
+                """.trimMargin()
 
                 executeCode(code, variableScope)
 
@@ -388,11 +370,11 @@ class ScriptVisitorTests : DescribeSpec({
             describe("with parameters") {
                 it("should call function with 'string' parameter value") {
                     code = """
-            |request myRequest {
-            |  import test: $resourceName
-            |  const greeting = test.sayHello("Merideum")
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  import test: $resourceName
+                        |  const greeting = test.sayHello("Merideum")
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope, resourceResolver = resourceResolver)
 
@@ -409,12 +391,12 @@ class ScriptVisitorTests : DescribeSpec({
 
                 it("should call function with variable parameter value") {
                     code = """
-            |request myRequest {
-            |  import test: $resourceName
-            |  const name = "Merideum"
-            |  const greeting = test.sayHello(name)
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  import test: $resourceName
+                        |  const name = "Merideum"
+                        |  const greeting = test.sayHello(name)
+                        |}
+                    """.trimMargin()
 
                     executeCode(code, variableScope, resourceResolver = resourceResolver)
 
@@ -431,23 +413,23 @@ class ScriptVisitorTests : DescribeSpec({
             }
 
             describe("return value") {
-                it("should return value to output") {
+                it("should return value to response") {
                     code = """
-            |request myRequest {
-            |  import test: $resourceName
-            |  
-            |  return test.sayHello("Merideum")
-            |}
-          """.trimMargin()
+                        |request myRequest {
+                        |  import test: $resourceName
+                        |  
+                        |  return test.sayHello("Merideum")
+                        |}
+                    """.trimMargin()
 
-                    val output = executeCode(
+                    val myRequest = executeCode(
                         code,
                         variableScope,
                         resourceResolver = resourceResolver
                     )
                         .shouldNotBeNull()
 
-                    output["value"] shouldBe "Hello Merideum!"
+                    myRequest.returnValue shouldBe "Hello Merideum!"
                 }
             }
         }

@@ -32,13 +32,13 @@ class SimpleScriptExecutor(private val resourceResolver: ResourceResolver) : Scr
         return try {
             visitor.visit(parseTree)
 
-            ScriptExecutionResult(null)
+            ScriptExecutionResult(context.scriptName!!, null)
         } catch (rt: ReturnTermination) {
-            ScriptExecutionResult(rt.value)
+            ScriptExecutionResult(context.scriptName!!, rt.value)
         } catch (e: ScriptRuntimeException) {
-            ScriptExecutionResult(null, ErrorsContainer(e, null))
+            ScriptExecutionResult(context.scriptName!!, null, ErrorsContainer(e, null))
         } catch (e: ScriptSyntaxException) {
-            ScriptExecutionResult(null, ErrorsContainer(null, e))
+            ScriptExecutionResult(context.scriptName!!, null, ErrorsContainer(null, e))
         }
     }
 

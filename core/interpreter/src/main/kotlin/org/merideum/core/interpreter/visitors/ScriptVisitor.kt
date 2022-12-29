@@ -48,14 +48,17 @@ class ScriptVisitor(
         // Interpret the script, executing all code within the block.
         this.visit(ctx.block())
 
+        // If this line was reached during a successful execution, then there was no return statement.
         return WrappedValue.nothing()
     }
 
     private fun validateAndVisitScriptDefinition(scriptDefinitionContext: ScriptDefinitionContext) {
         val scriptType = ScriptType.fromString(scriptDefinitionContext.scriptType().text)
 
-        if (scriptDefinitionContext.simpleIdentifier() == null) {
+        context.scriptName = if (scriptDefinitionContext.simpleIdentifier() == null) {
             throw ScriptSyntaxException("An identifier is required for the request", ScriptErrorType.SCRIPT_DEFINITION)
+        } else {
+            scriptDefinitionContext.simpleIdentifier().text
         }
 
         val scriptParametersContext = scriptDefinitionContext.scriptParameters()
@@ -240,37 +243,27 @@ class ScriptVisitor(
      *        }
      */
     override fun visitReturnStatement(ctx: MerideumParser.ReturnStatementContext): WrappedValue<Unit> {
-        val returnValue: Map<String, Any?> =
-            when (val returnExpression = this.visit(ctx.expression()).value!!) {
-                /**
-                 * If the return is an object,
-                 * then we return the object at the root level instead of nested in a property.
-                  */
-                is ObjectValue -> {
-                    returnExpression.get()
-                        ?: throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
-                }
+        val returnValue = when (val returnExpression = this.visit(ctx.expression()).value!!) {
+            is Variable<*> -> {
+                val variableValue = returnExpression.value
+                    ?: throw ScriptSyntaxException(
+                        "Cannot return value of uninitialized variable",
+                        ScriptErrorType.VARIABLE
+                    )
 
-                is Variable<*> -> {
-                    val variableValue = returnExpression.value
-                        ?: throw ScriptSyntaxException(
-                            "Cannot return value of uninitialized variable",
-                            ScriptErrorType.VARIABLE
-                        )
-
-                    // If the value is a variable, key the value to its variable name.
-                    mapOf(returnExpression.name to variableValue.get())
-                }
-
-                is TypedValue<*> -> {
-                    // If the value is a "raw" value, then wrap it in a key called 'value'.
-                    mapOf("value" to returnExpression.get())
-                }
-
-                else -> {
-                    throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
-                }
+                // If the value is a variable, key the value to its variable name.
+                variableValue.get()
             }
+
+            is TypedValue<*> -> {
+                // If the value is a "raw" value, then wrap it in a key called 'value'.
+                returnExpression.get()
+            }
+
+            else -> {
+                throw ScriptSyntaxException("Unexpected value for return", ScriptErrorType.RETURN)
+            }
+        }
 
         // End the execution
         throw ReturnTermination(returnValue)

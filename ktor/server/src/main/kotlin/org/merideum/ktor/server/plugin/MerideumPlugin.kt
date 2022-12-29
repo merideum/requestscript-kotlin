@@ -15,19 +15,16 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.merideum.core.api.MerideumResourceResolver
 import org.merideum.core.api.SimpleScriptExecutor
-import org.merideum.core.api.contract.ContractFileHandler
-import org.merideum.core.api.contract.ContractInMemoryHandler
 import org.merideum.core.api.contract.ContractHandler
+import org.merideum.core.api.contract.ContractInMemoryHandler
 import org.merideum.core.api.serializer.ObjectSerializer
 import org.merideum.core.interpreter.Resource
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.error.ResourceResolutionException
-import org.merideum.ktor.server.ResponseBodySerializer
 import org.merideum.ktor.server.SerializableContractRequestBody
 import org.merideum.ktor.server.SerializableContractResponse
-import org.merideum.ktor.server.SerializableResponseBodyWithErrors
-import org.merideum.ktor.server.SerializableResponseBodyWithOutput
-import org.merideum.ktor.server.jsonObjectToMap
+import org.merideum.ktor.server.mapToJson
+import org.merideum.ktor.server.jsonToMap
 import org.merideum.ktor.server.resource.InternalResource
 
 val Merideum = createApplicationPlugin(
@@ -53,20 +50,10 @@ val Merideum = createApplicationPlugin(
              * Routing for a standalone request.
              */
             post {
-                val responseSerializer = ResponseBodySerializer()
                 val requestRaw = this.call.receiveText()
 
                 val executionResult = executor.execute(requestRaw, ScriptContext())
-
-                val responseBody = if (executionResult.errors != null) {
-                    SerializableResponseBodyWithErrors(
-                        responseSerializer.deserialize(executionResult.errors!!.toMap())!!
-                    )
-                } else {
-                    SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
-                }
-
-                call.respond(responseBody)
+                call.respond(mapToJson(executionResult.toResponse()))
             }
 
             /**
@@ -102,19 +89,10 @@ val Merideum = createApplicationPlugin(
 
                         val executionResult = executor.execute(
                             contract,
-                            ScriptContext(parameters = jsonObjectToMap(requestBody.parameters))
+                            ScriptContext(parameters = jsonToMap(requestBody.parameters))
                         )
 
-                        val responseSerializer = ResponseBodySerializer()
-                        val responseBody = if (executionResult.errors != null) {
-                            SerializableResponseBodyWithErrors(
-                                responseSerializer.deserialize(executionResult.errors!!.toMap())!!
-                            )
-                        } else {
-                            SerializableResponseBodyWithOutput(responseSerializer.deserialize(executionResult.output))
-                        }
-
-                        call.respond(responseBody)
+                        call.respond(mapToJson(executionResult.toResponse()))
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package org.merideum.ktor.server
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
@@ -9,7 +10,8 @@ import kotlinx.serialization.json.JsonElement
  */
 @Serializable
 open class SerializableResponseBodyWithOutput(
-    val output: JsonElement?
+    @SerialName("return")
+    val returnValue: JsonElement?
 ) : SerializableResponseBody
 
 @Serializable

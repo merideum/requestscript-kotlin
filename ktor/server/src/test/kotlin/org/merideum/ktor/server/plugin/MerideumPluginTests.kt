@@ -15,7 +15,9 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
@@ -26,30 +28,29 @@ class MerideumPluginTests : DescribeSpec({
     describe("no configuration") {
         it("should accept simple Merideum code input") {
             val code = """
-            |request myRequest {
-            |  const test = 123
-            |
-            |  return test
-            |}
+                |request myRequest {
+                |  const test = 123
+                |
+                |  return test
+                |}
             """.trimMargin()
 
             testRequest { _, client ->
 
                 val response = client.post("/merideum") {
                     setBody(code)
-                }.body<ResponseBody>()
+                }
 
-                response.output
+                response.body<ResponseBody>()
                     .shouldNotBeNull()
                     .also {
-                        it.shouldNotBeEmpty()
 
-                        it["test"].shouldNotBeNull()
+                        it.returnValue.shouldNotBeNull()
                             .toString()
                             .toInt() shouldBe 123
-                    }
 
-                response.errors.shouldBeNull()
+                        it.errors.shouldBeNull()
+                    }
             }
         }
     }
@@ -72,7 +73,7 @@ class MerideumPluginTests : DescribeSpec({
                     setBody(code)
                 }.body<ResponseBody>()
 
-                response.output.shouldBeNull()
+                response.returnValue.shouldBeNull()
                 response.errors
                     .shouldNotBeNull()["runtime"]
                     .shouldNotBeNull()
@@ -103,7 +104,7 @@ class MerideumPluginTests : DescribeSpec({
                     setBody(code)
                 }.body<ResponseBody>()
 
-                response.output.shouldBeNull()
+                response.returnValue.shouldBeNull()
                 response.errors
                     .shouldNotBeNull()["syntax"]
                     .shouldNotBeNull()
@@ -123,7 +124,8 @@ class MerideumPluginTests : DescribeSpec({
 
 @kotlinx.serialization.Serializable
 class ResponseBody(
-    val output: JsonObject? = null,
+    @SerialName("return")
+    val returnValue: JsonElement? = null,
     val errors: JsonObject? = null
 )
 
