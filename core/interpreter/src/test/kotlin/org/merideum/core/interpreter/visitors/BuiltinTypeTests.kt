@@ -367,6 +367,33 @@ class BuiltinTypeTests : DescribeSpec({
                 }
             }
 
+            it("can declare and assign field with shorthand if variable") {
+                code = """
+                    |request myRequest {
+                    |  const message = "Hello World!"
+                    |  
+                    |  const foo = {
+                    |    message
+                    |  }
+                    |}
+                """.trimMargin()
+
+                val expectedMap = mutableMapOf("message" to "Hello World!")
+
+                executeCode(code, variableScope)
+
+                val actualFoo = variableScope
+                    .resolveVariable("foo")
+                    .shouldNotBeNull()
+
+                withClue("should be Kotlin 'Map' with message field") {
+                    actualFoo.value
+                        .shouldNotBeNull()
+                        .shouldBeTypeOf<ObjectValue>()
+                        .get() shouldBe expectedMap
+                }
+            }
+
             it("can declare and assign multiple fields") {
                 code = """
                     |request myRequest {

@@ -7,6 +7,7 @@ import org.merideum.antlr.MerideumParserBaseVisitor
 import org.merideum.core.interpreter.Variable
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.ScriptErrorType
+import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
 import org.merideum.core.interpreter.error.TypeMismatchedException
 import org.merideum.core.interpreter.error.UnknownVariableIdentifierException
@@ -156,15 +157,25 @@ class ExpressionVisitor(
             parent.visitTypeDeclaration(ctx.typeDeclaration()).value
         }
 
-        val assignmentValue = when (val assignment = parent.visitAssignment(ctx.assignment()).value) {
-            is TypedValue<*> -> assignment
-            // TODO throw exception if TypedValue is null because the variable value has not yet been set.
-            is Variable<*> -> assignment.value
+        val assignmentStatement = ctx.assignment()
 
-            else -> throw ScriptSyntaxException(
-                "Could not get value from assignment",
-                ScriptErrorType.OBJECT_DECLARATION
-            )
+        // If the assignment is not present, a variable shorthand is being used
+        val assignmentValue = if (assignmentStatement == null && type == null) {
+            val resolved = parent.scope.resolveVariable(name)
+                ?: throw ScriptRuntimeException("Could not resolve variable with name $name", ScriptErrorType.VARIABLE)
+
+            resolved.value
+        } else {
+            when (val assignment = parent.visitAssignment(ctx.assignment()).value) {
+                is TypedValue<*> -> assignment
+                // TODO throw exception if TypedValue is null because the variable value has not yet been set.
+                is Variable<*> -> assignment.value
+
+                else -> throw ScriptSyntaxException(
+                    "Could not get value from assignment",
+                    ScriptErrorType.OBJECT_DECLARATION
+                )
+            }
         }
 
         // TODO make sure type declaration, if included, matches the expression value
