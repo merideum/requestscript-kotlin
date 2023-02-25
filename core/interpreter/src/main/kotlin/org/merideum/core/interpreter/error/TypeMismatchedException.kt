@@ -1,11 +1,11 @@
 package org.merideum.core.interpreter.error
 
-import org.merideum.core.interpreter.type.Type
+import org.merideum.core.interpreter.type.MerideumType
 
 class TypeMismatchedException(
-    val firstType: Type,
-    val otherType: Type
+    val firstType: MerideumType,
+    val otherType: MerideumType
 ) : ScriptRuntimeException(
-    "Cannot perform operation between types '${firstType.typeName()}' and '${otherType.typeName()}'",
+    "Cannot perform operation between types '${firstType.name}' and '${otherType.name}'",
     ScriptErrorType.TYPE_MISMATCH
 )

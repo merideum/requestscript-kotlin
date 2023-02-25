@@ -8,15 +8,16 @@ import org.merideum.antlr.MerideumParser
 import org.merideum.core.api.error.ErrorsContainer
 import org.merideum.core.api.execution.ScriptExecutionResult
 import org.merideum.core.api.execution.ScriptExecutor
-import org.merideum.core.interpreter.ResourceResolver
 import org.merideum.core.interpreter.ReturnTermination
 import org.merideum.core.interpreter.ScriptContext
 import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.error.ScriptRuntimeException
 import org.merideum.core.interpreter.error.ScriptSyntaxException
-import org.merideum.core.interpreter.visitors.ScriptVisitor
+import org.merideum.core.interpreter.type.TypeRegistry
+import org.merideum.core.interpreter.type.builtInTypes
+import org.merideum.core.interpreter.visitors.RequestVisitor
 
-class SimpleScriptExecutor(private val resourceResolver: ResourceResolver) : ScriptExecutor {
+class SimpleScriptExecutor() : ScriptExecutor {
 
     override fun execute(code: String, context: ScriptContext): ScriptExecutionResult {
         val parseTree: ParseTree = parse(code)
@@ -24,10 +25,10 @@ class SimpleScriptExecutor(private val resourceResolver: ResourceResolver) : Scr
         val mainScope = VariableScope
             .main()
             .apply {
-                addRequest(Request(mapOf()))
+//                addRequest(Request(mapOf()))
             }
 
-        val visitor = ScriptVisitor(mainScope, resourceResolver, context)
+        val visitor = RequestVisitor(TypeRegistry(builtInTypes()), mainScope)
 
         return try {
             visitor.visit(parseTree)
@@ -47,5 +48,5 @@ class SimpleScriptExecutor(private val resourceResolver: ResourceResolver) : Scr
     private fun parse(code: String) =
         MerideumParser(CommonTokenStream(lexer(code))).apply {
             buildParseTree = true
-        }.parse()
+        }.request()
 }

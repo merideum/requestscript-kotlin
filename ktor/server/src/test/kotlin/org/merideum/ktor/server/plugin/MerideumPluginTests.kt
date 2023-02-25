@@ -154,5 +154,5 @@ fun Application.module() {
         )
     }
 
-    install(Merideum)
+//    install(Merideum)
 }

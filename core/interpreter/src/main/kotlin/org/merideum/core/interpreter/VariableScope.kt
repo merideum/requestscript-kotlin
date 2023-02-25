@@ -1,50 +1,38 @@
 package org.merideum.core.interpreter
 
-import org.merideum.core.interpreter.error.IdentifierAlreadyDeclaredException
+import org.merideum.core.interpreter.error.VariableCannotBeAssignedException
 import org.merideum.core.interpreter.error.TypeMismatchedException
-import org.merideum.core.interpreter.type.Type
-import org.merideum.core.interpreter.type.TypedValue
+import org.merideum.core.interpreter.type.MerideumTypedValue
+import org.merideum.core.interpreter.type.MerideumVariable
 
 /**
  * Contains variables with a scope.
  */
 data class VariableScope(
     val parent: VariableScope?,
-    val variables: MutableMap<String, Variable<*>>
+    val variables: MutableMap<String, MerideumVariable>
 ) {
+    fun hasVariable(name: String) = variables.contains(name)
 
     /**
      * See if the variable exists in the current scope by its name.
      */
     fun resolveVariable(name: String) = variables[name]
 
-    fun <T : TypedValue<*>> declareVariable(name: String, type: Type) {
-        val resolved = resolveVariable(name)
-
-        // TODO throw exception because a variable should not be re-declared
-        if (resolved != null) return
-
-        variables[name] = Variable<T>(name, null, Modifier.VAR, type)
+    fun declareAndAssignVariable(name: String, value: MerideumTypedValue, modifier: Modifier) {
+        variables[name] = MerideumVariable(modifier, value)
     }
 
-    fun declareAndAssignVariable(name: String, value: TypedValue<*>, modifier: Modifier) {
-        val resolved = resolveVariable(name)
-
-        if (resolved != null) throw IdentifierAlreadyDeclaredException(name)
-
-        variables[name] = Variable(name, value, modifier, value.type)
-    }
-
-    fun reassignVariable(name: String, newValue: TypedValue<*>) {
+    fun reassignVariable(name: String, newValue: MerideumTypedValue) {
         // TODO throw error if it cannot be resolved because cannot reassign a variable that does not exist.
         val resolved = resolveVariable(name) ?: return
 
         // Cannot reassign a constant variable.
-        if (resolved.modifier == Modifier.CONST) throw IdentifierAlreadyDeclaredException(name)
+        if (resolved.modifier == Modifier.CONST) throw VariableCannotBeAssignedException(name)
 
-        if (newValue.type != resolved.type) throw TypeMismatchedException(resolved.type, newValue.type)
+        if (newValue.type != resolved.value.type) throw TypeMismatchedException(resolved.value.type, newValue.type)
 
-        variables[name] = Variable(name, newValue, resolved.modifier, resolved.type)
+        variables[name] = MerideumVariable(resolved.modifier, newValue)
     }
 
     companion object {
