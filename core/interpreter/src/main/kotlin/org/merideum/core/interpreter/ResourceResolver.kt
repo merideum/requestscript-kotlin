@@ -1,6 +1,12 @@
 package org.merideum.core.interpreter
 
-interface ResourceResolver {
-    fun resolve(name: String): Resource<*>?
-    fun resolve(name: String, path: String): Resource<*>?
+data class ResourceResolver(
+    // Map resourcePath, Resource
+    val resources: Map<String, Resource>
+) {
+    fun get(name: String) = resources[name]
 }
+
+class Resource(
+    val name: String,
+)
