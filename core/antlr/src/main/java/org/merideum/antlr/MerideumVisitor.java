@@ -35,15 +35,48 @@ public interface MerideumVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReturnStatement(MerideumParser.ReturnStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MerideumParser#expression}.
+	 * Visit a parse tree produced by the {@code identifier}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(MerideumParser.ExpressionContext ctx);
+	T visitIdentifier(MerideumParser.IdentifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MerideumParser#integerExpression}.
+	 * Visit a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code integerExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitIntegerExpression(MerideumParser.IntegerExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MerideumParser#functionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCall(MerideumParser.FunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MerideumParser#functionCallParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallParams(MerideumParser.FunctionCallParamsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MerideumParser#functionCallParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallParam(MerideumParser.FunctionCallParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MerideumParser#resourcePathIdentifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx);
 }

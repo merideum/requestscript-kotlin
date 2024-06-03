@@ -7,6 +7,6 @@ data class ResourceResolver(
     fun get(name: String) = resources[name]
 }
 
-class Resource(
-    val name: String,
-)
+interface Resource {
+    fun callFunction(functionName: String, params: Map<String, Any?>): Any?
+}

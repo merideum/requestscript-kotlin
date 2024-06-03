@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.7.10" apply false
-    kotlin("plugin.serialization") version "1.7.10" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
+    kotlin("jvm") version "2.0.0" apply false
+    kotlin("plugin.serialization") version "2.0.0" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 dependencies {

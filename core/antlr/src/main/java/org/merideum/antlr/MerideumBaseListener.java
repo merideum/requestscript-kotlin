@@ -65,13 +65,25 @@ public class MerideumBaseListener implements MerideumListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(MerideumParser.ExpressionContext ctx) { }
+	@Override public void enterIdentifier(MerideumParser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression(MerideumParser.ExpressionContext ctx) { }
+	@Override public void exitIdentifier(MerideumParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -84,6 +96,54 @@ public class MerideumBaseListener implements MerideumListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIntegerExpression(MerideumParser.IntegerExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionCall(MerideumParser.FunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionCall(MerideumParser.FunctionCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionCallParams(MerideumParser.FunctionCallParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionCallParams(MerideumParser.FunctionCallParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionCallParam(MerideumParser.FunctionCallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionCallParam(MerideumParser.FunctionCallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

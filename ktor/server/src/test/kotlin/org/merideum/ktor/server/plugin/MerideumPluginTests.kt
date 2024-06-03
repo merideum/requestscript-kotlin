@@ -1,7 +1,6 @@
 package org.merideum.ktor.server.plugin
 
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -154,5 +153,5 @@ fun Application.module() {
         )
     }
 
-    install(Merideum)
+//    install(Merideum)
 }

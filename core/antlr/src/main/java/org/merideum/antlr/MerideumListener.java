@@ -48,23 +48,79 @@ public interface MerideumListener extends ParseTreeListener {
 	 */
 	void exitReturnStatement(MerideumParser.ReturnStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MerideumParser#expression}.
+	 * Enter a parse tree produced by the {@code identifier}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(MerideumParser.ExpressionContext ctx);
+	void enterIdentifier(MerideumParser.IdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MerideumParser#expression}.
+	 * Exit a parse tree produced by the {@code identifier}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(MerideumParser.ExpressionContext ctx);
+	void exitIdentifier(MerideumParser.IdentifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MerideumParser#integerExpression}.
+	 * Enter a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code functionCallExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCallExpression(MerideumParser.FunctionCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code integerExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void enterIntegerExpression(MerideumParser.IntegerExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MerideumParser#integerExpression}.
+	 * Exit a parse tree produced by the {@code integerExpression}
+	 * labeled alternative in {@link MerideumParser#expression}.
 	 * @param ctx the parse tree
 	 */
 	void exitIntegerExpression(MerideumParser.IntegerExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MerideumParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCall(MerideumParser.FunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MerideumParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCall(MerideumParser.FunctionCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MerideumParser#functionCallParams}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCallParams(MerideumParser.FunctionCallParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MerideumParser#functionCallParams}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCallParams(MerideumParser.FunctionCallParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MerideumParser#functionCallParam}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCallParam(MerideumParser.FunctionCallParamContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MerideumParser#functionCallParam}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCallParam(MerideumParser.FunctionCallParamContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MerideumParser#resourcePathIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MerideumParser#resourcePathIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitResourcePathIdentifier(MerideumParser.ResourcePathIdentifierContext ctx);
 }
