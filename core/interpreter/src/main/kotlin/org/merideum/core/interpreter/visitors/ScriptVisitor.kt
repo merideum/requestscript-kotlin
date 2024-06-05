@@ -11,6 +11,7 @@ import org.merideum.core.interpreter.VariableScope
 import org.merideum.core.interpreter.VariableType
 import org.merideum.core.interpreter.WrappedValue
 import org.merideum.core.interpreter.error.FunctionCallException
+import org.merideum.core.interpreter.error.ReturnTermination
 
 /**
  * The root visitor used when executing a Merideum script.
@@ -47,9 +48,7 @@ class ScriptVisitor(
     override fun visitReturnStatement(ctx: MerideumParser.ReturnStatementContext?): WrappedValue<Unit> {
         val value = this.visit(ctx!!.expression())
 
-        returnValue = value.value
-
-        return WrappedValue.nothing()
+        throw ReturnTermination(value.value)
     }
 
     override fun visitIntegerExpression(ctx: MerideumParser.IntegerExpressionContext?): WrappedValue<Int> {

@@ -5,6 +5,8 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import kotlinx.serialization.json.Json
+import org.merideum.ktor.server.plugin.Merideum
+
 //import org.merideum.ktor.server.plugin.Merideum
 
 fun Application.module() {
@@ -17,16 +19,15 @@ fun Application.module() {
         )
     }
 
-//    install(Merideum) {
-//        objectSerializers {
-//            add(PersonSerializer())
-//        }
-//
-//        resources {
-//            add(Greeter()) {
-//                name = "Greeter"
-//                path = "org.merideum.example"
-//            }
-//        }
-    //}
+    install(Merideum) {
+
+        resource {
+            name = "HelloWorld"
+            path = "com.merideum.kotlin"
+
+            fn("hello") {
+                "Hello, World!"
+            }
+        }
+    }
 }

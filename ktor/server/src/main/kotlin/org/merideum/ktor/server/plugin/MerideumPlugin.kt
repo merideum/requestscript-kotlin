@@ -1,76 +1,46 @@
 package org.merideum.ktor.server.plugin
 
+import io.ktor.server.application.call
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import org.merideum.core.api.SimpleScriptExecutor
+import org.merideum.core.interpreter.ResourceResolver
 import org.merideum.ktor.server.resource.InternalResource
 import kotlin.collections.set
 
-//val Merideum = createApplicationPlugin(
-//    name = "Merideum",
-//    createConfiguration = ::MerideumPluginConfiguration
-//) {
-//    application.routing {
-//        route("/merideum") {
-//
-//            /**
-//             * Routing for a standalone request.
-//             */
-//            post {
-//                val requestRaw = this.call.receiveText()
-//
-//                val executionResult = executor.execute(requestRaw, ScriptContext())
-//                call.respond(mapToJson(executionResult.toResponse()))
-//            }
-//
-//            /**
-//             * Routing for calling a request that has been saved to the server.
-//             */
-//            route("/contract") {
-//                post {
-//
-//                    val requestRaw = this.call.receiveText()
-//
-//                    val id = contractHandler.save(requestRaw)
-//
-//                    call.respond(SerializableContractResponse(id))
-//                }
-//
-//                route("/{id}") {
-//
-//                    get {
-//                        val id = call.parameters["id"] ?: ""
-//
-//                        val contract = contractHandler.get(id)
-//
-//                        call.respondText(contract)
-//                    }
-//
-//                    // Call the contract
-//                    post {
-//                        val id = call.parameters["id"] ?: ""
-//
-//                        val contract = contractHandler.get(id)
-//
-//                        val requestBody = call.receive<SerializableContractRequestBody>()
-//
-//                        val executionResult = executor.execute(
-//                            contract,
-//                            ScriptContext(parameters = jsonToMap(requestBody.parameters))
-//                        )
-//
-//                        call.respond(mapToJson(executionResult.toResponse()))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+val Merideum = createApplicationPlugin(
+    name = "Merideum",
+    createConfiguration = ::MerideumPluginConfiguration
+) {
+    val resourceResolver = ResourceResolver(pluginConfig.resources)
+
+    application.routing {
+        route("/merideum") {
+
+            /**
+             * Routing for a standalone request.
+             */
+            post {
+                val requestRaw = this.call.receiveText()
+
+                val executionResult = SimpleScriptExecutor(resourceResolver).execute(requestRaw)
+                call.respond(executionResult.toResponse())
+            }
+        }
+    }
+}
 
 class MerideumPluginConfiguration {
-    val resources: MutableList<InternalResource> = mutableListOf()
+    val resources: MutableMap<String, InternalResource> = mutableMapOf()
 
     fun resource(configuration: ResourceConfiguration.() -> Unit) {
         val config = ResourceConfiguration().apply(configuration)
 
-        resources.add(InternalResource(config.name, config.path, config.functions))
+        resources["${config.path}.${config.name}"] = InternalResource(config.name, config.path, config.functions)
     }
 }
 
