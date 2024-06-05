@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm")
     id("io.gitlab.arturbosch.detekt")
+
+    `maven-publish`
 }
 
 dependencies {
@@ -18,4 +20,16 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
     testImplementation("io.mockk:mockk:$mockkVersion")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "org.merideum.core"
+            artifactId = "interpreter"
+            version = "0.0.1"
+
+            from(components["java"])
+        }
+    }
 }

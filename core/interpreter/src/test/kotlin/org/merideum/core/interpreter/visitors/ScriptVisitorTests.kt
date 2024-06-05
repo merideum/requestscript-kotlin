@@ -28,7 +28,7 @@ class ScriptVisitorTests : DescribeSpec({
             describe("resource exists") {
                 it("should declare resource as variable") {
                     val scope = VariableScope(mutableMapOf())
-                    val resourceResolver = ResourceResolver(
+                    val resourceResolver = SimpleResourceResolver(
                         mapOf("com.test.Resource" to InternalResource())
                     )
 
@@ -64,7 +64,7 @@ class ScriptVisitorTests : DescribeSpec({
             describe("function exists with valid params") {
                 it ("should call function and return result") {
                     val scope = VariableScope(mutableMapOf())
-                    val resourceResolver = ResourceResolver(
+                    val resourceResolver = SimpleResourceResolver(
                         mapOf("com.test.Resource" to InternalResource())
                     )
 
@@ -82,7 +82,7 @@ class ScriptVisitorTests : DescribeSpec({
 
                 it ("allows nesting of function calls") {
                     val scope = VariableScope(mutableMapOf())
-                    val resourceResolver = ResourceResolver(
+                    val resourceResolver = SimpleResourceResolver(
                         mapOf("com.test.Resource" to InternalResource())
                     )
 
@@ -117,3 +117,7 @@ class ScriptVisitorTests : DescribeSpec({
     }
 
 })
+
+data class SimpleResourceResolver(val resources: Map<String, Resource>): ResourceResolver {
+    override fun get(name: String) = resources[name]
+}

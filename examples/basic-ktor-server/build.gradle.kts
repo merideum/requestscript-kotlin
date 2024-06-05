@@ -16,7 +16,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-cio:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 

@@ -6,12 +6,14 @@ import org.merideum.antlr.MerideumLexer
 import org.merideum.antlr.MerideumParser
 import org.merideum.core.interpreter.ResourceResolver
 import org.merideum.core.interpreter.VariableScope
+import org.merideum.core.interpreter.error.ReturnTermination
 import org.merideum.core.interpreter.visitors.ScriptVisitor
+import org.merideum.core.interpreter.visitors.SimpleResourceResolver
 
 fun executeCode(
     code: String,
     variableScope: VariableScope = VariableScope(mutableMapOf()),
-    resourceResolver: ResourceResolver = ResourceResolver(mapOf())
+    resourceResolver: ResourceResolver = SimpleResourceResolver(mapOf())
 ): Any? {
     val lexer = MerideumLexer(CharStreams.fromString(code))
     val parser = MerideumParser(CommonTokenStream(lexer))
@@ -22,7 +24,11 @@ fun executeCode(
 
     val visitor = ScriptVisitor(variableScope, resourceResolver)
 
-    visitor.visit(parseTree)
+    try {
+        visitor.visit(parseTree)
+    } catch (rt: ReturnTermination) {
+        return rt.value
+    }
 
-    return visitor.returnValue
+    return null
 }
