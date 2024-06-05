@@ -6,13 +6,13 @@ Make sure you can run the scripts locally:
 `chmod +x ./scripts/get-grammar.sh`
 `chmod +x ./scripts/generate-antlr.sh`
 
-Run `./scripts/get-grammar.sh` to pull the ANTLR grammar for the Merideum scripting language.
+Run `./scripts/get-grammar.sh` to pull the ANTLR grammar for the language.
 This command may fail due to the file hosting de-caching.
 Go to the raw location in a browser to reset it.
 
 # Generating Lexer and Parser
 
-Merideum uses ANTLR4 to generate lexer and parser code in the implementation langauge. The ANTLR code is generated to
+RequestScript uses ANTLR4 to generate lexer and parser code in the implementation language. The ANTLR code is generated to
 Kotlin/Java with the following command:
 
 Or `./scripts/generate-antlr.sh`
@@ -25,7 +25,7 @@ Or `./scripts/generate-antlr.sh`
 This repository follows [semantic versioning](https://semver.org/).
 
 # Code Analysis
-merideum-kotlin uses [Detekt](https://detekt.dev/) for code analysis and formatting. 
+requestscript-kotlin uses [Detekt](https://detekt.dev/) for code analysis and formatting. 
 Be sure to run the `detekt` gradle task often when developing locally. 
 This task is run as part of the pipeline and will fail the build if there are issues.
 Detekt has an IntelliJ plugin to provide faster feedback.

@@ -1,6 +1,6 @@
-# merideum-kotlin
+# requestscript-kotlin
 
-Reference implementation of Merideum in Kotlin.
+Reference implementation of RequestScript in Kotlin.
 
 Read the [project introduction](/docs/project-introduction.md) to learn more.
 

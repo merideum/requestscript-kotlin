@@ -1,4 +1,4 @@
-rootProject.name = "merideum-kotlin"
+rootProject.name = "requestscript-kotlin"
 
 include("core:antlr")
 include("core:interpreter")

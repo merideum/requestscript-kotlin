@@ -37,9 +37,9 @@ out/
 .vscode/
 
 ### ANTLR ###
-*.g4
+#*.g4
 gen/
 *.tokens
 
-### Merideum ###
+### RequestScript ###
 contracts/
