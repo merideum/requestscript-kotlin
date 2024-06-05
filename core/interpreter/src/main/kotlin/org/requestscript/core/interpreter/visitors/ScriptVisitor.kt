@@ -26,7 +26,9 @@ class ScriptVisitor(
         return super.visitStatement(ctx)
     }
 
-    override fun visitImportResourceStatement(ctx: RequestScriptParser.ImportResourceStatementContext?): WrappedValue<Unit> {
+    override fun visitImportResourceStatement(
+        ctx: RequestScriptParser.ImportResourceStatementContext?
+    ): WrappedValue<Unit> {
         val identifier = ctx!!.IDENTIFIER().text
         val resourcePath = ctx.resourcePathIdentifier().text + ctx.RESOURCE_IDENTIFIER().text
 

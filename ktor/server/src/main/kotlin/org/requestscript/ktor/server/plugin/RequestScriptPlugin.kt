@@ -40,7 +40,9 @@ val RequestScript = createApplicationPlugin(
 
                         val body = call.receive<ResourceFunctionCall>()
 
-                        val result = resourceResolver.get(resourcePath)?.callFunction(body.function.name, body.function.params)
+                        val result = resourceResolver
+                            .get(resourcePath)
+                            ?.callFunction(body.function.name, body.function.params)
 
                         if (result != Unit) {
                             call.respondText(result.toString())
