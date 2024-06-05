@@ -13,7 +13,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "org.merideum.core"
+            groupId = "org.requestscript.core"
             artifactId = "antlr"
             version = "0.0.1"
 

@@ -10,7 +10,7 @@ dependencies {
 
 allprojects {
     version = "0.0.1"
-    group = "org.merideum.kotlin"
+    group = "org.requestscript.kotlin"
 
     repositories {
         mavenCentral()

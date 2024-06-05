@@ -25,7 +25,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "org.merideum.core"
+            groupId = "org.requestscript.core"
             artifactId = "interpreter"
             version = "0.0.1"
 

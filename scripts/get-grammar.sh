@@ -4,20 +4,11 @@ grammarVersion="0.0.20"
 
 domain="https://raw.githubusercontent.com"
 organization="merideum"
-repository="merideum-lang"
-lexerFile="MerideumLexer.g4"
-parserFile="MerideumParser.g4"
+repository="requestscript-lang"
+grammarFile="RequestScript.g4"
 
-url="$domain/$organization/$repository/$grammarVersion/$lexerFile"
+url="$domain/$organization/$repository/$grammarVersion/$grammarFile"
 
-echo "Pulling $lexerFile from $url"
+echo "Pulling $grammarFile from $url"
 echo ""
-curl ${url} > MerideumLexer.g4
-
-echo ""
-
-url="$domain/$organization/$repository/$grammarVersion/$parserFile"
-
-echo "Pulling $parserFile from $url"
-echo ""
-curl ${url} > MerideumParser.g4
+curl ${url} > RequestScript.g4
