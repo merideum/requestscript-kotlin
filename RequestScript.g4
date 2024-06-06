@@ -1,7 +1,24 @@
 grammar RequestScript;
 
 parse
-    : (WS* statement WS*)*
+    : (WS* scriptDefinition WS*)*
+    ;
+
+scriptDefinition
+    : scriptType IDENTIFIER scriptParameters? BRACE_L (statement)* BRACE_R
+    ;
+
+scriptType
+    : REQUEST
+    | CONTRACT
+    ;
+
+scriptParameters
+    : PAREN_L scriptParameter (COMMA scriptParameter)? PAREN_R
+    ;
+
+ scriptParameter
+    : IDENTIFIER typeDeclaration
     ;
 
 statement
@@ -11,7 +28,7 @@ statement
 
 // import test: Resource
 importResourceStatement
-    : IMPORT IDENTIFIER COLON resourcePathIdentifier RESOURCE_IDENTIFIER
+    : IMPORT IDENTIFIER COLON resourcePathIdentifier IDENTIFIER
     ;
 
 returnStatement
@@ -40,19 +57,33 @@ resourcePathIdentifier
     : IDENTIFIER (DOT IDENTIFIER)* DOT
     ;
 
+typeDeclaration
+    : COLON type
+    ;
+
+type
+    : INT
+    | STRING
+    ;
+
 // Lexer
 
 // Keywords
 IMPORT: 'import';
 RETURN: 'return';
+REQUEST: 'request';
+CONTRACT: 'contract';
+INT: 'int';
+STRING: 'string';
 
 COLON: ':';
 COMMA: ',';
 DOT: '.';
 PAREN_L: '(';
 PAREN_R: ')';
+BRACE_L: '{';
+BRACE_R: '}';
 
-RESOURCE_IDENTIFIER: (CAPITAL_LETTER)(LETTER)*;
 IDENTIFIER: (LETTER | '_')(LETTER | '_' | DIGIT)*;
 CAPITAL_LETTER: [A-Z];
 LOWERCASE_LETTER: [a-z];

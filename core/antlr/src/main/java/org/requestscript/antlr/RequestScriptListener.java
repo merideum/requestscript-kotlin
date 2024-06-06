@@ -18,6 +18,46 @@ public interface RequestScriptListener extends ParseTreeListener {
 	 */
 	void exitParse(RequestScriptParser.ParseContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptDefinition(RequestScriptParser.ScriptDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptDefinition(RequestScriptParser.ScriptDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#scriptType}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptType(RequestScriptParser.ScriptTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#scriptType}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptType(RequestScriptParser.ScriptTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptParameters(RequestScriptParser.ScriptParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptParameters(RequestScriptParser.ScriptParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#scriptParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptParameter(RequestScriptParser.ScriptParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#scriptParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptParameter(RequestScriptParser.ScriptParameterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RequestScriptParser#statement}.
 	 * @param ctx the parse tree
 	 */
@@ -123,4 +163,24 @@ public interface RequestScriptListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitResourcePathIdentifier(RequestScriptParser.ResourcePathIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeDeclaration(RequestScriptParser.TypeDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeDeclaration(RequestScriptParser.TypeDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RequestScriptParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(RequestScriptParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RequestScriptParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(RequestScriptParser.TypeContext ctx);
 }

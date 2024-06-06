@@ -17,6 +17,30 @@ public interface RequestScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParse(RequestScriptParser.ParseContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#scriptDefinition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptDefinition(RequestScriptParser.ScriptDefinitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#scriptType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptType(RequestScriptParser.ScriptTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#scriptParameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptParameters(RequestScriptParser.ScriptParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#scriptParameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScriptParameter(RequestScriptParser.ScriptParameterContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RequestScriptParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -79,4 +103,16 @@ public interface RequestScriptVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitResourcePathIdentifier(RequestScriptParser.ResourcePathIdentifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#typeDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDeclaration(RequestScriptParser.TypeDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RequestScriptParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(RequestScriptParser.TypeContext ctx);
 }

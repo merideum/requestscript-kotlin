@@ -33,7 +33,9 @@ class ScriptVisitorTests : DescribeSpec({
                     )
 
                     val code = """
-                    import rsc: com.test.Resource
+                        request MyRequest {
+                            import rsc: com.test.Resource
+                        }
                 """.trimIndent()
 
                     executeCode(code, scope, resourceResolver)
@@ -50,7 +52,9 @@ class ScriptVisitorTests : DescribeSpec({
                     val scope = VariableScope(mutableMapOf())
 
                     val code = """
-                    import rsc: com.test.Resource
+                    request MyRequest {
+                            import rsc: com.test.Resource
+                    }
                 """.trimIndent()
 
                     executeCode(code, scope)
@@ -69,9 +73,12 @@ class ScriptVisitorTests : DescribeSpec({
                     )
 
                     val code = """
-                    import rsc: com.test.Resource
+                    request MyRequest {
+                            
+                        import rsc: com.test.Resource
                     
-                    return rsc.add(first: 100, second: 200)
+                        return rsc.add(first: 100, second: 200)
+                    }
                 """.trimIndent()
 
                     val result = executeCode(code, scope, resourceResolver)
@@ -87,9 +94,12 @@ class ScriptVisitorTests : DescribeSpec({
                     )
 
                     val code = """
+                        request MyRequest {
+                            
                     import rsc: com.test.Resource
                     
                     return rsc.add(first: 100, second: rsc.add(first:25, second:50))
+                    }
                 """.trimIndent()
 
                     val result = executeCode(code, scope, resourceResolver)
@@ -106,7 +116,9 @@ class ScriptVisitorTests : DescribeSpec({
             val scope = VariableScope(mutableMapOf())
 
             val code = """
+                request MyRequest {
                     return 123
+                }
                 """.trimIndent()
 
             val result = executeCode(code, scope)
