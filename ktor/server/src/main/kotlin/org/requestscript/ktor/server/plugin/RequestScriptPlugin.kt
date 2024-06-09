@@ -5,7 +5,6 @@ import io.ktor.server.application.createApplicationPlugin
 import io.ktor.server.request.receive
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
@@ -45,7 +44,7 @@ val RequestScript = createApplicationPlugin(
                             ?.callFunction(body.function.name, body.function.params)
 
                         if (result != Unit) {
-                            call.respondText(result.toString())
+                            call.respond(CallResult(result))
                         }
                     }
                 }
@@ -73,3 +72,7 @@ class ResourceConfiguration {
         functions[name] = function
     }
 }
+
+class CallResult(
+    val returnValue: Any?
+)

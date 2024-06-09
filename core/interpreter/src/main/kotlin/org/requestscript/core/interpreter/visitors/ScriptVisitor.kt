@@ -20,7 +20,6 @@ class ScriptVisitor(
     val scope: VariableScope,
     val resources: ResourceResolver,
 ) : RequestScriptBaseVisitor<WrappedValue<*>>() {
-    var returnValue: Any? = Unit
 
     override fun visitStatement(ctx: RequestScriptParser.StatementContext?): WrappedValue<*> {
         return super.visitStatement(ctx)
