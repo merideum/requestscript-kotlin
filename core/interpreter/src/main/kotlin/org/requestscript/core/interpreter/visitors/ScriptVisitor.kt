@@ -2,8 +2,8 @@
 
 package org.requestscript.core.interpreter.visitors
 
-import org.requestscript.antlr.RequestScriptBaseVisitor
 import org.requestscript.antlr.RequestScriptParser
+import org.requestscript.antlr.RequestScriptParserBaseVisitor
 import org.requestscript.core.interpreter.Resource
 import org.requestscript.core.interpreter.ResourceResolver
 import org.requestscript.core.interpreter.Variable
@@ -19,7 +19,7 @@ import org.requestscript.core.interpreter.error.ReturnTermination
 class ScriptVisitor(
     val scope: VariableScope,
     val resources: ResourceResolver,
-) : RequestScriptBaseVisitor<WrappedValue<*>>() {
+) : RequestScriptParserBaseVisitor<WrappedValue<*>>() {
 
     override fun visitStatement(ctx: RequestScriptParser.StatementContext?): WrappedValue<*> {
         return super.visitStatement(ctx)

@@ -1,4 +1,4 @@
-// Generated from RequestScript.g4 by ANTLR 4.13.1
+// Generated from RequestScriptLexer.g4 by ANTLR 4.13.1
 package org.requestscript.antlr;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -92,7 +92,7 @@ public class RequestScriptLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "RequestScript.g4"; }
+	public String getGrammarFileName() { return "RequestScriptLexer.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

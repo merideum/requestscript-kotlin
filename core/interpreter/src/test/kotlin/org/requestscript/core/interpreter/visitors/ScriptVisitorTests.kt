@@ -19,6 +19,8 @@ class ScriptVisitorTests : DescribeSpec({
             override fun callFunction(functionName: String, params: Map<String, Any?>): Any? {
                 if (functionName == "add") {
                     return params["first"] as Int + params["second"] as Int
+                } else if (functionName == "test") {
+                    return "hello"
                 }
                 throw IllegalArgumentException("$functionName not found")
             }
@@ -65,6 +67,27 @@ class ScriptVisitorTests : DescribeSpec({
         }
 
         describe("call resource function") {
+            it("should call function with no params") {
+                val scope = VariableScope(mutableMapOf())
+                val resourceResolver = SimpleResourceResolver(
+                    mapOf("com.test.Resource" to InternalResource())
+                )
+
+                val code = """
+                    request MyRequest {
+                            
+                        import rsc: com.test.Resource
+                    
+                        return rsc.test()
+                    }
+                """.trimIndent()
+
+                val result = executeCode(code, scope, resourceResolver)
+
+                (result is String).shouldBeTrue()
+                result shouldBe "hello"
+            }
+
             describe("function exists with valid params") {
                 it ("should call function and return result") {
                     val scope = VariableScope(mutableMapOf())

@@ -1,4 +1,4 @@
-// Generated from RequestScript.g4 by ANTLR 4.13.1
+// Generated from RequestScriptParser.g4 by ANTLR 4.13.1
 package org.requestscript.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public interface RequestScriptVisitor<T> extends ParseTreeVisitor<T> {
+public interface RequestScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
 	 * Visit a parse tree produced by {@link RequestScriptParser#parse}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from RequestScript.g4 by ANTLR 4.13.1
+// Generated from RequestScriptParser.g4 by ANTLR 4.13.1
 package org.requestscript.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -6,12 +6,12 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link RequestScriptListener},
+ * This class provides an empty implementation of {@link RequestScriptParserListener},
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
 @SuppressWarnings("CheckReturnValue")
-public class RequestScriptBaseListener implements RequestScriptListener {
+public class RequestScriptParserBaseListener implements RequestScriptParserListener {
 	/**
 	 * {@inheritDoc}
 	 *

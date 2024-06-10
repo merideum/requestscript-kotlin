@@ -22,5 +22,14 @@ fun Application.module() {
                 "Hello, ${params["name"]}!"
             }
         }
+
+        resource {
+            name = "TestMap"
+            path = "org.requestscript.example"
+
+            fn("go") {
+                mapOf("name" to "Hello World")
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-// Generated from RequestScript.g4 by ANTLR 4.13.1
+// Generated from RequestScriptParser.g4 by ANTLR 4.13.1
 package org.requestscript.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link RequestScriptParser}.
  */
-public interface RequestScriptListener extends ParseTreeListener {
+public interface RequestScriptParserListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link RequestScriptParser#parse}.
 	 * @param ctx the parse tree

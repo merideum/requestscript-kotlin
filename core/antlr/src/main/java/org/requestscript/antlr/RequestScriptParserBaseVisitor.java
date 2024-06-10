@@ -1,9 +1,9 @@
-// Generated from RequestScript.g4 by ANTLR 4.13.1
+// Generated from RequestScriptParser.g4 by ANTLR 4.13.1
 package org.requestscript.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
- * This class provides an empty implementation of {@link RequestScriptVisitor},
+ * This class provides an empty implementation of {@link RequestScriptParserVisitor},
  * which can be extended to create a visitor which only needs to handle a subset
  * of the available methods.
  *
@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * operations with no return type.
  */
 @SuppressWarnings("CheckReturnValue")
-public class RequestScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements RequestScriptVisitor<T> {
+public class RequestScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements RequestScriptParserVisitor<T> {
 	/**
 	 * {@inheritDoc}
 	 *
